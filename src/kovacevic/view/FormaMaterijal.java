@@ -92,7 +92,6 @@ public class FormaMaterijal extends Forma<Materijal> {
                 }
 
                 BigDecimal rowHeightColumn = wholeNumberOfLines.multiply(bdStartRowHeight);
-//                System.out.println( " wholeNumberOfLines " + wholeNumberOfLines);
 
                 if (rowHeightColumn.intValue() > h) {
                     h = rowHeightColumn.intValue()+3;
