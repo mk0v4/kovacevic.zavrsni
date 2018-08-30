@@ -51,17 +51,11 @@ public class FormaMaterijal extends Forma<Materijal> {
 
     public void changedSize(JTable table) {
 
-        System.out.println(" table.getSize() " + table.getSize());
-        System.out.println(" table.getParent().getSize().getWidth() " + table.getParent().getSize().getWidth());
-        System.out.println("table.getColumnCount() " + table.getColumnCount());
-        System.out.println("(int) table.getParent().getSize().getWidth()/table.getColumnCount() " + (int) table.getParent().getSize().getWidth() / table.getColumnCount());
-
         for (int i = 0; i < table.getColumnCount(); i++) {
-            System.out.println("table.getColumnModel().getColumn(i).getWidth() "+table.getColumnModel().getColumn(i).getWidth());
+
             table.getColumnModel().getColumn(i).setPreferredWidth((int) table.getParent().getSize().getWidth() / table.getColumnCount());
 
         }
-        System.out.println("changedSize()" + table.getSize().toString());
 
     }
 
@@ -72,7 +66,7 @@ public class FormaMaterijal extends Forma<Materijal> {
         int h = 0;
         for (int row = 0; row < table.getRowCount(); row++) {
             int actualRowHeight = table.getRowHeight(row);
-            h = actualRowHeight+3;
+            h = actualRowHeight + 3;
             for (int column = 0; column < table.getModel().getColumnCount(); column++) {
 
                 String value = table.getValueAt(row, column).toString();
@@ -94,7 +88,7 @@ public class FormaMaterijal extends Forma<Materijal> {
                 BigDecimal rowHeightColumn = wholeNumberOfLines.multiply(bdStartRowHeight);
 
                 if (rowHeightColumn.intValue() > h) {
-                    h = rowHeightColumn.intValue()+3;
+                    h = rowHeightColumn.intValue() + 3;
                 }
             }
 

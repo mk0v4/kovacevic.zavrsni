@@ -7,13 +7,20 @@ package kovacevic.view;
 
 import java.awt.event.KeyEvent;
 import java.math.BigDecimal;
+import java.util.ArrayList;
 import java.util.List;
+import javax.swing.DefaultComboBoxModel;
 import javax.swing.JOptionPane;
 import javax.swing.table.DefaultTableModel;
 import kovacevic.controller.Obrada;
 import kovacevic.model.Rad;
 import kovacevic.pomocno.HibernateUtil;
 import org.hibernate.Session;
+import org.jdesktop.swingx.autocomplete.AutoCompleteDecorator;
+
+
+
+
 
 /**
  *
@@ -34,7 +41,8 @@ public class FormaRad extends Forma<Rad> {
         setTitle("Rad");
         obrada = new Obrada();
         ucitaj();
-
+        grupeRadova();
+        AutoCompleteDecorator.decorate(cmbGrupeRadova);
     }
 
     @Override
@@ -76,15 +84,6 @@ public class FormaRad extends Forma<Rad> {
                 rad.getCijena(),});
         }
 
-//                public boolean isCellEditable(int row, int column) {
-//        return getModel().isCellEditable(convertRowIndexToModel(row),
-//                                         convertColumnIndexToModel(column));
-//        rezultati.forEach((Rad r) -> {
-//            model.addRow(new Object[]{
-//                r.getGrupaRadova(),
-//                r.getKategorijaRad(),
-//                r.getCijena(),});
-//        });
     }
 
     @Override
@@ -98,12 +97,19 @@ public class FormaRad extends Forma<Rad> {
     }
 
     private void trazi() {
+        if (!cmbGrupeRadova.getSelectedItem().equals("Nije odabrano")) {
+            String grupaRadova = (String) cmbGrupeRadova.getSelectedItem();
+            txtTratziGrupa.setText(grupaRadova);
+        } else {
+            txtTratziGrupa.setText("");
+        }
+
         if (txtTraziCijena.getText().trim().equals("")) {
             if (txtTraziKategorija.getText().trim().equals("") && txtTraziCijena.getText().trim().equals("")) {
                 rezultati = HibernateUtil.getSession().createQuery("from Rad a where "
                         + " a.obrisan=false and a.grupaRadova like :grupaRadova"
                         + " order by grupaRadova asc, kategorijaRad asc, cijena asc")
-                        .setParameter("grupaRadova", "%" + txtTratziGrupa.getText() + "%")
+                        .setParameter("grupaRadova", "%"+txtTratziGrupa.getText()+"%")
                         .list();
 
                 System.out.println("r1:" + rezultati);
@@ -168,6 +174,23 @@ public class FormaRad extends Forma<Rad> {
 
     }
 
+    private void grupeRadova() {
+
+        DefaultComboBoxModel<String> m = new DefaultComboBoxModel<>();
+        cmbGrupeRadova.setModel(m);
+        List<String> rad = HibernateUtil.getSession().
+                createQuery("select distinct a.grupaRadova from Rad a where "
+                        + "a.obrisan=false  ").list();
+
+        m.addElement("Nije odabrano");
+        for (String r : rad) {
+
+            m.addElement(r);
+
+        }
+        
+    }
+
     /**
      * This method is called from within the constructor to initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is always
@@ -197,6 +220,7 @@ public class FormaRad extends Forma<Rad> {
         btnResetirajTrazilicu = new javax.swing.JButton();
         jLabel1 = new javax.swing.JLabel();
         btnUpute = new javax.swing.JButton();
+        cmbGrupeRadova = new javax.swing.JComboBox<>();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
         setMinimumSize(new java.awt.Dimension(730, 400));
@@ -320,6 +344,12 @@ public class FormaRad extends Forma<Rad> {
             }
         });
 
+        cmbGrupeRadova.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                cmbGrupeRadovaActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
@@ -354,7 +384,8 @@ public class FormaRad extends Forma<Rad> {
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                                 .addComponent(btnObrisi))
                             .addComponent(txtIdValue, javax.swing.GroupLayout.PREFERRED_SIZE, 250, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(jLabel1)))
+                            .addComponent(cmbGrupeRadova, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                            .addComponent(jLabel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
                     .addGroup(layout.createSequentialGroup()
                         .addComponent(txtTratziGrupa, javax.swing.GroupLayout.PREFERRED_SIZE, 100, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
@@ -408,6 +439,8 @@ public class FormaRad extends Forma<Rad> {
                             .addComponent(btnObrisi))
                         .addGap(18, 18, 18)
                         .addComponent(jLabel1)
+                        .addGap(32, 32, 32)
+                        .addComponent(cmbGrupeRadova, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addGap(0, 0, Short.MAX_VALUE))
                     .addComponent(jScrollPane3, javax.swing.GroupLayout.DEFAULT_SIZE, 259, Short.MAX_VALUE))
                 .addContainerGap())
@@ -548,7 +581,7 @@ public class FormaRad extends Forma<Rad> {
             txtCijena.setText(model.getValueAt(row, 3).toString());
 
             System.out.println("kovacevic.view.FormaRad.tblRadMouseClicked()" + tblRad.getSelectionBackground());
-            
+
         } else if (evt.getClickCount() == 1 && evt.isAltDown() == true) {
             System.out.println("=== jedan klik i stisnut je alt ===");
             tblRad.getSelectionModel().clearSelection();
@@ -608,12 +641,27 @@ public class FormaRad extends Forma<Rad> {
                 getTitle() + " - Upute za korištenje", JOptionPane.PLAIN_MESSAGE);
     }//GEN-LAST:event_btnUputeActionPerformed
 
+    private void cmbGrupeRadovaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cmbGrupeRadovaActionPerformed
+//        if (!cmbGrupeRadova.getSelectedItem().equals("Nije odabrano")) {
+//            rezultati = HibernateUtil.getSession().createQuery("from Rad a where "
+//                    + " a.obrisan=false and a.grupaRadova =:grupaRadova"
+//                    + " order by grupaRadova asc, kategorijaRad asc, cijena asc")
+//                    .setParameter("grupaRadova", cmbGrupeRadova.getSelectedItem())
+//                    .list();
+//            popunjavanjeTablice();
+//        } else {
+//            ucitaj();
+//        }
+        trazi();
+    }//GEN-LAST:event_cmbGrupeRadovaActionPerformed
+
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btnDodaj;
     private javax.swing.JButton btnObrisi;
     private javax.swing.JButton btnPromjeni;
     private javax.swing.JButton btnResetirajTrazilicu;
     private javax.swing.JButton btnUpute;
+    private javax.swing.JComboBox<String> cmbGrupeRadova;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JScrollPane jScrollPane3;
     private javax.swing.JLabel lblCijena;
