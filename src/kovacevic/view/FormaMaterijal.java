@@ -5,13 +5,19 @@
  */
 package kovacevic.view;
 
+import java.awt.Container;
 import java.awt.Font;
+import java.awt.event.ComponentEvent;
+import java.awt.event.KeyEvent;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.util.List;
+import javax.swing.DefaultComboBoxModel;
 import javax.swing.JTable;
+import javax.swing.ScrollPaneConstants;
 
 import javax.swing.table.DefaultTableModel;
+import javax.swing.table.TableModel;
 
 import kovacevic.controller.Obrada;
 import kovacevic.model.Materijal;
@@ -19,6 +25,7 @@ import kovacevic.pomocno.HibernateUtil;
 import kovacevic.pomocno.WordWrapCellRenderer;
 
 import org.hibernate.Session;
+import org.jdesktop.swingx.autocomplete.AutoCompleteDecorator;
 
 /**
  *
@@ -36,6 +43,8 @@ public class FormaMaterijal extends Forma<Materijal> {
         initComponents();
         setTitle("Materijal");
         obrada = new Obrada();
+        AutoCompleteDecorator.decorate(cmbGrupeMaterijala);
+        popuniGrupeMaterijala();
         ucitaj();
 
 //        addComponentListener(new ComponentAdapter() {
@@ -50,16 +59,19 @@ public class FormaMaterijal extends Forma<Materijal> {
     }
 
     public void changedSize(JTable table) {
-
+//           System.out.println("jScrollPane3.getViewport().getWidth() "+jScrollPane3.getViewport().getWidth());
+//           System.out.println("table.getParent().getSize().getWidth() "+table.getParent().getSize().getWidth());
+//           System.out.println("jScrollPane3.getVerticalScrollBar().isShowing() " + jScrollPane3.getVerticalScrollBar().isShowing());
         for (int i = 0; i < table.getColumnCount(); i++) {
 
-            table.getColumnModel().getColumn(i).setPreferredWidth((int) table.getParent().getSize().getWidth() / table.getColumnCount());
+            table.getColumnModel().getColumn(i).setPreferredWidth((int) jScrollPane3.getViewport().getWidth() / table.getColumnCount());
 
         }
 
     }
 
     private void updateRowHeights(JTable table) {
+
         int startRowHeight = table.getRowHeight();
         BigDecimal bdStartRowHeight = new BigDecimal(startRowHeight);
 
@@ -126,11 +138,7 @@ public class FormaMaterijal extends Forma<Materijal> {
             "Oznaka", "Pakovanje količina", "Jedinica mjere", "Cijena pakovanja", "Opis"};
 
         DefaultTableModel model = (DefaultTableModel) tablica.getModel();
-//        tblMaterijal = new WrappableTable(tablica, model);
 
-//            DefaultTableModel table = new DefaultTableModel();
-//        tblMaterijal = new WrappableTable(model);
-//        tblMaterijal.setDefaultRenderer(Object.class, tableCellRenderer);
         tablica.setDefaultRenderer(Object.class, new WordWrapCellRenderer());
 
         model.setRowCount(0);
@@ -151,9 +159,57 @@ public class FormaMaterijal extends Forma<Materijal> {
                 materijal.getOpis()});
         }
 
+        changedSize(tablica);
         updateRowHeights(tablica);
 
 //        tablica = new WrappableTable(tablica, model);
+    }
+
+    private void trazi() {
+
+        String grupaMaterijala = null;
+        String cond = null;
+        String p = null;
+        if (!cmbGrupeMaterijala.getSelectedItem().equals("Nije odabrano")) {
+            grupaMaterijala = (String) cmbGrupeMaterijala.getSelectedItem();
+            cond = "=";
+            p = "";
+
+        } else {
+            grupaMaterijala = "";
+            cond = "like";
+            p = "%";
+        }
+
+        rezultati = HibernateUtil.getSession().createQuery("from Materijal a where "
+                + " a.obrisan=false and a.grupaMaterijal " + cond + " :grupaMaterijal and a.proizvodac like :proizvodac and a.oznaka like :oznaka "
+                + " order by grupaMaterijal asc, cijenaAmbalaza asc").setParameter("grupaMaterijal", p + grupaMaterijala + p).setParameter("proizvodac", "%").setParameter("oznaka", "%"+ txtTraziOznaka.getText()+"%").list();
+
+        popunjavanjeTablice(tblMaterijal);
+
+//rezultati = HibernateUtil.getSession().createQuery("from Materijal a where "
+//                + " a.obrisan=false and a.grupaMaterijal =:grupaMaterijal and a.proizvodac =:proizvodac and a.oznaka =:oznaka"
+//                + " order by grupaMaterijal asc, cijenaAmbalaza asc").setParameter("grupaMaterijal", cmbGrupeMaterijala.getSelectedItem()).setParameter("proizvodac", "")
+//                .setParameter("oznaka", "").list();
+//
+//        popunjavanjeTablice(tblMaterijal);
+    }
+
+    private void popuniGrupeMaterijala() {
+
+        DefaultComboBoxModel<String> m = new DefaultComboBoxModel<>();
+        cmbGrupeMaterijala.setModel(m);
+        List<String> materijal = HibernateUtil.getSession().
+                createQuery("select distinct a.grupaMaterijal from Materijal a where "
+                        + "a.obrisan=false  ").list();
+
+        m.addElement("Nije odabrano");
+        for (String s : materijal) {
+
+            m.addElement(s);
+
+        }
+
     }
 
     /**
@@ -181,8 +237,8 @@ public class FormaMaterijal extends Forma<Materijal> {
         btnDodaj = new javax.swing.JButton();
         btnPromjeni = new javax.swing.JButton();
         btnObrisi = new javax.swing.JButton();
-        txtUvjet = new javax.swing.JTextField();
-        btnTrazi = new javax.swing.JButton();
+        txtTraziOznaka = new javax.swing.JTextField();
+        btnReset = new javax.swing.JButton();
         jScrollPane2 = new javax.swing.JScrollPane();
         tarOpis = new javax.swing.JTextArea();
         lblPretraga = new javax.swing.JLabel();
@@ -191,9 +247,13 @@ public class FormaMaterijal extends Forma<Materijal> {
         tblMaterijal = new javax.swing.JTable();
         lblId = new javax.swing.JLabel();
         txtIdValue = new javax.swing.JTextField();
+        cmbGrupeMaterijala = new javax.swing.JComboBox<>();
+        txtTraziOznaka1 = new javax.swing.JTextField();
+        lblPretraga1 = new javax.swing.JLabel();
+        lblPretraga2 = new javax.swing.JLabel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
-        setMinimumSize(new java.awt.Dimension(850, 450));
+        setMinimumSize(new java.awt.Dimension(850, 460));
         setPreferredSize(new java.awt.Dimension(450, 333));
 
         lblGrupaMaterijal.setText("Grupa materijala:");
@@ -237,16 +297,21 @@ public class FormaMaterijal extends Forma<Materijal> {
             }
         });
 
-        txtUvjet.addActionListener(new java.awt.event.ActionListener() {
+        txtTraziOznaka.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                txtUvjetActionPerformed(evt);
+                txtTraziOznakaActionPerformed(evt);
+            }
+        });
+        txtTraziOznaka.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyPressed(java.awt.event.KeyEvent evt) {
+                txtTraziOznakaKeyPressed(evt);
             }
         });
 
-        btnTrazi.setText("Traži");
-        btnTrazi.addActionListener(new java.awt.event.ActionListener() {
+        btnReset.setText("Reset");
+        btnReset.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                btnTraziActionPerformed(evt);
+                btnResetActionPerformed(evt);
             }
         });
 
@@ -256,7 +321,7 @@ public class FormaMaterijal extends Forma<Materijal> {
         jScrollPane2.setViewportView(tarOpis);
         tarOpis.setLineWrap(true);
 
-        lblPretraga.setText("Pretraga po grupi materijala, proizvođaču i oznaci:");
+        lblPretraga.setText("grupa materijalai:");
 
         jLabel1.setText("dodati povijest cijena za odabrani red");
 
@@ -306,6 +371,27 @@ public class FormaMaterijal extends Forma<Materijal> {
             }
         });
 
+        cmbGrupeMaterijala.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                cmbGrupeMaterijalaActionPerformed(evt);
+            }
+        });
+
+        txtTraziOznaka1.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                txtTraziOznaka1ActionPerformed(evt);
+            }
+        });
+        txtTraziOznaka1.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyPressed(java.awt.event.KeyEvent evt) {
+                txtTraziOznaka1KeyPressed(evt);
+            }
+        });
+
+        lblPretraga1.setText(" proizvođači:");
+
+        lblPretraga2.setText("oznaka:");
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
@@ -313,15 +399,23 @@ public class FormaMaterijal extends Forma<Materijal> {
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(jScrollPane3, javax.swing.GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE)
                     .addGroup(layout.createSequentialGroup()
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(lblPretraga)
+                            .addComponent(cmbGrupeMaterijala, javax.swing.GroupLayout.PREFERRED_SIZE, 100, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(lblPretraga))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(txtTraziOznaka1, javax.swing.GroupLayout.PREFERRED_SIZE, 100, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(lblPretraga1))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addGroup(layout.createSequentialGroup()
-                                .addComponent(txtUvjet, javax.swing.GroupLayout.PREFERRED_SIZE, 351, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addComponent(btnTrazi)))
-                        .addGap(0, 0, Short.MAX_VALUE))
-                    .addComponent(jScrollPane3, javax.swing.GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE))
+                                .addComponent(txtTraziOznaka, javax.swing.GroupLayout.PREFERRED_SIZE, 100, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addGap(18, 18, 18)
+                                .addComponent(btnReset))
+                            .addComponent(lblPretraga2))
+                        .addGap(0, 27, Short.MAX_VALUE)))
                 .addGap(18, 18, 18)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
@@ -359,11 +453,16 @@ public class FormaMaterijal extends Forma<Materijal> {
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
                 .addGap(12, 12, 12)
-                .addComponent(lblPretraga)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(lblPretraga)
+                    .addComponent(lblPretraga1)
+                    .addComponent(lblPretraga2))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(txtUvjet, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(btnTrazi))
+                    .addComponent(txtTraziOznaka, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(btnReset)
+                    .addComponent(cmbGrupeMaterijala, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(txtTraziOznaka1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(jScrollPane3, javax.swing.GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE)
@@ -435,21 +534,30 @@ public class FormaMaterijal extends Forma<Materijal> {
         obrisi();
     }//GEN-LAST:event_btnObrisiActionPerformed
 
-    private void txtUvjetActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtUvjetActionPerformed
+    private void txtTraziOznakaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtTraziOznakaActionPerformed
 
-    }//GEN-LAST:event_txtUvjetActionPerformed
+    }//GEN-LAST:event_txtTraziOznakaActionPerformed
 
-    private void btnTraziActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnTraziActionPerformed
-        rezultati = HibernateUtil.getSession().createQuery("from Materijal a where "
-                + " a.obrisan=false and concat(a.grupaMaterijal, ' ', a.proizvodac, ' ',a.oznaka, ' ') like :uvjet").setString("uvjet", "%" + txtUvjet.getText() + "%").list();
-        popunjavanjeTablice(tblMaterijal);
-    }//GEN-LAST:event_btnTraziActionPerformed
+    private void btnResetActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnResetActionPerformed
+
+        tblMaterijal.getSelectionModel().clearSelection();
+        entitet = null;
+        txtIdValue.setText("");
+        txtGrupaMaterijal.setText("");
+        txtProizvodac.setText("");
+        txtOznaka.setText("");
+        txtKolicinaAmbalaza.setText("");
+        txtJedinicaMjereAmbalaza.setText("");
+        txtCijenaAmbalaza.setText("");
+        tarOpis.setText("");
+        ucitaj();
+    }//GEN-LAST:event_btnResetActionPerformed
 
     private void tblMaterijalMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_tblMaterijalMouseClicked
         if (evt.getClickCount() == 2) {
             DefaultTableModel model = (DefaultTableModel) tblMaterijal.getModel();
             int row = tblMaterijal.getSelectedRow();
-            System.out.println("=== odabrani redak" + row);
+//            System.out.println("=== odabrani redak" + row);
             entitet = rezultati.get(tblMaterijal.convertRowIndexToModel(row));
             txtIdValue.setText(model.getValueAt(row, 0).toString());
             txtGrupaMaterijal.setText(model.getValueAt(row, 1).toString());
@@ -460,7 +568,7 @@ public class FormaMaterijal extends Forma<Materijal> {
             txtCijenaAmbalaza.setText(model.getValueAt(row, 6).toString());
             tarOpis.setWrapStyleWord(true);
             tarOpis.setText(model.getValueAt(row, 7).toString());
-            System.out.println(model.getValueAt(row, 7).toString().length());
+//            System.out.println(model.getValueAt(row, 7).toString().length());
         } else if (evt.getClickCount() == 1 && evt.isAltDown() == true) {
             tblMaterijal.getSelectionModel().clearSelection();
             entitet = null;
@@ -490,15 +598,38 @@ public class FormaMaterijal extends Forma<Materijal> {
     }//GEN-LAST:event_tblMaterijalComponentResized
 
     private void jScrollPane3ComponentResized(java.awt.event.ComponentEvent evt) {//GEN-FIRST:event_jScrollPane3ComponentResized
-        System.out.println("-");
+//        System.out.println("kovacevic.view.FormaMaterijal.jScrollPane3ComponentResized()");
+
         changedSize(tblMaterijal);
     }//GEN-LAST:event_jScrollPane3ComponentResized
+
+    private void cmbGrupeMaterijalaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cmbGrupeMaterijalaActionPerformed
+        trazi();
+//        jScrollPane3ComponentResized(new ComponentEvent(jScrollPane3, WIDTH));
+//System.out.println("jScrollPane3.getVerticalScrollBar().isShowing() " + jScrollPane3.getVerticalScrollBar().isShowing());
+
+    }//GEN-LAST:event_cmbGrupeMaterijalaActionPerformed
+
+    private void txtTraziOznakaKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtTraziOznakaKeyPressed
+        if (evt.getKeyCode() == KeyEvent.VK_ENTER) {
+            trazi();
+        }
+    }//GEN-LAST:event_txtTraziOznakaKeyPressed
+
+    private void txtTraziOznaka1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtTraziOznaka1ActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_txtTraziOznaka1ActionPerformed
+
+    private void txtTraziOznaka1KeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtTraziOznaka1KeyPressed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_txtTraziOznaka1KeyPressed
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btnDodaj;
     private javax.swing.JButton btnObrisi;
     private javax.swing.JButton btnPromjeni;
-    private javax.swing.JButton btnTrazi;
+    private javax.swing.JButton btnReset;
+    private javax.swing.JComboBox<String> cmbGrupeMaterijala;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JScrollPane jScrollPane2;
     private javax.swing.JScrollPane jScrollPane3;
@@ -510,6 +641,8 @@ public class FormaMaterijal extends Forma<Materijal> {
     private javax.swing.JLabel lblOpis;
     private javax.swing.JLabel lblOznaka;
     private javax.swing.JLabel lblPretraga;
+    private javax.swing.JLabel lblPretraga1;
+    private javax.swing.JLabel lblPretraga2;
     private javax.swing.JLabel lblProizvodac;
     private javax.swing.JTextArea tarOpis;
     private javax.swing.JTable tblMaterijal;
@@ -520,7 +653,8 @@ public class FormaMaterijal extends Forma<Materijal> {
     private javax.swing.JTextField txtKolicinaAmbalaza;
     private javax.swing.JTextField txtOznaka;
     private javax.swing.JTextField txtProizvodac;
-    private javax.swing.JTextField txtUvjet;
+    private javax.swing.JTextField txtTraziOznaka;
+    private javax.swing.JTextField txtTraziOznaka1;
     // End of variables declaration//GEN-END:variables
 
 }

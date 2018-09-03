@@ -7,7 +7,6 @@ package kovacevic.view;
 
 import java.awt.event.KeyEvent;
 import java.math.BigDecimal;
-import java.util.ArrayList;
 import java.util.List;
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.JOptionPane;
@@ -17,10 +16,6 @@ import kovacevic.model.Rad;
 import kovacevic.pomocno.HibernateUtil;
 import org.hibernate.Session;
 import org.jdesktop.swingx.autocomplete.AutoCompleteDecorator;
-
-
-
-
 
 /**
  *
@@ -41,7 +36,7 @@ public class FormaRad extends Forma<Rad> {
         setTitle("Rad");
         obrada = new Obrada();
         ucitaj();
-        grupeRadova();
+        popuniGrupeRadova();
         AutoCompleteDecorator.decorate(cmbGrupeRadova);
     }
 
@@ -93,76 +88,75 @@ public class FormaRad extends Forma<Rad> {
         entitet.setKategorijaRad(txtKategorijaRad.getText());
         entitet.setCijena(new BigDecimal(txtCijena.getText()));
         super.spremi();
+        popuniGrupeRadova();
         popunjavanjeTablice();
     }
 
     private void trazi() {
+        String grupaRadova = null;
+        String cond = null;
+        String p = null;
         if (!cmbGrupeRadova.getSelectedItem().equals("Nije odabrano")) {
-            String grupaRadova = (String) cmbGrupeRadova.getSelectedItem();
-            txtTratziGrupa.setText(grupaRadova);
+            grupaRadova = (String) cmbGrupeRadova.getSelectedItem();
+            cond = "=";
+            p = "";
+
         } else {
-            txtTratziGrupa.setText("");
+            grupaRadova = "";
+            cond = "like";
+            p = "%";
+
         }
 
         if (txtTraziCijena.getText().trim().equals("")) {
             if (txtTraziKategorija.getText().trim().equals("") && txtTraziCijena.getText().trim().equals("")) {
+
                 rezultati = HibernateUtil.getSession().createQuery("from Rad a where "
-                        + " a.obrisan=false and a.grupaRadova like :grupaRadova"
+                        + " a.obrisan=false and a.grupaRadova " + cond + " :grupaRadova"
                         + " order by grupaRadova asc, kategorijaRad asc, cijena asc")
-                        .setParameter("grupaRadova", "%"+txtTratziGrupa.getText()+"%")
+                        .setParameter("grupaRadova", p + grupaRadova + p)
                         .list();
 
-                System.out.println("r1:" + rezultati);
+//                System.out.println("r1:" + rezultati);
             } else if (txtTraziCijena.getText().trim().equals("")) {
                 rezultati = HibernateUtil.getSession().createQuery("from Rad a where "
-                        + " a.obrisan=false and a.grupaRadova like :grupaRadova and"
+                        + " a.obrisan=false and a.grupaRadova " + cond + " :grupaRadova and"
                         + " a.kategorijaRad = :kategorijaRad order by grupaRadova asc, kategorijaRad asc, cijena asc")
-                        .setParameter("grupaRadova", "%" + txtTratziGrupa.getText() + "%")
+                        .setParameter("grupaRadova", p + grupaRadova + p)
                         .setParameter("kategorijaRad", txtTraziKategorija.getText()).list();
-                System.out.println("r2:" + rezultati);
+//                System.out.println("r2:" + rezultati);
             }
         } else {
             if (txtTraziKategorija.getText().trim().equals("")) {
                 rezultati = HibernateUtil.getSession().createQuery("from Rad a where "
-                        + " a.obrisan=false and a.grupaRadova like :grupaRadova "
+                        + " a.obrisan=false and a.grupaRadova " + cond + " :grupaRadova "
                         //                    + "and a.kategorijaRad = :kategorijaRad "
                         + "and a.cijena like concat(:cijena,'%') order by grupaRadova asc, kategorijaRad asc, cijena asc")
-                        .setParameter("grupaRadova", "%" + txtTratziGrupa.getText() + "%")
+                        .setParameter("grupaRadova", p + grupaRadova + p)
                         .setParameter("cijena", new BigDecimal(txtTraziCijena.getText()))
                         //                    .setParameter("kategorijaRad", txtTraziKategorija.getText())
                         .list();
-                System.out.println("r3:" + rezultati);
+//                System.out.println("r3:" + rezultati);
             } else {
                 rezultati = HibernateUtil.getSession().createQuery("from Rad a where "
-                        + " a.obrisan=false and a.grupaRadova like :grupaRadova "
+                        + " a.obrisan=false and a.grupaRadova " + cond + " :grupaRadova "
                         + "and a.kategorijaRad = :kategorijaRad "
                         + "and a.cijena like concat(:cijena,'%') order by grupaRadova asc, kategorijaRad asc, cijena asc")
-                        .setParameter("grupaRadova", "%" + txtTratziGrupa.getText() + "%")
+                        .setParameter("grupaRadova", p + grupaRadova + p)
                         .setParameter("cijena", new BigDecimal(txtTraziCijena.getText()))
                         .setParameter("kategorijaRad", txtTraziKategorija.getText())
                         .list();
-                System.out.println("r4:" + rezultati);
+//                System.out.println("r4:" + rezultati);
             }
 
         }
 
-//        if (!txtTratziGrupa.getText().trim().equals("") && !txtTraziKategorija.getText().trim().equals("") && !txtTraziKategorija.getText().trim().equals("")) {
-//        }
-//        rezultati = HibernateUtil.getSession().createQuery("from Rad a where "
-//                + " a.obrisan=false and a.grupaRadova like :grupaRadova and a.kategorijaRad = :kategorijaRad "
-//                + "(and a.cijena like :cijena")
-//                .setParameter("grupaRadova", "%" + txtTratziGrupa.getText() + "%")
-//                .setParameter("cijena", "%" + txtTraziCijena.getText() + "%")
-//                .setParameter("kategorijaRad", txtTraziKategorija.getText()).list();
-//        popunjavanjeTablice();
-//        System.out.println("r1:" + rezultati);
         popunjavanjeTablice();
     }
 
     private boolean provjeraDuplogUnosaRed() {
-//        select cijena, grupaRadova, kategorijaRad,  count(*) from zavrsni.rad where obrisan = 0 group by cijena, grupaRadova, kategorijaRad having count(*) > 1 ;
         rezultati = HibernateUtil.getSession().createQuery(
-                "from Rad a where a.obrisan=false order by grupaRadova asc, kategorijaRad asc, cijena asc").list();
+                "from Rad a where a.obrisan=false").list();
         for (Rad rad : rezultati) {
             if (rad.getGrupaRadova().matches(txtGrupaRadova.getText()) && rad.getKategorijaRad().matches(txtKategorijaRad.getText()) && rad.getCijena().equals(new BigDecimal(txtCijena.getText())) && rad.isObrisan() == false) {
                 System.out.println("provjeraDuplogUnosaRed === postoji unešen podatak");
@@ -174,7 +168,7 @@ public class FormaRad extends Forma<Rad> {
 
     }
 
-    private void grupeRadova() {
+    private void popuniGrupeRadova() {
 
         DefaultComboBoxModel<String> m = new DefaultComboBoxModel<>();
         cmbGrupeRadova.setModel(m);
@@ -188,7 +182,7 @@ public class FormaRad extends Forma<Rad> {
             m.addElement(r);
 
         }
-        
+
     }
 
     /**
@@ -209,7 +203,6 @@ public class FormaRad extends Forma<Rad> {
         btnDodaj = new javax.swing.JButton();
         btnPromjeni = new javax.swing.JButton();
         btnObrisi = new javax.swing.JButton();
-        txtTratziGrupa = new javax.swing.JTextField();
         lblPretraga = new javax.swing.JLabel();
         txtTraziKategorija = new javax.swing.JTextField();
         jScrollPane3 = new javax.swing.JScrollPane();
@@ -221,6 +214,8 @@ public class FormaRad extends Forma<Rad> {
         jLabel1 = new javax.swing.JLabel();
         btnUpute = new javax.swing.JButton();
         cmbGrupeRadova = new javax.swing.JComboBox<>();
+        lblPretraga1 = new javax.swing.JLabel();
+        lblPretraga2 = new javax.swing.JLabel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
         setMinimumSize(new java.awt.Dimension(730, 400));
@@ -259,18 +254,7 @@ public class FormaRad extends Forma<Rad> {
             }
         });
 
-        txtTratziGrupa.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                txtTratziGrupaActionPerformed(evt);
-            }
-        });
-        txtTratziGrupa.addKeyListener(new java.awt.event.KeyAdapter() {
-            public void keyPressed(java.awt.event.KeyEvent evt) {
-                txtTratziGrupaKeyPressed(evt);
-            }
-        });
-
-        lblPretraga.setText("Pretraga po grupi, kategoriji i cijeni:");
+        lblPretraga.setText("grupa:");
 
         txtTraziKategorija.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -350,6 +334,10 @@ public class FormaRad extends Forma<Rad> {
             }
         });
 
+        lblPretraga1.setText("kategorija:");
+
+        lblPretraga2.setText("cijena:");
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
@@ -358,7 +346,7 @@ public class FormaRad extends Forma<Rad> {
                 .addContainerGap()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(layout.createSequentialGroup()
-                        .addComponent(jScrollPane3, javax.swing.GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE)
+                        .addComponent(jScrollPane3, javax.swing.GroupLayout.DEFAULT_SIZE, 382, Short.MAX_VALUE)
                         .addGap(13, 13, 13)
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -384,36 +372,48 @@ public class FormaRad extends Forma<Rad> {
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                                 .addComponent(btnObrisi))
                             .addComponent(txtIdValue, javax.swing.GroupLayout.PREFERRED_SIZE, 250, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(cmbGrupeRadova, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                             .addComponent(jLabel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
                     .addGroup(layout.createSequentialGroup()
-                        .addComponent(txtTratziGrupa, javax.swing.GroupLayout.PREFERRED_SIZE, 100, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(cmbGrupeRadova, javax.swing.GroupLayout.PREFERRED_SIZE, 99, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(lblPretraga))
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(txtTraziKategorija, javax.swing.GroupLayout.PREFERRED_SIZE, 100, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(txtTraziKategorija, javax.swing.GroupLayout.PREFERRED_SIZE, 100, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(lblPretraga1))
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(txtTraziCijena, javax.swing.GroupLayout.PREFERRED_SIZE, 104, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(btnResetirajTrazilicu)
-                        .addGap(0, 350, Short.MAX_VALUE))
-                    .addGroup(layout.createSequentialGroup()
-                        .addComponent(lblPretraga)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addComponent(btnUpute)))
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(txtTraziCijena, javax.swing.GroupLayout.PREFERRED_SIZE, 104, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(lblPretraga2))
+                        .addGap(18, 18, 18)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addGroup(layout.createSequentialGroup()
+                                .addGap(0, 0, Short.MAX_VALUE)
+                                .addComponent(btnUpute))
+                            .addGroup(layout.createSequentialGroup()
+                                .addComponent(btnResetirajTrazilicu)
+                                .addGap(0, 0, Short.MAX_VALUE)))))
                 .addContainerGap())
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
-                .addGap(12, 12, 12)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(lblPretraga)
-                    .addComponent(btnUpute))
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(layout.createSequentialGroup()
+                        .addGap(12, 12, 12)
+                        .addComponent(btnUpute))
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                        .addContainerGap()
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                            .addComponent(lblPretraga1)
+                            .addComponent(lblPretraga2)
+                            .addComponent(lblPretraga))))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(txtTratziGrupa, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(txtTraziKategorija, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(txtTraziCijena, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(btnResetirajTrazilicu))
+                    .addComponent(btnResetirajTrazilicu)
+                    .addComponent(cmbGrupeRadova, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(layout.createSequentialGroup()
@@ -439,10 +439,8 @@ public class FormaRad extends Forma<Rad> {
                             .addComponent(btnObrisi))
                         .addGap(18, 18, 18)
                         .addComponent(jLabel1)
-                        .addGap(32, 32, 32)
-                        .addComponent(cmbGrupeRadova, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(0, 0, Short.MAX_VALUE))
-                    .addComponent(jScrollPane3, javax.swing.GroupLayout.DEFAULT_SIZE, 259, Short.MAX_VALUE))
+                        .addGap(0, 112, Short.MAX_VALUE))
+                    .addComponent(jScrollPane3, javax.swing.GroupLayout.DEFAULT_SIZE, 271, Short.MAX_VALUE))
                 .addContainerGap())
         );
 
@@ -467,34 +465,20 @@ public class FormaRad extends Forma<Rad> {
             for (int i = 0; i < rezultati.size(); i++) {
                 if (tblRad.getModel().getValueAt(i, 0).toString().contains("(" + entitet.getId().toString() + ")")) {
                     txtIdValue.setText(tblRad.getModel().getValueAt(i, 0).toString());
-//                    entitet = rezultati.get(tblRad.convertRowIndexToModel(i));
+                    entitet = rezultati.get(tblRad.convertRowIndexToModel(i));
                     row = i;
-                    System.out.println("=== red " + (i + 1) + "=== rowVarijabla " + (row + 1));
                     break;
                 }
 
             }
+
             trazi();
+            popuniGrupeRadova();
             tblRad.setRowSelectionInterval(row, row);
         }
 
 
     }//GEN-LAST:event_btnDodajActionPerformed
-
-//            DefaultTableModel model = (DefaultTableModel) tblRad.getModel();
-//        model.setRowCount(0);
-//        model.setColumnIdentifiers(coulumnName);
-//
-//        tblRad.setModel(model);
-//        int rb = 0;
-//        for (Rad rad : rezultati) {
-//            rb++;
-//            model.addRow(new Object[]{
-//                rb + ". (" + rad.getId() + ")",
-//                rad.getGrupaRadova(),
-//                rad.getKategorijaRad(),
-//                rad.getCijena(),});
-//        }
 
     private void btnPromjeniActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnPromjeniActionPerformed
 
@@ -508,13 +492,16 @@ public class FormaRad extends Forma<Rad> {
             model.setValueAt(txtGrupaRadova.getText(), i, 1);
             model.setValueAt(txtKategorijaRad.getText(), i, 2);
             model.setValueAt(txtCijena.getText(), i, 3);
-            spremi();
+            if (provjeraDuplogUnosaRed() == false) {
+                spremi();
+            } else {
+                JOptionPane.showMessageDialog(rootPane, "Vrijednosti nisu izmjenjene", getTitle() + " - Promjena postojećeg", HEIGHT);
+            }
             entitet = null;
+            popuniGrupeRadova();
+            trazi();
             entitet = rezultati.get(tblRad.convertRowIndexToModel(i));
             tblRad.setRowSelectionInterval(i, i);
-            trazi();
-        } else if (provjeraDuplogUnosaRed() == true) {
-            JOptionPane.showMessageDialog(rootPane, "Vrijednosti nisu izmjenjene", getTitle() + " - Promjena postojećeg", HEIGHT);
         } else {
 
             JOptionPane.showMessageDialog(rootPane, "Odaberite stavku vidljivu unutar tablice",
@@ -525,7 +512,7 @@ public class FormaRad extends Forma<Rad> {
     }//GEN-LAST:event_btnPromjeniActionPerformed
 
     private void btnObrisiActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnObrisiActionPerformed
-        System.out.println("btnObrisiActionPerformed()" + entitet);
+//        System.out.println("btnObrisiActionPerformed()" + entitet);
         if (entitet == null || tblRad.getSelectedRow() == -1) {
             JOptionPane.showMessageDialog(rootPane, "Odaberite stavku vidljivu unutar tablice", getTitle() + " - Obriši", HEIGHT);
         } else {
@@ -548,16 +535,13 @@ public class FormaRad extends Forma<Rad> {
                 txtKategorijaRad.setText("");
                 txtCijena.setText("");
                 tblRad.getSelectionModel().clearSelection();
+                popuniGrupeRadova();
                 trazi();
 
             }
 
         }
     }//GEN-LAST:event_btnObrisiActionPerformed
-
-    private void txtTratziGrupaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtTratziGrupaActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_txtTratziGrupaActionPerformed
 
     private void txtGrupaRadovaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtGrupaRadovaActionPerformed
         // TODO add your handling code here:
@@ -570,8 +554,8 @@ public class FormaRad extends Forma<Rad> {
     private void tblRadMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_tblRadMouseClicked
         if (evt.getClickCount() == 2) {
             int row = tblRad.getSelectedRow();
-            System.out.println(row + 1);
-            System.out.println("=== dvoklik unutar tablice ===");
+//            System.out.println(row + 1);
+//            System.out.println("=== dvoklik unutar tablice ===");
             DefaultTableModel model = (DefaultTableModel) tblRad.getModel();
             entitet = rezultati.get(tblRad.convertRowIndexToModel(row));
             System.out.println(entitet.getId() + " " + entitet);
@@ -580,10 +564,9 @@ public class FormaRad extends Forma<Rad> {
             txtKategorijaRad.setText(model.getValueAt(row, 2).toString());
             txtCijena.setText(model.getValueAt(row, 3).toString());
 
-            System.out.println("kovacevic.view.FormaRad.tblRadMouseClicked()" + tblRad.getSelectionBackground());
-
+//            System.out.println("kovacevic.view.FormaRad.tblRadMouseClicked()" + tblRad.getSelectionBackground());
         } else if (evt.getClickCount() == 1 && evt.isAltDown() == true) {
-            System.out.println("=== jedan klik i stisnut je alt ===");
+//            System.out.println("=== jedan klik i stisnut je alt ===");
             tblRad.getSelectionModel().clearSelection();
             entitet = null;
             txtIdValue.setText("");
@@ -593,12 +576,6 @@ public class FormaRad extends Forma<Rad> {
         }
 
     }//GEN-LAST:event_tblRadMouseClicked
-
-    private void txtTratziGrupaKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtTratziGrupaKeyPressed
-        if (evt.getKeyCode() == KeyEvent.VK_ENTER) {
-            trazi();
-        }
-    }//GEN-LAST:event_txtTratziGrupaKeyPressed
 
     private void txtTraziKategorijaKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtTraziKategorijaKeyPressed
         if (evt.getKeyCode() == KeyEvent.VK_ENTER) {
@@ -621,7 +598,7 @@ public class FormaRad extends Forma<Rad> {
     }//GEN-LAST:event_txtIdValueActionPerformed
 
     private void btnResetirajTrazilicuActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnResetirajTrazilicuActionPerformed
-        txtTratziGrupa.setText("");
+        cmbGrupeRadova.setSelectedItem("Nije odabrano");
         txtTraziCijena.setText("");
         txtTraziKategorija.setText("");
 
@@ -669,12 +646,13 @@ public class FormaRad extends Forma<Rad> {
     private javax.swing.JLabel lblId;
     private javax.swing.JLabel lblKategorijaRada;
     private javax.swing.JLabel lblPretraga;
+    private javax.swing.JLabel lblPretraga1;
+    private javax.swing.JLabel lblPretraga2;
     private javax.swing.JTable tblRad;
     private javax.swing.JTextField txtCijena;
     private javax.swing.JTextField txtGrupaRadova;
     private javax.swing.JTextField txtIdValue;
     private javax.swing.JTextField txtKategorijaRad;
-    private javax.swing.JTextField txtTratziGrupa;
     private javax.swing.JTextField txtTraziCijena;
     private javax.swing.JTextField txtTraziKategorija;
     // End of variables declaration//GEN-END:variables
