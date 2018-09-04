@@ -5,7 +5,7 @@
  */
 package kovacevic.view;
 
-import kovacevic.controller.Obrada;
+import kovacevic.controller.HibernateObrada;
 import kovacevic.model.Entitet;
 import javax.swing.JFrame;
 import javax.swing.event.TableModelEvent;
@@ -19,7 +19,7 @@ public abstract class Forma<T extends Entitet> extends JFrame  {
     protected abstract void ucitaj();
     
    
-     protected Obrada<T> obrada;
+     protected HibernateObrada<T> obrada;
     protected T entitet;
    
 

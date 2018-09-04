@@ -11,7 +11,7 @@ import java.util.List;
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.DefaultListModel;
 import javax.swing.JOptionPane;
-import kovacevic.controller.Obrada;
+import kovacevic.controller.HibernateObrada;
 import kovacevic.model.AnalizaCijene;
 import kovacevic.model.AnalizaMaterijal;
 import kovacevic.model.AnalizaRad;
@@ -35,7 +35,7 @@ public class FormaAnalizaCijene extends Forma<AnalizaCijene> {
     public FormaAnalizaCijene() {
         initComponents();
         setTitle("Analiza Cijena");
-        obrada = new Obrada();
+        obrada = new HibernateObrada();
 
         ucitaj();
         ucitajAnalizaRad();

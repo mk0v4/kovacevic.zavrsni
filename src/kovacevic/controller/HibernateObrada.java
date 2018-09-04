@@ -17,11 +17,11 @@ import org.hibernate.Session;
  * @author Marko Kovačević
  * @param <T> bilo koji entitet mapiran putem ORM-a
  */
-public class Obrada<T extends Entitet> {
+public class HibernateObrada<T extends Entitet> {
 
     private final Session session;
 
-    public Obrada() {
+    public HibernateObrada() {
         session = HibernateUtil.getSession();
     }
 

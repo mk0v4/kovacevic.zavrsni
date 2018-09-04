@@ -5,21 +5,17 @@
  */
 package kovacevic.view;
 
-import java.awt.Container;
 import java.awt.Font;
-import java.awt.event.ComponentEvent;
 import java.awt.event.KeyEvent;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.util.List;
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.JTable;
-import javax.swing.ScrollPaneConstants;
 
 import javax.swing.table.DefaultTableModel;
-import javax.swing.table.TableModel;
 
-import kovacevic.controller.Obrada;
+import kovacevic.controller.HibernateObrada;
 import kovacevic.model.Materijal;
 import kovacevic.pomocno.HibernateUtil;
 import kovacevic.pomocno.WordWrapCellRenderer;
@@ -42,7 +38,7 @@ public class FormaMaterijal extends Forma<Materijal> {
     public FormaMaterijal() {
         initComponents();
         setTitle("Materijal");
-        obrada = new Obrada();
+        obrada = new HibernateObrada();
         AutoCompleteDecorator.decorate(cmbGrupeMaterijala);
         popuniGrupeMaterijala();
         ucitaj();
@@ -183,7 +179,7 @@ public class FormaMaterijal extends Forma<Materijal> {
 
         rezultati = HibernateUtil.getSession().createQuery("from Materijal a where "
                 + " a.obrisan=false and a.grupaMaterijal " + cond + " :grupaMaterijal and a.proizvodac like :proizvodac and a.oznaka like :oznaka "
-                + " order by grupaMaterijal asc, cijenaAmbalaza asc").setParameter("grupaMaterijal", p + grupaMaterijala + p).setParameter("proizvodac", "%").setParameter("oznaka", "%"+ txtTraziOznaka.getText()+"%").list();
+                + " order by grupaMaterijal asc, cijenaAmbalaza asc").setParameter("grupaMaterijal", p + grupaMaterijala + p).setParameter("proizvodac", "%").setParameter("oznaka", "%" + txtTraziOznaka.getText() + "%").list();
 
         popunjavanjeTablice(tblMaterijal);
 
@@ -321,7 +317,7 @@ public class FormaMaterijal extends Forma<Materijal> {
         jScrollPane2.setViewportView(tarOpis);
         tarOpis.setLineWrap(true);
 
-        lblPretraga.setText("grupa materijalai:");
+        lblPretraga.setText("grupa materijala:");
 
         jLabel1.setText("dodati povijest cijena za odabrani red");
 

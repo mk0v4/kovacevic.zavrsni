@@ -10,7 +10,7 @@ import java.util.List;
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.DefaultListModel;
 import javax.swing.JOptionPane;
-import kovacevic.controller.Obrada;
+import kovacevic.controller.HibernateObrada;
 import kovacevic.model.AnalizaCijene;
 import kovacevic.model.AnalizaRad;
 import kovacevic.model.Rad;
@@ -30,7 +30,7 @@ public class FormaAnalizaRad extends Forma<AnalizaRad> {
     public FormaAnalizaRad() {
         initComponents();
         setTitle("Analiza Rada");
-        obrada = new Obrada();
+        obrada = new HibernateObrada();
 
         ucitaj();
         ucitajAnalizaCijene();

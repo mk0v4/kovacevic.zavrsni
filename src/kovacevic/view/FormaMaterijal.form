@@ -285,7 +285,7 @@
     </Container>
     <Component class="javax.swing.JLabel" name="lblPretraga">
       <Properties>
-        <Property name="text" type="java.lang.String" value="grupa materijalai:"/>
+        <Property name="text" type="java.lang.String" value="grupa materijala:"/>
       </Properties>
     </Component>
     <Component class="javax.swing.JLabel" name="jLabel1">

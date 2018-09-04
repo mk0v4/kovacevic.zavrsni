@@ -10,7 +10,7 @@ import java.util.ArrayList;
 import java.util.List;
 import javax.swing.DefaultListModel;
 import javax.swing.JOptionPane;
-import kovacevic.controller.Obrada;
+import kovacevic.controller.HibernateObrada;
 import kovacevic.model.AnalizaCijene;
 import kovacevic.model.StavkaTroskovnik;
 import kovacevic.pomocno.HibernateUtil;
@@ -30,7 +30,7 @@ public class FormaStavkaTroskovnik extends Forma<StavkaTroskovnik>{
     public FormaStavkaTroskovnik() {
         initComponents();
         setTitle("Stavke Troškovnika");
-        obrada = new Obrada();
+        obrada = new HibernateObrada();
 
         ucitaj();
         ucitajAnalizaCijene();

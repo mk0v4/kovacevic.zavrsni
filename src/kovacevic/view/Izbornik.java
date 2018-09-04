@@ -41,6 +41,7 @@ public class Izbornik extends javax.swing.JFrame {
         btnAnalizaMaterijal = new javax.swing.JButton();
         btnAnalizaCijene = new javax.swing.JButton();
         lblGithub = new javax.swing.JLabel();
+        jLabel1 = new javax.swing.JLabel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setMinimumSize(new java.awt.Dimension(400, 350));
@@ -114,6 +115,13 @@ public class Izbornik extends javax.swing.JFrame {
             }
         });
 
+        jLabel1.setText("jLabel1");
+        jLabel1.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                jLabel1MouseClicked(evt);
+            }
+        });
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
@@ -132,7 +140,10 @@ public class Izbornik extends javax.swing.JFrame {
                     .addComponent(btnAnalizaCijene, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addComponent(btnStavkaTroskovnik, javax.swing.GroupLayout.DEFAULT_SIZE, 312, Short.MAX_VALUE)
                     .addComponent(btnEraDijagram, javax.swing.GroupLayout.DEFAULT_SIZE, 312, Short.MAX_VALUE)
-                    .addComponent(lblGithub, javax.swing.GroupLayout.Alignment.TRAILING))
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                        .addComponent(jLabel1)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addComponent(lblGithub)))
                 .addContainerGap())
         );
         layout.setVerticalGroup(
@@ -153,7 +164,9 @@ public class Izbornik extends javax.swing.JFrame {
                 .addGap(18, 18, 18)
                 .addComponent(btnEraDijagram, javax.swing.GroupLayout.PREFERRED_SIZE, 40, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(15, 15, 15)
-                .addComponent(lblGithub)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(lblGithub)
+                    .addComponent(jLabel1))
                 .addContainerGap())
         );
 
@@ -199,6 +212,10 @@ public class Izbornik extends javax.swing.JFrame {
         new FormaStavkaTroskovnik().setVisible(true);
     }//GEN-LAST:event_btnStavkaTroskovnikActionPerformed
 
+    private void jLabel1MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jLabel1MouseClicked
+new FormaRadMaterijal().setVisible(true);        // TODO add your handling code here:
+    }//GEN-LAST:event_jLabel1MouseClicked
+
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btnAnalizaCijene;
     private javax.swing.JButton btnAnalizaMaterijal;
@@ -207,6 +224,7 @@ public class Izbornik extends javax.swing.JFrame {
     private javax.swing.JButton btnMaterijal;
     private javax.swing.JButton btnRad;
     private javax.swing.JButton btnStavkaTroskovnik;
+    private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel lblGithub;
     // End of variables declaration//GEN-END:variables
 }

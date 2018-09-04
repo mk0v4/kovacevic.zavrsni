@@ -6,7 +6,7 @@
 package kovacevic;
 
 import java.math.BigDecimal;
-import kovacevic.controller.Obrada;
+import kovacevic.controller.HibernateObrada;
 import kovacevic.model.AnalizaCijene;
 import kovacevic.model.AnalizaMaterijal;
 import kovacevic.model.AnalizaRad;
@@ -23,7 +23,7 @@ public class PocetniLoad {
     public static void main(String[] args){
 
         
-        Obrada<Rad> obradaRadovi = new Obrada<>();
+        HibernateObrada<Rad> obradaRadovi = new HibernateObrada<>();
         Rad rad = new Rad();
         rad.setGrupaRadova("Zidar");
         rad.setKategorijaRad("I");
@@ -121,7 +121,7 @@ public class PocetniLoad {
         obradaRadovi.save(rad15);
 
 
-        Obrada<Materijal> obradaMaterijali = new Obrada<>();
+        HibernateObrada<Materijal> obradaMaterijali = new HibernateObrada<>();
         Materijal materijal = new Materijal();
         materijal.setGrupaMaterijal("Cement");
         materijal.setProizvodac("NEXE");
@@ -183,7 +183,7 @@ public class PocetniLoad {
         obradaMaterijali.save(materijal5);
 
 
-        Obrada<StavkaTroskovnik> obradaStavkeTroskovnika = new Obrada<>();
+        HibernateObrada<StavkaTroskovnik> obradaStavkeTroskovnika = new HibernateObrada<>();
         StavkaTroskovnik stavkaTroskovnik = new StavkaTroskovnik();
         stavkaTroskovnik.setOznakaStavka("1.");
         stavkaTroskovnik.setKolicinaTroskovnik(new BigDecimal(30.52));
@@ -192,7 +192,7 @@ public class PocetniLoad {
         obradaStavkeTroskovnika.save(stavkaTroskovnik);
         
 
-        Obrada<AnalizaCijene> obradaAnalizeCijena = new Obrada<>();
+        HibernateObrada<AnalizaCijene> obradaAnalizeCijena = new HibernateObrada<>();
         AnalizaCijene analizaCijene = new AnalizaCijene();
         analizaCijene.setOznakaNorme("GN 301-203-3.1.");
         analizaCijene.setGrupaNorme("Zidraski radovi");
@@ -220,7 +220,7 @@ public class PocetniLoad {
         obradaAnalizeCijena.save(analizaCijene1);
 
 
-        Obrada<AnalizaMaterijal> obradaAnalizeMaterijala = new Obrada<>();
+        HibernateObrada<AnalizaMaterijal> obradaAnalizeMaterijala = new HibernateObrada<>();
         AnalizaMaterijal analizaMaterijal = new AnalizaMaterijal();
         analizaMaterijal.setKolicina(new BigDecimal(146.00));
         analizaMaterijal.setJedinicaMjere("kg");
@@ -276,7 +276,7 @@ public class PocetniLoad {
         obradaAnalizeMaterijala.save(analizaMaterijal5);         
         
         
-        Obrada<AnalizaRad> obradaAnalizeRadova = new Obrada<>();
+        HibernateObrada<AnalizaRad> obradaAnalizeRadova = new HibernateObrada<>();
         AnalizaRad analizaRad = new AnalizaRad();
         analizaRad.setOpisOperacije("Strojno spravljanje morta");
         analizaRad.setBrojOperacije(2);
