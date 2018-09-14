@@ -10,14 +10,19 @@ import java.awt.event.KeyEvent;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.swing.DefaultComboBoxModel;
+import javax.swing.JFrame;
 import javax.swing.JOptionPane;
 import javax.swing.JTable;
 import javax.swing.table.DefaultTableModel;
-import kovacevic.controller.HibernateObrada;
+import kovacevic.controller.ObradaMaterijal;
+import kovacevic.controller.ObradaRad;
 import kovacevic.model.Materijal;
 import kovacevic.model.Rad;
 import kovacevic.pomocno.HibernateUtil;
+import kovacevic.pomocno.PorukaIznimke;
 import kovacevic.pomocno.WordWrapCellRenderer;
 import org.hibernate.Session;
 import org.jdesktop.swingx.autocomplete.AutoCompleteDecorator;
@@ -26,41 +31,47 @@ import org.jdesktop.swingx.autocomplete.AutoCompleteDecorator;
  *
  * @author Marko Kovačević
  */
-public class FormaRadMaterijal extends FormaZaRadMaterijal<Rad, Materijal> {
+public class FormaRadMaterijal extends JFrame {
+
+    private ObradaRad obradaRad;
+    private Rad rad;
+
+    private ObradaMaterijal obradaMaterijal;
+    private Materijal materijal;
 
     private List<Rad> rezultatiRad;
     private List<Materijal> rezultatiMaterijal;
+
+    private boolean dodaj = false;
+    private boolean promijeni = false;
+    private boolean obrisi = false;
 
     /**
      * Creates new form FormaRadMaterijal
      */
     public FormaRadMaterijal() {
+        obradaRad = new ObradaRad();
+        obradaMaterijal = new ObradaMaterijal();
 
         initComponents();
-        setTitle("Izbornik1()");
-        obradaRad = new HibernateObrada();
-        obradaMaterijal = new HibernateObrada();
+        setTitle("Rad / Materijal");
+
         AutoCompleteDecorator.decorate(cmbGrupeRadova);
         AutoCompleteDecorator.decorate(cmbGrupeMaterijala);
+
         popuniGrupeRadova();
         popuniGrupeMaterijala();
+
         ucitajRad();
         ucitajMaterijal();
         jTabbedPane1.setEnabledAt(2, false);
-        
     }
 
-    @Override
     protected void ucitajRad() {
-        Session session = HibernateUtil.getSession();
-        session.clear();
-        rezultatiRad = HibernateUtil.getSession().createQuery(
-                "from Rad a where a.obrisan=false order by grupaRadova asc, kategorijaRad asc, cijena asc").list();
+        rezultatiRad = obradaRad.getListaRad(rad);
         popunjavanjeTabliceRad();
-
     }
 
-    @Override
     protected void ucitajMaterijal() {
         Session session = HibernateUtil.getSession();
         session.clear();
@@ -70,7 +81,6 @@ public class FormaRadMaterijal extends FormaZaRadMaterijal<Rad, Materijal> {
     }
 
     private void popunjavanjeTabliceRad() {
-
         String[] coulumnName = {"Rb. (Id)", "Grupe radova", "Kategorije radova", "Cijene radova"};
         DefaultTableModel model = (DefaultTableModel) tblRad.getModel();
         model.setRowCount(0);
@@ -86,22 +96,15 @@ public class FormaRadMaterijal extends FormaZaRadMaterijal<Rad, Materijal> {
                 rad.getKategorijaRad(),
                 rad.getCijena(),});
         }
-
     }
 
     private void popunjavanjeTabliceMaterijal(JTable tablica) {
-
         String[] coulumnName = {"Rb. (Id)", "Grupe materijala", "Proizvođač",
             "Oznaka", "Pakovanje količina", "Jedinica mjere", "Cijena pakovanja", "Opis"};
-
         DefaultTableModel model = (DefaultTableModel) tablica.getModel();
-
         tablica.setDefaultRenderer(Object.class, new WordWrapCellRenderer());
-
         model.setRowCount(0);
         model.setColumnIdentifiers(coulumnName);
-
-        //        tablica.setModel(model);
         int rb = 0;
         for (Materijal materijal : rezultatiMaterijal) {
             rb++;
@@ -115,26 +118,55 @@ public class FormaRadMaterijal extends FormaZaRadMaterijal<Rad, Materijal> {
                 materijal.getCijenaAmbalaza(),
                 materijal.getOpis()});
         }
-
         changedSize(tablica);
         updateRowHeights(tablica);
-
-//        tablica = new WrappableTable(tablica, model);
     }
 
-    @Override
-    protected void spremiRad() {
-
+    protected void dpoRad() {
+        String nfePoruka = "";
+        String dodatakNaslovu = "";
         rad.setGrupaRadova(txtRadGrupaRadova.getText());
         rad.setKategorijaRad(txtRadKategorijaRad.getText());
-        rad.setCijena(new BigDecimal(txtRadCijena.getText()));
-        super.spremiRad();
+        if (txtRadCijena.getText().trim().equals("")) {
+            rad.setCijena(null);
+        } else {
+            try {
+                rad.setCijena(new BigDecimal(txtRadCijena.getText()));
+            } catch (NumberFormatException nfe) {
+                nfePoruka = "Unešena vrijednost polja " + lblRadCijena.getText().replace(":", "") + " ne odgovara numeričkom unosu.";
+            }
+        }
+        try {
+            if (dodaj == true) {
+                dodatakNaslovu = " - Dodavanje novog";
+                obradaRad.spremi(rad);
+            }
+            if (promijeni == true) {
+                dodatakNaslovu = " - Promijena";
+                obradaRad.promijeni(rad);
+            }
+            if (obrisi == true) {
+                dodatakNaslovu = " - Brisanje";
+                obradaRad.obrisi(rad);
+            }
+        } catch (PorukaIznimke pi) {
+            JOptionPane.showMessageDialog(rootPane, (nfePoruka.trim().equals("") ? "" : nfePoruka + "\n") + pi.getOpis() + pi.getGreska(),
+                    getTitle() + dodatakNaslovu, HEIGHT);
+            if (pi.getGreska().contains(ObradaRad.GRUPA_RADOVA)) {
+                txtRadGrupaRadova.requestFocus();
+            } else if (pi.getGreska().contains(ObradaRad.KATEGORIJA_RAD)) {
+                txtRadKategorijaRad.requestFocus();
+            } else if (pi.getGreska().contains(ObradaRad.CIJENA_RAD)) {
+                txtRadCijena.requestFocus();
+            }
+//            Logger.getLogger(FormaRadMaterijal.class.getName()).log(Level.SEVERE, null, e.getMessage());
+            return;
+        }
         popuniGrupeRadova();
-        popunjavanjeTabliceRad();
+        ucitajRad();
     }
 
-    @Override
-    protected void spremiMaterijal() {
+    protected void spremiMaterijal() throws PorukaIznimke {
         materijal.setGrupaMaterijal(txtMaterijalGrupaMaterijal.getText());
         materijal.setProizvodac(txtMaterijalProizvodac.getText());
         materijal.setOznaka(txtMaterijalOznaka.getText());
@@ -142,7 +174,7 @@ public class FormaRadMaterijal extends FormaZaRadMaterijal<Rad, Materijal> {
         materijal.setJedinicaMjereAmbalaza(txtMaterijalJedinicaMjereAmbalaza.getText());
         materijal.setCijenaAmbalaza(new BigDecimal(txtMaterijalCijenaAmbalaza.getText()));
         materijal.setOpis(tarMaterijalOpis.getText());
-        super.spremiMaterijal();
+        obradaMaterijal.spremi(materijal);
     }
 
     private void traziRad() {
@@ -244,22 +276,7 @@ public class FormaRadMaterijal extends FormaZaRadMaterijal<Rad, Materijal> {
 //        popunjavanjeTablice(tblMaterijal);
     }
 
-    private boolean provjeraDuplogUnosaRed() {
-        rezultatiRad = HibernateUtil.getSession().createQuery(
-                "from Rad a where a.obrisan=false").list();
-        for (Rad rad : rezultatiRad) {
-            if (rad.getGrupaRadova().matches(txtRadGrupaRadova.getText()) && rad.getKategorijaRad().matches(txtRadKategorijaRad.getText()) && rad.getCijena().equals(new BigDecimal(txtRadCijena.getText())) && rad.isObrisan() == false) {
-                System.out.println("provjeraDuplogUnosaRed === postoji unešen podatak");
-                return true;
-            }
-
-        }
-        return false;
-
-    }
-
     private void popuniGrupeRadova() {
-
         DefaultComboBoxModel<String> m = new DefaultComboBoxModel<>();
         cmbGrupeRadova.setModel(m);
         List<String> rad = HibernateUtil.getSession().
@@ -270,9 +287,7 @@ public class FormaRadMaterijal extends FormaZaRadMaterijal<Rad, Materijal> {
         for (String r : rad) {
 
             m.addElement(r);
-
         }
-
     }
 
     private void updateRowHeights(JTable table) {
@@ -330,7 +345,6 @@ public class FormaRadMaterijal extends FormaZaRadMaterijal<Rad, Materijal> {
     }
 
     private void popuniGrupeMaterijala() {
-
         DefaultComboBoxModel<String> m = new DefaultComboBoxModel<>();
         cmbGrupeMaterijala.setModel(m);
         List<String> materijal = HibernateUtil.getSession().
@@ -341,9 +355,7 @@ public class FormaRadMaterijal extends FormaZaRadMaterijal<Rad, Materijal> {
         for (String s : materijal) {
 
             m.addElement(s);
-
         }
-
     }
 
     /**
@@ -437,7 +449,7 @@ public class FormaRadMaterijal extends FormaZaRadMaterijal<Rad, Materijal> {
             }
         });
 
-        btnRadPromjeni.setText("Promjeni");
+        btnRadPromjeni.setText("Promijeni");
         btnRadPromjeni.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 btnRadPromjeniActionPerformed(evt);
@@ -958,21 +970,30 @@ public class FormaRadMaterijal extends FormaZaRadMaterijal<Rad, Materijal> {
 
     private void btnMaterijalDodajActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnMaterijalDodajActionPerformed
         materijal = new Materijal();
-        spremiMaterijal();
+        try {
+            spremiMaterijal();
+        } catch (PorukaIznimke ex) {
+            Logger.getLogger(FormaRadMaterijal.class.getName()).log(Level.SEVERE, null, ex);
+        }
     }//GEN-LAST:event_btnMaterijalDodajActionPerformed
 
     private void btnMaterijalPromjeniActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnMaterijalPromjeniActionPerformed
-        //        if (lista.getSelectedValue() == null) {
-        //            JOptionPane.showConfirmDialog(rootPane, "Prvo odaberite stavku");
-        //        }
-        spremiMaterijal();
+        try {
+            spremiMaterijal();
+        } catch (PorukaIznimke ex) {
+            Logger.getLogger(FormaRadMaterijal.class.getName()).log(Level.SEVERE, null, ex);
+        }
     }//GEN-LAST:event_btnMaterijalPromjeniActionPerformed
 
     private void btnMaterijalObrisiActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnMaterijalObrisiActionPerformed
-        //        if (lista.getSelectedValue() == null) {
-        //            JOptionPane.showConfirmDialog(rootPane, "Prvo odaberite stavku");
-        //        }
-        obrisiMaterijal();
+        try {
+            //        if (lista.getSelectedValue() == null) {
+            //            JOptionPane.showConfirmDialog(rootPane, "Prvo odaberite stavku");
+            //        }
+            obradaMaterijal.obrisi(materijal);
+        } catch (PorukaIznimke ex) {
+            Logger.getLogger(FormaRadMaterijal.class.getName()).log(Level.SEVERE, null, ex);
+        }
     }//GEN-LAST:event_btnMaterijalObrisiActionPerformed
 
     private void txtMaterijalTraziOznakaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtMaterijalTraziOznakaActionPerformed
@@ -1037,8 +1058,6 @@ public class FormaRadMaterijal extends FormaZaRadMaterijal<Rad, Materijal> {
     }//GEN-LAST:event_tblMaterijalComponentResized
 
     private void jScrollPaneMaterijalComponentResized(java.awt.event.ComponentEvent evt) {//GEN-FIRST:event_jScrollPaneMaterijalComponentResized
-        //        System.out.println("kovacevic.view.FormaMaterijal.jScrollPane3ComponentResized()");
-
         changedSize(tblMaterijal);
     }//GEN-LAST:event_jScrollPaneMaterijalComponentResized
 
@@ -1063,16 +1082,6 @@ public class FormaRadMaterijal extends FormaZaRadMaterijal<Rad, Materijal> {
     }//GEN-LAST:event_txtMaterijalTraziProizvodacKeyPressed
 
     private void cmbGrupeRadovaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cmbGrupeRadovaActionPerformed
-        //        if (!cmbGrupeRadova.getSelectedItem().equals("Nije odabrano")) {
-        //            rezultati = HibernateUtil.getSession().createQuery("from Rad a where "
-        //                    + " a.obrisan=false and a.grupaRadova =:grupaRadova"
-        //                    + " order by grupaRadova asc, kategorijaRad asc, cijena asc")
-        //                    .setParameter("grupaRadova", cmbGrupeRadova.getSelectedItem())
-        //                    .list();
-        //            popunjavanjeTablice();
-        //        } else {
-        //            ucitaj();
-        //        }
         traziRad();
     }//GEN-LAST:event_cmbGrupeRadovaActionPerformed
 
@@ -1092,7 +1101,6 @@ public class FormaRadMaterijal extends FormaZaRadMaterijal<Rad, Materijal> {
         cmbGrupeRadova.setSelectedItem("Nije odabrano");
         txtRadTraziCijena.setText("");
         txtRadTraziKategorija.setText("");
-
         ucitajRad();
     }//GEN-LAST:event_btnRadResetirajTrazilicuActionPerformed
 
@@ -1102,12 +1110,7 @@ public class FormaRadMaterijal extends FormaZaRadMaterijal<Rad, Materijal> {
 
     private void txtRadTraziCijenaKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtRadTraziCijenaKeyPressed
         if (evt.getKeyCode() == KeyEvent.VK_ENTER) {
-//            if (txtRadTraziCijena.getText()) {
-//
-//            } else {
             traziRad();
-//            }
-
         }
     }//GEN-LAST:event_txtRadTraziCijenaKeyPressed
 
@@ -1118,8 +1121,6 @@ public class FormaRadMaterijal extends FormaZaRadMaterijal<Rad, Materijal> {
     private void tblRadMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_tblRadMouseClicked
         if (evt.getClickCount() == 2) {
             int row = tblRad.getSelectedRow();
-            //            System.out.println(row + 1);
-            //            System.out.println("=== dvoklik unutar tablice ===");
             DefaultTableModel model = (DefaultTableModel) tblRad.getModel();
             rad = rezultatiRad.get(tblRad.convertRowIndexToModel(row));
             System.out.println(rad.getId() + " " + rad);
@@ -1127,10 +1128,7 @@ public class FormaRadMaterijal extends FormaZaRadMaterijal<Rad, Materijal> {
             txtRadGrupaRadova.setText(model.getValueAt(row, 1).toString());
             txtRadKategorijaRad.setText(model.getValueAt(row, 2).toString());
             txtRadCijena.setText(model.getValueAt(row, 3).toString());
-
-            //            System.out.println("kovacevic.view.FormaRad.tblRadMouseClicked()" + tblRad.getSelectionBackground());
         } else if (evt.getClickCount() == 1 && evt.isAltDown() == true) {
-            //            System.out.println("=== jedan klik i stisnut je alt ===");
             tblRad.getSelectionModel().clearSelection();
             rad = null;
             txtRadIdValue.setText("");
@@ -1151,14 +1149,12 @@ public class FormaRadMaterijal extends FormaZaRadMaterijal<Rad, Materijal> {
     }//GEN-LAST:event_txtRadTraziKategorijaActionPerformed
 
     private void btnRadObrisiActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnRadObrisiActionPerformed
-        //        System.out.println("btnObrisiActionPerformed()" + entitet);
+        obrisi = true;
         if (rad == null || tblRad.getSelectedRow() == -1) {
             JOptionPane.showMessageDialog(rootPane, "Odaberite stavku vidljivu unutar tablice", getTitle() + " - Obriši", HEIGHT);
         } else {
-
             int i = tblRad.getSelectedRow();
             DefaultTableModel model = (DefaultTableModel) tblRad.getModel();
-            //            entitet = rezultati.get(tblRad.convertRowIndexToModel(i));
 
             Object[] options = {"Da", "Ne"};
             int reply = JOptionPane.showOptionDialog(rootPane, "Sigurno želite obrisati stavku? \n"
@@ -1167,78 +1163,47 @@ public class FormaRadMaterijal extends FormaZaRadMaterijal<Rad, Materijal> {
                     + model.getValueAt(i, 3).toString(), getTitle()
                     + " - Obriši", JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE, null, options, null);
             if (reply == JOptionPane.YES_OPTION) {
-                obrisiRad();
+                dpoRad();
+                ucitajRad();
                 rad = null;
                 txtRadIdValue.setText("");
                 txtRadGrupaRadova.setText("");
                 txtRadKategorijaRad.setText("");
                 txtRadCijena.setText("");
                 tblRad.getSelectionModel().clearSelection();
-                popuniGrupeRadova();
                 traziRad();
-
             }
-
         }
+        obrisi = false;
     }//GEN-LAST:event_btnRadObrisiActionPerformed
 
     private void btnRadPromjeniActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnRadPromjeniActionPerformed
-
-        int i = tblRad.getSelectedRow();
-        if (i >= 0 && (rad != null && tblRad.getSelectedRow() != -1)
-                && !txtRadGrupaRadova.getText().trim().equals("")
-                && !txtRadKategorijaRad.getText().trim().equals("")
-                && !txtRadCijena.getText().trim().equals("")) {
+        promijeni = true;
+        if (rad == null || tblRad.getSelectedRow() == -1) {
+            JOptionPane.showMessageDialog(rootPane, "Odaberite stavku vidljivu unutar tablice",
+                    getTitle() + " - Promjena postojećeg", HEIGHT);
+        } else {
+            int i = tblRad.getSelectedRow();
             rad = rezultatiRad.get(tblRad.convertRowIndexToModel(i));
+            dpoRad();
             DefaultTableModel model = (DefaultTableModel) tblRad.getModel();
             model.setValueAt(txtRadGrupaRadova.getText(), i, 1);
             model.setValueAt(txtRadKategorijaRad.getText(), i, 2);
             model.setValueAt(txtRadCijena.getText(), i, 3);
-            if (provjeraDuplogUnosaRed() == false) {
-                spremiRad();
-            } else {
-                JOptionPane.showMessageDialog(rootPane, "Vrijednosti nisu izmjenjene", getTitle() + " - Promjena postojećeg", HEIGHT);
-            }
             rad = null;
-            popuniGrupeRadova();
             traziRad();
             rad = rezultatiRad.get(tblRad.convertRowIndexToModel(i));
             tblRad.setRowSelectionInterval(i, i);
-        } else {
-
-            JOptionPane.showMessageDialog(rootPane, "Odaberite stavku vidljivu unutar tablice",
-                    getTitle() + " - Promjena postojećeg", HEIGHT);
         }
+        promijeni = false;
     }//GEN-LAST:event_btnRadPromjeniActionPerformed
 
     private void btnRadDodajActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnRadDodajActionPerformed
-        if (txtRadGrupaRadova.getText().trim().equals("") || txtRadKategorijaRad.getText().trim().equals("")
-                || txtRadCijena.getText().trim().equals("")) {
-            JOptionPane.showMessageDialog(rootPane, "Nisu unešeni sljedeći podatci:"
-                    + (txtRadGrupaRadova.getText().trim().equals("") ? "\n" + lblRadGrupaRadova.getText().replace(":", "") : "")
-                    + (txtRadKategorijaRad.getText().trim().equals("") ? "\n" + lblRadKategorijaRada.getText().replace(":", "") : "")
-                    + (txtRadCijena.getText().trim().equals("") ? "\n" + lblRadCijena.getText().replace(":", "") : ""), getTitle() + " - Dodavanje novog", HEIGHT);
-
-        } else if (provjeraDuplogUnosaRed() == true) {
-            JOptionPane.showMessageDialog(rootPane, "Postoji unos u tablici", getTitle() + " - Dodavanje novog", HEIGHT);
-        } else {
-            rad = new Rad();
-            spremiRad();
-            int row = 0;
-            for (int i = 0; i < rezultatiRad.size(); i++) {
-                if (tblRad.getModel().getValueAt(i, 0).toString().contains("(" + rad.getId().toString() + ")")) {
-                    txtRadIdValue.setText(tblRad.getModel().getValueAt(i, 0).toString());
-                    rad = rezultatiRad.get(tblRad.convertRowIndexToModel(i));
-                    row = i;
-                    break;
-                }
-
-            }
-
-            traziRad();
-            popuniGrupeRadova();
-            tblRad.setRowSelectionInterval(row, row);
-        }
+        dodaj = true;
+        rad = new Rad();
+        dpoRad();
+        traziRad();
+        dodaj = false;
     }//GEN-LAST:event_btnRadDodajActionPerformed
 
     private void txtRadGrupaRadovaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtRadGrupaRadovaActionPerformed

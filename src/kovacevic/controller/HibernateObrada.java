@@ -66,4 +66,6 @@ public class HibernateObrada<T extends Entitet> {
         return lista;
     }
 
+
+
 }
