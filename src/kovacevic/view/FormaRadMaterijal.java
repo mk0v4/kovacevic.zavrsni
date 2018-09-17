@@ -368,6 +368,7 @@ public class FormaRadMaterijal extends JFrame {
     private void initComponents() {
 
         jTabbedPane1 = new javax.swing.JTabbedPane();
+        jPanelPrebacivanje = new javax.swing.JPanel();
         jPanelRad = new javax.swing.JPanel();
         lblRadGrupaRadova = new javax.swing.JLabel();
         lblRadKategorijaRada = new javax.swing.JLabel();
@@ -423,12 +424,24 @@ public class FormaRadMaterijal extends JFrame {
         txtMaterijalTraziProizvodac = new javax.swing.JTextField();
         lblMaterijalTraziProizvodac = new javax.swing.JLabel();
         lblMaterijalTraziOznaka = new javax.swing.JLabel();
-        jPanelPrebacivanje = new javax.swing.JPanel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
         setMinimumSize(new java.awt.Dimension(860, 500));
 
         jTabbedPane1.setMinimumSize(new java.awt.Dimension(850, 460));
+
+        javax.swing.GroupLayout jPanelPrebacivanjeLayout = new javax.swing.GroupLayout(jPanelPrebacivanje);
+        jPanelPrebacivanje.setLayout(jPanelPrebacivanjeLayout);
+        jPanelPrebacivanjeLayout.setHorizontalGroup(
+            jPanelPrebacivanjeLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 845, Short.MAX_VALUE)
+        );
+        jPanelPrebacivanjeLayout.setVerticalGroup(
+            jPanelPrebacivanjeLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 432, Short.MAX_VALUE)
+        );
+
+        jTabbedPane1.addTab("Prebacivanje", jPanelPrebacivanje);
 
         lblRadGrupaRadova.setText("Grupa radova:");
 
@@ -935,19 +948,6 @@ public class FormaRadMaterijal extends JFrame {
         );
 
         jTabbedPane1.addTab("Materijal", jPanelMaterijal);
-
-        javax.swing.GroupLayout jPanelPrebacivanjeLayout = new javax.swing.GroupLayout(jPanelPrebacivanje);
-        jPanelPrebacivanje.setLayout(jPanelPrebacivanjeLayout);
-        jPanelPrebacivanjeLayout.setHorizontalGroup(
-            jPanelPrebacivanjeLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 845, Short.MAX_VALUE)
-        );
-        jPanelPrebacivanjeLayout.setVerticalGroup(
-            jPanelPrebacivanjeLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 432, Short.MAX_VALUE)
-        );
-
-        jTabbedPane1.addTab("Prebacivanje", jPanelPrebacivanje);
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
