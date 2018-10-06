@@ -10,6 +10,7 @@ import kovacevic.controller.HibernateObrada;
 import kovacevic.model.AnalizaCijene;
 import kovacevic.model.AnalizaMaterijal;
 import kovacevic.model.AnalizaRad;
+import kovacevic.model.GrupacijaNorme;
 import kovacevic.model.Materijal;
 import kovacevic.model.Rad;
 import kovacevic.model.StavkaTroskovnik;
@@ -19,28 +20,27 @@ import kovacevic.model.StavkaTroskovnik;
  * @author Marko Kovačević
  */
 public class PocetniLoad {
-    
-    public static void main(String[] args){
 
-        
+    public static void main(String[] args) {
+
         HibernateObrada<Rad> obradaRadovi = new HibernateObrada<>();
         Rad rad = new Rad();
         rad.setGrupaRadova("Zidar");
         rad.setKategorijaRad("I");
         rad.setCijena(new BigDecimal(55.00));
         obradaRadovi.save(rad);
-        
+
         Rad rad1 = new Rad();
         rad1.setGrupaRadova("Zidar");
         rad1.setKategorijaRad("II");
         rad1.setCijena(new BigDecimal(60.00));
         obradaRadovi.save(rad1);
-        
+
         Rad rad2 = new Rad();
         rad2.setGrupaRadova("Zidar");
         rad2.setKategorijaRad("III");
         rad2.setCijena(new BigDecimal(65.00));
-        obradaRadovi.save(rad2);    
+        obradaRadovi.save(rad2);
 
         Rad rad3 = new Rad();
         rad3.setGrupaRadova("Zidar");
@@ -59,7 +59,7 @@ public class PocetniLoad {
         rad5.setKategorijaRad("VI");
         rad5.setCijena(new BigDecimal(80.00));
         obradaRadovi.save(rad5);
-        
+
         Rad rad6 = new Rad();
         rad6.setGrupaRadova("Zidar");
         rad6.setKategorijaRad("VII");
@@ -71,13 +71,13 @@ public class PocetniLoad {
         rad7.setKategorijaRad("VIII");
         rad7.setCijena(new BigDecimal(90.00));
         obradaRadovi.save(rad7);
-        
+
         Rad rad8 = new Rad();
         rad8.setGrupaRadova("Radnik");
         rad8.setKategorijaRad("I");
         rad8.setCijena(new BigDecimal(50.00));
         obradaRadovi.save(rad8);
-        
+
         Rad rad9 = new Rad();
         rad9.setGrupaRadova("Radnik");
         rad9.setKategorijaRad("II");
@@ -95,18 +95,18 @@ public class PocetniLoad {
         rad11.setKategorijaRad("IV");
         rad11.setCijena(new BigDecimal(57.50));
         obradaRadovi.save(rad11);
-        
+
         Rad rad12 = new Rad();
         rad12.setGrupaRadova("Radnik");
         rad12.setKategorijaRad("V");
         rad12.setCijena(new BigDecimal(60.00));
-        obradaRadovi.save(rad12);        
-        
+        obradaRadovi.save(rad12);
+
         Rad rad13 = new Rad();
         rad13.setGrupaRadova("Radnik");
         rad13.setKategorijaRad("VI");
         rad13.setCijena(new BigDecimal(62.50));
-        obradaRadovi.save(rad13); 
+        obradaRadovi.save(rad13);
 
         Rad rad14 = new Rad();
         rad14.setGrupaRadova("Radnik");
@@ -119,7 +119,6 @@ public class PocetniLoad {
         rad15.setKategorijaRad("VIII");
         rad15.setCijena(new BigDecimal(70.00));
         obradaRadovi.save(rad15);
-
 
         HibernateObrada<Materijal> obradaMaterijali = new HibernateObrada<>();
         Materijal materijal = new Materijal();
@@ -141,7 +140,7 @@ public class PocetniLoad {
         materijal1.setCijenaAmbalaza(new BigDecimal(18.00));
         materijal1.setOpis("Hidratizirano vapno");
         obradaMaterijali.save(materijal1);
-        
+
         Materijal materijal2 = new Materijal();
         materijal2.setGrupaMaterijal("Voda");
         materijal2.setProizvodac("Gradski vodovod");
@@ -151,7 +150,7 @@ public class PocetniLoad {
         materijal2.setCijenaAmbalaza(new BigDecimal(15.00));
         materijal2.setOpis("Smatra se prikladnom za pripremu i ne treba se ispitivati");
         obradaMaterijali.save(materijal2);
-        
+
         Materijal materijal3 = new Materijal();
         materijal3.setGrupaMaterijal("Agregat");
         materijal3.setProizvodac("");
@@ -161,7 +160,7 @@ public class PocetniLoad {
         materijal3.setCijenaAmbalaza(new BigDecimal(90.00));
         materijal3.setOpis("Riječni pijesak");
         obradaMaterijali.save(materijal3);
-        
+
         Materijal materijal4 = new Materijal();
         materijal4.setGrupaMaterijal("Opeka");
         materijal4.setProizvodac("");
@@ -171,7 +170,7 @@ public class PocetniLoad {
         materijal4.setCijenaAmbalaza(new BigDecimal(0.28));
         materijal4.setOpis("");
         obradaMaterijali.save(materijal4);
-        
+
         Materijal materijal5 = new Materijal();
         materijal5.setGrupaMaterijal("Mort");
         materijal5.setProizvodac("Gradilište");
@@ -182,7 +181,6 @@ public class PocetniLoad {
         materijal5.setOpis("");
         obradaMaterijali.save(materijal5);
 
-
         HibernateObrada<StavkaTroskovnik> obradaStavkeTroskovnika = new HibernateObrada<>();
         StavkaTroskovnik stavkaTroskovnik = new StavkaTroskovnik();
         stavkaTroskovnik.setOznakaStavka("1.");
@@ -190,12 +188,23 @@ public class PocetniLoad {
         stavkaTroskovnik.setDodatanOpis("Početka radova nakon odobrenja nadzornog inženjera.");
         stavkaTroskovnik.setUkupnaCijena(new BigDecimal(21886.50));
         obradaStavkeTroskovnika.save(stavkaTroskovnik);
-        
+
+        HibernateObrada<GrupacijaNorme> obradaGrupacijaNorme = new HibernateObrada<>();
+        GrupacijaNorme grupacijaNorme = new GrupacijaNorme();
+        grupacijaNorme.setOznakaNorme("GN-301-203");
+        grupacijaNorme.setGrupaNorme("Zidraski radovi");
+        grupacijaNorme.setOpis("Zidanje prizemlja i katova opekom");
+        obradaGrupacijaNorme.save(grupacijaNorme);
+
+        GrupacijaNorme grupacijaNorme1 = new GrupacijaNorme();
+        grupacijaNorme1.setOznakaNorme("GN-301-103");
+        grupacijaNorme1.setGrupaNorme("Zidraski radovi");
+        grupacijaNorme1.setOpis("Spravljanje produžnog morta");
+        obradaGrupacijaNorme.save(grupacijaNorme1);
 
         HibernateObrada<AnalizaCijene> obradaAnalizeCijena = new HibernateObrada<>();
         AnalizaCijene analizaCijene = new AnalizaCijene();
-        analizaCijene.setOznakaNorme("GN 301-203-3.1.");
-        analizaCijene.setGrupaNorme("Zidraski radovi");
+        analizaCijene.setOznakaNorme("GN-301-203-3.1.");
         analizaCijene.setOpis("Zidanje zida punom opekom 15x30x6,5cm u produžnom mortu 1:3:9");
         analizaCijene.setJedinicaMjere("m3");
         analizaCijene.setUkupanNormativVremena(new BigDecimal(8.01));
@@ -204,11 +213,11 @@ public class PocetniLoad {
         analizaCijene.setKoeficijentFirme(new BigDecimal(1.05));
         analizaCijene.setSveukupanIznos(new BigDecimal(717.12));
         analizaCijene.setStavkaTroskovnik(stavkaTroskovnik);
+        analizaCijene.setGrupacijaNorme(grupacijaNorme);
         obradaAnalizeCijena.save(analizaCijene);
-        
+
         AnalizaCijene analizaCijene1 = new AnalizaCijene();
-        analizaCijene1.setOznakaNorme("GN 301-103-5.3.");
-        analizaCijene1.setGrupaNorme("Zidraski radovi");
+        analizaCijene1.setOznakaNorme("GN-301-103-5.3.");
         analizaCijene1.setOpis("Strojna izrada produžnog morta 1:3:9");
         analizaCijene1.setJedinicaMjere("m3");
         analizaCijene1.setUkupanNormativVremena(new BigDecimal(2.03));
@@ -217,8 +226,8 @@ public class PocetniLoad {
         analizaCijene1.setKoeficijentFirme(new BigDecimal(1.00));
         analizaCijene1.setSveukupanIznos(new BigDecimal(411.12));
         analizaCijene1.setStavkaTroskovnik(stavkaTroskovnik);
+        analizaCijene1.setGrupacijaNorme(grupacijaNorme1);
         obradaAnalizeCijena.save(analizaCijene1);
-
 
         HibernateObrada<AnalizaMaterijal> obradaAnalizeMaterijala = new HibernateObrada<>();
         AnalizaMaterijal analizaMaterijal = new AnalizaMaterijal();
@@ -229,7 +238,7 @@ public class PocetniLoad {
         analizaMaterijal.setAnalizaCijene(analizaCijene1);
         analizaMaterijal.setMaterijal(materijal);
         obradaAnalizeMaterijala.save(analizaMaterijal);
-        
+
         AnalizaMaterijal analizaMaterijal1 = new AnalizaMaterijal();
         analizaMaterijal1.setKolicina(new BigDecimal(0.31));
         analizaMaterijal1.setJedinicaMjere("m3");
@@ -238,7 +247,7 @@ public class PocetniLoad {
         analizaMaterijal1.setAnalizaCijene(analizaCijene1);
         analizaMaterijal1.setMaterijal(materijal1);
         obradaAnalizeMaterijala.save(analizaMaterijal1);
-        
+
         AnalizaMaterijal analizaMaterijal2 = new AnalizaMaterijal();
         analizaMaterijal2.setKolicina(new BigDecimal(0.93));
         analizaMaterijal2.setJedinicaMjere("m3");
@@ -247,7 +256,7 @@ public class PocetniLoad {
         analizaMaterijal2.setAnalizaCijene(analizaCijene1);
         analizaMaterijal2.setMaterijal(materijal2);
         obradaAnalizeMaterijala.save(analizaMaterijal2);
-        
+
         AnalizaMaterijal analizaMaterijal3 = new AnalizaMaterijal();
         analizaMaterijal3.setKolicina(new BigDecimal(0.24));
         analizaMaterijal3.setJedinicaMjere("m3");
@@ -255,8 +264,8 @@ public class PocetniLoad {
         analizaMaterijal3.setCijenaMaterijal(new BigDecimal(3.60));
         analizaMaterijal3.setAnalizaCijene(analizaCijene1);
         analizaMaterijal3.setMaterijal(materijal3);
-        obradaAnalizeMaterijala.save(analizaMaterijal3);         
-        
+        obradaAnalizeMaterijala.save(analizaMaterijal3);
+
         AnalizaMaterijal analizaMaterijal4 = new AnalizaMaterijal();
         analizaMaterijal4.setKolicina(new BigDecimal(275));
         analizaMaterijal4.setJedinicaMjere("kom");
@@ -264,7 +273,7 @@ public class PocetniLoad {
         analizaMaterijal4.setCijenaMaterijal(new BigDecimal(77.00));
         analizaMaterijal4.setAnalizaCijene(analizaCijene);
         analizaMaterijal4.setMaterijal(materijal4);
-        obradaAnalizeMaterijala.save(analizaMaterijal4);        
+        obradaAnalizeMaterijala.save(analizaMaterijal4);
 
         AnalizaMaterijal analizaMaterijal5 = new AnalizaMaterijal();
         analizaMaterijal5.setKolicina(new BigDecimal(0.32));
@@ -273,9 +282,8 @@ public class PocetniLoad {
         analizaMaterijal5.setCijenaMaterijal(new BigDecimal(97.45));
         analizaMaterijal5.setAnalizaCijene(analizaCijene);
         analizaMaterijal5.setMaterijal(materijal5);
-        obradaAnalizeMaterijala.save(analizaMaterijal5);         
-        
-        
+        obradaAnalizeMaterijala.save(analizaMaterijal5);
+
         HibernateObrada<AnalizaRad> obradaAnalizeRadova = new HibernateObrada<>();
         AnalizaRad analizaRad = new AnalizaRad();
         analizaRad.setOpisOperacije("Strojno spravljanje morta");
@@ -285,7 +293,7 @@ public class PocetniLoad {
         analizaRad.setAnalizaCijene(analizaCijene1);
         analizaRad.setRad(rad9);
         obradaAnalizeRadova.save(analizaRad);
-        
+
         AnalizaRad analizaRad1 = new AnalizaRad();
         analizaRad1.setOpisOperacije("Prijenos cementa");
         analizaRad1.setBrojOperacije(3);
@@ -312,7 +320,7 @@ public class PocetniLoad {
         analizaRad3.setAnalizaCijene(analizaCijene);
         analizaRad3.setRad(rad5);
         obradaAnalizeRadova.save(analizaRad3);
-        
+
         AnalizaRad analizaRad4 = new AnalizaRad();
         analizaRad4.setOpisOperacije("Zidanje");
         analizaRad4.setBrojOperacije(2);
@@ -320,8 +328,8 @@ public class PocetniLoad {
         analizaRad4.setCijenaVrijeme(new BigDecimal(66.15));
         analizaRad4.setAnalizaCijene(analizaCijene);
         analizaRad4.setRad(rad9);
-        obradaAnalizeRadova.save(analizaRad4); 
-        
+        obradaAnalizeRadova.save(analizaRad4);
+
         AnalizaRad analizaRad5 = new AnalizaRad();
         analizaRad5.setOpisOperacije("Prijenos opeke");
         analizaRad5.setBrojOperacije(3);
@@ -338,9 +346,9 @@ public class PocetniLoad {
         analizaRad6.setCijenaVrijeme(new BigDecimal(34.13));
         analizaRad6.setAnalizaCijene(analizaCijene);
         analizaRad6.setRad(rad9);
-        obradaAnalizeRadova.save(analizaRad6);         
-        
+        obradaAnalizeRadova.save(analizaRad6);
+
         System.out.println("Završen početni load");
-}
-    
+    }
+
 }

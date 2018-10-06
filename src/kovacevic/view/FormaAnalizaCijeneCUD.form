@@ -1,0 +1,222 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+
+<Form version="1.7" maxVersion="1.9" type="org.netbeans.modules.form.forminfo.JFrameFormInfo">
+  <Properties>
+    <Property name="defaultCloseOperation" type="int" value="2"/>
+    <Property name="minimumSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
+      <Dimension value="[300, 0]"/>
+    </Property>
+  </Properties>
+  <SyntheticProperties>
+    <SyntheticProperty name="formSizePolicy" type="int" value="1"/>
+    <SyntheticProperty name="generateCenter" type="boolean" value="true"/>
+  </SyntheticProperties>
+  <AuxValues>
+    <AuxValue name="FormSettings_autoResourcing" type="java.lang.Integer" value="0"/>
+    <AuxValue name="FormSettings_autoSetComponentName" type="java.lang.Boolean" value="false"/>
+    <AuxValue name="FormSettings_generateFQN" type="java.lang.Boolean" value="true"/>
+    <AuxValue name="FormSettings_generateMnemonicsCode" type="java.lang.Boolean" value="false"/>
+    <AuxValue name="FormSettings_i18nAutoMode" type="java.lang.Boolean" value="false"/>
+    <AuxValue name="FormSettings_layoutCodeTarget" type="java.lang.Integer" value="1"/>
+    <AuxValue name="FormSettings_listenerGenerationStyle" type="java.lang.Integer" value="0"/>
+    <AuxValue name="FormSettings_variablesLocal" type="java.lang.Boolean" value="false"/>
+    <AuxValue name="FormSettings_variablesModifier" type="java.lang.Integer" value="2"/>
+  </AuxValues>
+
+  <Layout>
+    <DimensionLayout dim="0">
+      <Group type="103" groupAlignment="0" attributes="0">
+          <Group type="102" alignment="0" attributes="0">
+              <EmptySpace max="-2" attributes="0"/>
+              <Group type="103" groupAlignment="0" attributes="0">
+                  <Component id="lblOpisNorme" alignment="0" min="-2" max="-2" attributes="0"/>
+                  <Component id="lblJedinicaMjere" alignment="0" min="-2" max="-2" attributes="0"/>
+                  <Component id="lblUkupnoVrijeme" alignment="0" min="-2" max="-2" attributes="0"/>
+                  <Component id="lblUkupnoRad" alignment="0" min="-2" max="-2" attributes="0"/>
+                  <Component id="lblKoeficijentFirme" alignment="0" min="-2" max="-2" attributes="0"/>
+                  <Component id="lblUkupnoMaterijal" alignment="0" min="-2" max="-2" attributes="0"/>
+                  <Component id="lblUkupnaCijena" alignment="0" min="-2" max="-2" attributes="0"/>
+                  <Component id="lblOznakaNorme" min="-2" max="-2" attributes="0"/>
+              </Group>
+              <EmptySpace type="separate" max="-2" attributes="0"/>
+              <Group type="103" groupAlignment="0" attributes="0">
+                  <Component id="txtUkupnaCijena" alignment="0" max="32767" attributes="0"/>
+                  <Group type="102" alignment="0" attributes="0">
+                      <Component id="btnDodaj" min="-2" max="-2" attributes="0"/>
+                      <EmptySpace max="-2" attributes="0"/>
+                      <Component id="btnPromjeni" min="-2" max="-2" attributes="0"/>
+                      <EmptySpace pref="56" max="32767" attributes="0"/>
+                      <Component id="btnObrisi" min="-2" max="-2" attributes="0"/>
+                  </Group>
+                  <Component id="txtUkupnoMaterijal" alignment="0" max="32767" attributes="0"/>
+                  <Component id="txtKoeficijentFirme" alignment="0" max="32767" attributes="0"/>
+                  <Component id="txtUkupnoRad" alignment="0" max="32767" attributes="0"/>
+                  <Component id="txtUkupanNormativVremena" alignment="0" max="32767" attributes="0"/>
+                  <Component id="txtJedinicaMjere" alignment="0" max="32767" attributes="0"/>
+                  <Component id="jScrollPane2" alignment="0" max="32767" attributes="0"/>
+                  <Component id="txtOznakaNorme" alignment="0" max="32767" attributes="0"/>
+              </Group>
+              <EmptySpace max="-2" attributes="0"/>
+          </Group>
+      </Group>
+    </DimensionLayout>
+    <DimensionLayout dim="1">
+      <Group type="103" groupAlignment="0" attributes="0">
+          <Group type="102" alignment="0" attributes="0">
+              <EmptySpace max="-2" attributes="0"/>
+              <Group type="103" groupAlignment="3" attributes="0">
+                  <Component id="txtOznakaNorme" alignment="3" min="-2" max="-2" attributes="0"/>
+                  <Component id="lblOznakaNorme" alignment="3" min="-2" max="-2" attributes="0"/>
+              </Group>
+              <EmptySpace min="-2" max="-2" attributes="0"/>
+              <Group type="103" groupAlignment="0" attributes="0">
+                  <Component id="lblOpisNorme" alignment="0" min="-2" max="-2" attributes="0"/>
+                  <Component id="jScrollPane2" alignment="0" min="-2" pref="81" max="-2" attributes="0"/>
+              </Group>
+              <EmptySpace max="-2" attributes="0"/>
+              <Group type="103" groupAlignment="3" attributes="0">
+                  <Component id="txtJedinicaMjere" alignment="3" min="-2" max="-2" attributes="0"/>
+                  <Component id="lblJedinicaMjere" alignment="3" min="-2" max="-2" attributes="0"/>
+              </Group>
+              <EmptySpace max="-2" attributes="0"/>
+              <Group type="103" groupAlignment="3" attributes="0">
+                  <Component id="txtUkupanNormativVremena" alignment="3" min="-2" max="-2" attributes="0"/>
+                  <Component id="lblUkupnoVrijeme" alignment="3" min="-2" max="-2" attributes="0"/>
+              </Group>
+              <EmptySpace min="-2" max="-2" attributes="0"/>
+              <Group type="103" groupAlignment="3" attributes="0">
+                  <Component id="txtUkupnoRad" alignment="3" min="-2" max="-2" attributes="0"/>
+                  <Component id="lblUkupnoRad" alignment="3" min="-2" max="-2" attributes="0"/>
+              </Group>
+              <EmptySpace min="-2" max="-2" attributes="0"/>
+              <Group type="103" groupAlignment="3" attributes="0">
+                  <Component id="txtKoeficijentFirme" alignment="3" min="-2" max="-2" attributes="0"/>
+                  <Component id="lblKoeficijentFirme" alignment="3" min="-2" max="-2" attributes="0"/>
+              </Group>
+              <EmptySpace max="-2" attributes="0"/>
+              <Group type="103" groupAlignment="3" attributes="0">
+                  <Component id="txtUkupnoMaterijal" alignment="3" min="-2" max="-2" attributes="0"/>
+                  <Component id="lblUkupnoMaterijal" alignment="3" min="-2" max="-2" attributes="0"/>
+              </Group>
+              <EmptySpace min="-2" max="-2" attributes="0"/>
+              <Group type="103" groupAlignment="3" attributes="0">
+                  <Component id="txtUkupnaCijena" alignment="3" min="-2" max="-2" attributes="0"/>
+                  <Component id="lblUkupnaCijena" alignment="3" min="-2" max="-2" attributes="0"/>
+              </Group>
+              <EmptySpace type="separate" min="-2" max="-2" attributes="0"/>
+              <Group type="103" groupAlignment="3" attributes="0">
+                  <Component id="btnDodaj" alignment="3" min="-2" max="-2" attributes="0"/>
+                  <Component id="btnPromjeni" alignment="3" min="-2" max="-2" attributes="0"/>
+                  <Component id="btnObrisi" alignment="3" min="-2" max="-2" attributes="0"/>
+              </Group>
+              <EmptySpace max="32767" attributes="0"/>
+          </Group>
+      </Group>
+    </DimensionLayout>
+  </Layout>
+  <SubComponents>
+    <Component class="javax.swing.JLabel" name="lblOznakaNorme">
+      <Properties>
+        <Property name="text" type="java.lang.String" value="Oznaka norme:"/>
+      </Properties>
+    </Component>
+    <Component class="javax.swing.JTextField" name="txtOznakaNorme">
+    </Component>
+    <Component class="javax.swing.JLabel" name="lblOpisNorme">
+      <Properties>
+        <Property name="text" type="java.lang.String" value="Opis norme:"/>
+      </Properties>
+    </Component>
+    <Container class="javax.swing.JScrollPane" name="jScrollPane2">
+      <Properties>
+        <Property name="toolTipText" type="java.lang.String" value=""/>
+      </Properties>
+      <AuxValues>
+        <AuxValue name="autoScrollPane" type="java.lang.Boolean" value="true"/>
+      </AuxValues>
+
+      <Layout class="org.netbeans.modules.form.compat2.layouts.support.JScrollPaneSupportLayout"/>
+      <SubComponents>
+        <Component class="javax.swing.JTextArea" name="tarOpisNorme">
+          <Properties>
+            <Property name="columns" type="int" value="20"/>
+            <Property name="rows" type="int" value="5"/>
+            <Property name="wrapStyleWord" type="boolean" value="true"/>
+            <Property name="preferredSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
+              <Dimension value="[104, 79]"/>
+            </Property>
+          </Properties>
+          <AuxValues>
+            <AuxValue name="JavaCodeGenerator_AddingCodePost" type="java.lang.String" value="tarOpisNorme.setLineWrap(true);"/>
+          </AuxValues>
+        </Component>
+      </SubComponents>
+    </Container>
+    <Component class="javax.swing.JLabel" name="lblJedinicaMjere">
+      <Properties>
+        <Property name="text" type="java.lang.String" value="Jedinica mjere:"/>
+      </Properties>
+    </Component>
+    <Component class="javax.swing.JTextField" name="txtJedinicaMjere">
+    </Component>
+    <Component class="javax.swing.JLabel" name="lblUkupnoVrijeme">
+      <Properties>
+        <Property name="text" type="java.lang.String" value="Ukupan normativ vremena:"/>
+      </Properties>
+    </Component>
+    <Component class="javax.swing.JTextField" name="txtUkupanNormativVremena">
+    </Component>
+    <Component class="javax.swing.JLabel" name="lblUkupnoRad">
+      <Properties>
+        <Property name="text" type="java.lang.String" value="Ukupna cijena rada:"/>
+      </Properties>
+    </Component>
+    <Component class="javax.swing.JTextField" name="txtUkupnoRad">
+    </Component>
+    <Component class="javax.swing.JLabel" name="lblKoeficijentFirme">
+      <Properties>
+        <Property name="text" type="java.lang.String" value="Koeficijent:"/>
+      </Properties>
+    </Component>
+    <Component class="javax.swing.JTextField" name="txtKoeficijentFirme">
+    </Component>
+    <Component class="javax.swing.JLabel" name="lblUkupnoMaterijal">
+      <Properties>
+        <Property name="text" type="java.lang.String" value="Ukupna cijena materijala:"/>
+      </Properties>
+    </Component>
+    <Component class="javax.swing.JTextField" name="txtUkupnoMaterijal">
+    </Component>
+    <Component class="javax.swing.JLabel" name="lblUkupnaCijena">
+      <Properties>
+        <Property name="text" type="java.lang.String" value="Ukupna cijena:"/>
+      </Properties>
+    </Component>
+    <Component class="javax.swing.JTextField" name="txtUkupnaCijena">
+    </Component>
+    <Component class="javax.swing.JButton" name="btnDodaj">
+      <Properties>
+        <Property name="text" type="java.lang.String" value="Dodaj"/>
+      </Properties>
+      <Events>
+        <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="btnDodajActionPerformed"/>
+      </Events>
+    </Component>
+    <Component class="javax.swing.JButton" name="btnPromjeni">
+      <Properties>
+        <Property name="text" type="java.lang.String" value="Promjeni"/>
+      </Properties>
+      <Events>
+        <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="btnPromjeniActionPerformed"/>
+      </Events>
+    </Component>
+    <Component class="javax.swing.JButton" name="btnObrisi">
+      <Properties>
+        <Property name="text" type="java.lang.String" value="Obri&#x161;i"/>
+      </Properties>
+      <Events>
+        <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="btnObrisiActionPerformed"/>
+      </Events>
+    </Component>
+  </SubComponents>
+</Form>

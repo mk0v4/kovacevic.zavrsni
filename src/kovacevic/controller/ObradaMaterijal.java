@@ -8,7 +8,6 @@ package kovacevic.controller;
 import java.util.ArrayList;
 import java.util.List;
 import kovacevic.model.Materijal;
-import kovacevic.model.Rad;
 import kovacevic.pomocno.HibernateUtil;
 import kovacevic.pomocno.PorukaIznimke;
 
@@ -19,7 +18,7 @@ import kovacevic.pomocno.PorukaIznimke;
 public class ObradaMaterijal {
 
     private HibernateObrada<Materijal> obrada;
-    private ArrayList<String> ordersBys;
+    private ArrayList<String> ordersBys = new ArrayList<>();
 
     public static final String ENTITET_NULL = "vrijednost nije odabrana";
     public static final String GRUPA_MATERIJAL = "Grupa materijala";
@@ -34,6 +33,8 @@ public class ObradaMaterijal {
 
     public ObradaMaterijal() {
         obrada = new HibernateObrada<>();
+        ordersBys.add("grupaMaterijal");
+        ordersBys.add("cijenaAmbalaza");
     }
 
     public boolean provjeraDuplogUnosaMaterijal(Materijal materijal) {
@@ -86,9 +87,9 @@ public class ObradaMaterijal {
                     throw new PorukaIznimke("Rezultat mora biti različit u jednom od unosa",
                             "Postoji unos u tablici za ", GRUPA_MATERIJAL + ": " + materijal.getGrupaMaterijal() + ", "
                             + PROIZVODAC + ": " + materijal.getProizvodac() + ", "
-                            + OZNAKA + ": " + materijal.getOznaka() + ", " 
-                            + KOLICINA_AMBALAZA + ": " + materijal.getKolicinaAmbalaza() + ", " 
-                            + JEDINICA_MJERE_AMBALAZA + ": " + materijal.getJedinicaMjereAmbalaza() + ", " 
+                            + OZNAKA + ": " + materijal.getOznaka() + ", "
+                            + KOLICINA_AMBALAZA + ": " + materijal.getKolicinaAmbalaza() + ", "
+                            + JEDINICA_MJERE_AMBALAZA + ": " + materijal.getJedinicaMjereAmbalaza() + ", "
                             + CIJENA_AMBALAZA + ": " + materijal.getCijenaAmbalaza() + ", "
                             + OPIS + ": " + materijal.getOpis());
                 }
@@ -107,17 +108,26 @@ public class ObradaMaterijal {
         return obrada.save(materijal);
     }
 
-    public Rad promijeni(Rad rad) throws PorukaIznimke {
-        if (rad == null) {
+    public Materijal promijeni(Materijal materijal) throws PorukaIznimke {
+        if (materijal == null) {
             throw new PorukaIznimke("Entitet mora biti odabran ", "Odaberite stavku unutar tablice", ENTITET_NULL);
         }
-        if (rad.getGrupaRadova().trim().length() != 0 || rad.getKategorijaRad().trim().length() != 0 || rad.getCijena() != null) {
-            if (provjeraDuplogUnosaRad(rad) == true) {
+        if (materijal.getGrupaMaterijal().trim().length() != 0 || materijal.getProizvodac().trim().length() != 0
+                || materijal.getOznaka().trim().length() != 0 || materijal.getOpis().trim().length() != 0
+                || materijal.getJedinicaMjereAmbalaza().trim().length() != 0 || materijal.getKolicinaAmbalaza() != null
+                || materijal.getCijenaAmbalaza() != null) {
+            if (provjeraDuplogUnosaMaterijal(materijal) == true) {
                 throw new PorukaIznimke("Rezultat mora biti različit u jednom od unosa", "Podatci nisu izmjenjeni za ",
-                        GRUPA_RADOVA + ": " + rad.getGrupaRadova() + ", " + KATEGORIJA_RAD + ": " + rad.getKategorijaRad() + ", " + CIJENA_RAD + ": " + rad.getCijena());
+                        GRUPA_MATERIJAL + ": " + materijal.getGrupaMaterijal() + ", "
+                        + PROIZVODAC + ": " + materijal.getProizvodac() + ", "
+                        + OZNAKA + ": " + materijal.getOznaka() + ", "
+                        + KOLICINA_AMBALAZA + ": " + materijal.getKolicinaAmbalaza() + ", "
+                        + JEDINICA_MJERE_AMBALAZA + ": " + materijal.getJedinicaMjereAmbalaza() + ", "
+                        + CIJENA_AMBALAZA + ": " + materijal.getCijenaAmbalaza() + ", "
+                        + OPIS + ": " + materijal.getOpis());
             }
         }
-        return obrada.save(rad);
+        return obrada.save(materijal);
     }
 
     public void obrisi(Materijal materijal) throws PorukaIznimke {

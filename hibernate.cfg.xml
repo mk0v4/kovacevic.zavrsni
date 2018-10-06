@@ -8,40 +8,41 @@
     Kreirati bazu 
         create database zavrsni character set utf8 collate utf8_general_ci;
 
-     --> 
-    <property name="connection.url">jdbc:mysql://localhost:3306/zavrsni</property>
-    <property name="connection.username">edunova</property>
-    <property name="connection.password">edunova</property>
-    <property name="connection.driver_class">com.mysql.jdbc.Driver</property>
-    <property name="dialect">org.hibernate.dialect.MySQLDialect</property>
-    <property name="hibernate.connection.CharSet">utf8</property>
-    <property name="hibernate.connection.characterEncoding">utf8</property>
-    <property name="hibernate.connection.useUnicode">true</property>
-    <property name="show_sql">false</property>
-    <property name="format_sql">true</property>
+        --> 
+        <property name="connection.url">jdbc:mysql://localhost:3306/zavrsni</property>
+        <property name="connection.username">edunova</property>
+        <property name="connection.password">edunova</property>
+        <property name="connection.driver_class">com.mysql.jdbc.Driver</property>
+        <property name="dialect">org.hibernate.dialect.MySQLDialect</property>
+        <property name="hibernate.connection.CharSet">utf8</property>
+        <property name="hibernate.connection.characterEncoding">utf8</property>
+        <property name="hibernate.connection.useUnicode">true</property>
+        <property name="show_sql">false</property>
+        <property name="format_sql">true</property>
     
-    <!-- 
-    validate: validate the schema, makes no changes to the database.
-    update: update the schema.
-    create: creates the schema, destroying previous data.
-    create-drop: drop the schema at the end of the session. 
-    1. puta create, poslije update
-    -->
-    <property name="hbm2ddl.auto">update</property>
+        <!-- 
+        validate: validate the schema, makes no changes to the database.
+        update: update the schema.
+        create: creates the schema, destroying previous data.
+        create-drop: drop the schema at the end of the session. 
+        1. puta create, poslije update
+        -->
+        <property name="hbm2ddl.auto">update</property>
   
-    <!-- JDBC connection pool (use the built-in) -->
-    <property name="connection.pool_size">1</property>
-    <property name="current_session_context_class">thread</property>
+        <!-- JDBC connection pool (use the built-in) -->
+        <property name="connection.pool_size">1</property>
+        <property name="current_session_context_class">thread</property>
 
-    <!-- moraju se slijedno navesti klase koje su mapirane -->
+        <!-- moraju se slijedno navesti klase koje su mapirane -->
     
-    <mapping class="kovacevic.model.Rad" />
-    <mapping class="kovacevic.model.Materijal" />
-    <mapping class="kovacevic.model.AnalizaRad" />
-    <mapping class="kovacevic.model.AnalizaMaterijal" />
-    <mapping class="kovacevic.model.AnalizaCijene" />
-    <mapping class="kovacevic.model.StavkaTroskovnik" />
+        <mapping class="kovacevic.model.Rad" />
+        <mapping class="kovacevic.model.Materijal" />
+        <mapping class="kovacevic.model.AnalizaRad" />
+        <mapping class="kovacevic.model.AnalizaMaterijal" />
+        <mapping class="kovacevic.model.GrupacijaNorme" />
+        <mapping class="kovacevic.model.AnalizaCijene" />
+        <mapping class="kovacevic.model.StavkaTroskovnik" />
    
    
-</session-factory>
+    </session-factory>
 </hibernate-configuration>

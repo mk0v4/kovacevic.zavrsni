@@ -5,10 +5,16 @@
  */
 package kovacevic.pomocno;
 
+import java.awt.Color;
 import java.awt.Component;
+import java.awt.Font;
+import java.awt.Insets;
 
 import java.awt.event.ComponentAdapter;
 import java.awt.event.ComponentEvent;
+import java.math.BigDecimal;
+import java.math.RoundingMode;
+import javax.swing.JScrollPane;
 
 import javax.swing.JTable;
 import javax.swing.JTextArea;
@@ -16,134 +22,91 @@ import javax.swing.JTextArea;
 import javax.swing.table.TableModel;
 import javax.swing.table.TableCellRenderer;
 
-import javax.swing.event.TableModelEvent;
-
 /**
  *
- * @author 001
+ * @author Marko Kovačević
  */
-public class WrappableTable extends JTable {
+public final class WrappableTable extends JTable {
 
     protected WrappableTableRenderer renderer;
 
-    private JTable extTablica;
-
-    public WrappableTable(JTable table, TableModel tm) {
+    public WrappableTable(JTable table, TableModel tm, JScrollPane scrollPane) {
         super(tm);
-        this.extTablica = table;
-        this.renderer = new WrappableTableRenderer(table);
+        changedSize(table, scrollPane);
 
         table.addComponentListener(new ComponentAdapter() {
             @Override
             public void componentResized(ComponentEvent e) {
-                updateRowHeights(0);
+                updateRowHeights(table, scrollPane);
             }
         });
-    }
-
-    @Override
-    public void tableChanged(TableModelEvent e) {
-        super.tableChanged(e);
-
-        if (e.getFirstRow() >= 0) {
-            updateRowHeights(e.getFirstRow());
-        }
-    }
-
-    protected void updateRowHeights(int beginningRow) {
-        if (getColumnModel().getColumnCount() <= 0) {
-            return;
-        }
-
-        TableModel tm = getModel();
-        int rowCount = tm.getRowCount();
-        int cwidth = getColumnModel().getColumn(7).getWidth();
-
-        for (int i = beginningRow; i < rowCount; i++) {
-            for (int col = 0; col < getColumnCount(); col++) {
-                int newHeight = renderer.getNeededHeight(getValueAt(i, col), cwidth);
-
-                if (newHeight <= 0) {
-                    newHeight = 16;
-                }
-                System.out.println(" === row " + i + " === newHeight " + newHeight);
-                extTablica.setRowHeight(i, newHeight);
+        scrollPane.addComponentListener(new ComponentAdapter() {
+            @Override
+            public void componentResized(ComponentEvent e) {
+                changedSize(table, scrollPane);
             }
+        });
+        this.renderer = new WrappableTableRenderer(table);
+    }
 
+    private void updateRowHeights(JTable table, JScrollPane scrollPane) {
+        table.setRowHeight(16);
+        int startRowHeight = table.getRowHeight();
+        BigDecimal bdStartRowHeight = new BigDecimal(startRowHeight);
+        int h = 0;
+        changedSize(table, scrollPane);
+        for (int row = 0; row < table.getRowCount(); row++) {
+            int actualRowHeight = table.getRowHeight(row);
+            h = actualRowHeight + 3;
+            for (int column = 0; column < table.getModel().getColumnCount(); column++) {
+                String value = table.getValueAt(row, column).toString();
+                Font valueFont = table.getFont();
+                int valueWidth = table.getFontMetrics(valueFont).stringWidth(value.toUpperCase());
+                int columnWidth = table.getColumnModel().getColumn(column).getWidth();
+                BigDecimal bdValueWidth = new BigDecimal(valueWidth);
+                BigDecimal bdColumnWidth = new BigDecimal(columnWidth);
+                BigDecimal wholeNumberOfLines = bdValueWidth.divide(bdColumnWidth, RoundingMode.UP);
+                if (wholeNumberOfLines.equals(BigDecimal.ZERO)) {
+                    wholeNumberOfLines = BigDecimal.ONE;
+                }
+                BigDecimal rowHeightColumn = wholeNumberOfLines.multiply(bdStartRowHeight);
+                if (rowHeightColumn.intValue() > h) {
+                    h = rowHeightColumn.intValue() + 3;
+                }
+            }
+            table.setRowHeight(row, h);
         }
     }
 
-    @Override
-    public TableCellRenderer getCellRenderer(int row, int column) {
-        return renderer;
-    }
-
-    @Override
-    public TableCellRenderer getDefaultRenderer(Class columnClass) {
-        return renderer;
+    public void changedSize(JTable table, JScrollPane scrollPane) {
+        for (int i = 0; i < table.getColumnCount(); i++) {
+            table.getColumnModel().getColumn(i).setPreferredWidth((int) scrollPane.getViewport().getWidth() / table.getColumnCount());
+        }
     }
 
     public static class WrappableTableRenderer extends JTextArea implements TableCellRenderer {
 
         /**
-         * Row height ondosi se na cijelu tablicu
+         *
          */
         public WrappableTableRenderer(JTable table) {
             setWrapStyleWord(true);
             setLineWrap(true);
-            
-        }
-
-        public int getNeededHeight(Object o, int columnWidth) {
-            int length = o.toString().length();
-
-            
-            System.out.println("getFont()" + getFont());
-//            System.out.println("=== o.toString() " + o.toString());
-//            System.out.println(getLineWrap());
-//            System.out.println("Length; " + length);
-//            System.out.println("Table column width: " + columnWidth);
-//            System.out.println("Letter width: " + getColumnWidth());
-            int charsPerLine = columnWidth / getColumnWidth();
-            charsPerLine += 1;
-//            System.out.println("chars per line: " + charsPerLine);
-            int ret = length / charsPerLine;
-//            System.out.println("Length / charsperline: " + ret);
-            if ((length % charsPerLine) > 0) {
-                ret += 1;
-            }
-//            System.out.println("added 1?: " + ret);
-
-            ret *= getRowHeight();
-            System.out.println("RET: " + ret);
-
-            return ret;
+            setMargin(new Insets(0, 2, 0, 2));
         }
 
         @Override
-        public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected, boolean hasFocus, int row, int column) {
+        public Component getTableCellRendererComponent(JTable table, Object value,
+                boolean isSelected, boolean hasFocus, int row, int column) {
             setText(value.toString());
             setSize(table.getColumnModel().getColumn(column).getWidth(), (int) getPreferredSize().getHeight());
+            if (isSelected) {
+                setBackground(new Color(184, 207, 229));
+            } else {
+                setBackground(Color.WHITE);
+            }
+//        System.out.println(new SimpleDateFormat("HH:mm.ssSSS").format(new Date()).toString());
             return this;
         }
     }
-
-//    public static void main(String[] args) {
-//        javax.swing.JFrame frame = new javax.swing.JFrame();
-//
-//        DefaultTableModel table = new DefaultTableModel();
-//        table.addColumn("Foo");
-//        table.addColumn("Bar");
-//
-//        frame.getContentPane().add(new WrappableTable(table));
-//
-//        Object[] row = {"Ugh", "Blugh"};
-//        table.addRow(row);
-//        Object[] row2 = {"123456789123. faagf", "Blugh"};
-//        table.addRow(row2);
-//
-//        frame.setLocation(50, 50);
-//        frame.pack();
-//        frame.show();
-//    }
 }

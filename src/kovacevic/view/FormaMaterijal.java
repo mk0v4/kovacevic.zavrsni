@@ -18,7 +18,7 @@ import javax.swing.table.DefaultTableModel;
 import kovacevic.controller.HibernateObrada;
 import kovacevic.model.Materijal;
 import kovacevic.pomocno.HibernateUtil;
-import kovacevic.pomocno.WordWrapCellRenderer;
+import kovacevic.pomocno.WrappableTable;
 
 import org.hibernate.Session;
 import org.jdesktop.swingx.autocomplete.AutoCompleteDecorator;
@@ -135,7 +135,7 @@ public class FormaMaterijal extends Forma<Materijal> {
 
         DefaultTableModel model = (DefaultTableModel) tablica.getModel();
 
-        tablica.setDefaultRenderer(Object.class, new WordWrapCellRenderer());
+        tablica.setDefaultRenderer(Object.class, new WrappableTable.WrappableTableRenderer(tablica));
 
         model.setRowCount(0);
         model.setColumnIdentifiers(coulumnName);

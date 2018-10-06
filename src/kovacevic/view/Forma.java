@@ -8,6 +8,7 @@ package kovacevic.view;
 import kovacevic.controller.HibernateObrada;
 import kovacevic.model.Entitet;
 import javax.swing.JFrame;
+import javax.swing.JList;
 import javax.swing.event.TableModelEvent;
 
 /**
@@ -32,6 +33,10 @@ public abstract class Forma<T extends Entitet> extends JFrame  {
     protected  void spremi(){
         entitet=obrada.save(entitet);
         ucitaj();
+    }
+
+    void getListCellRendererComponent(JList<?> list, Object value, int index, boolean selected, boolean cellHasFocus) {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
     
 }

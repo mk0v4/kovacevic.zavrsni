@@ -9,6 +9,7 @@ import java.io.Serializable;
 import java.math.BigDecimal;
 import java.util.List;
 import javax.persistence.Entity;
+import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
@@ -21,7 +22,7 @@ import javax.persistence.Table;
 @Table
 public class AnalizaCijene extends Entitet implements Serializable {
 
-    private String oznakaNorme, grupaNorme, opis, jedinicaMjere;
+    private String oznakaNorme, opis, jedinicaMjere;
 
     private BigDecimal ukupanNormativVremena, ukupnaCijenaMaterijal, ukupnaCijenaRad, koeficijentFirme, sveukupanIznos;
 
@@ -33,6 +34,17 @@ public class AnalizaCijene extends Entitet implements Serializable {
     
     @ManyToOne
     private StavkaTroskovnik stavkaTroskovnik;
+    
+    @ManyToOne
+    private GrupacijaNorme grupacijaNorme;
+
+    public GrupacijaNorme getGrupacijaNorme() {
+        return grupacijaNorme;
+    }
+
+    public void setGrupacijaNorme(GrupacijaNorme grupacijaNorme) {
+        this.grupacijaNorme = grupacijaNorme;
+    }
 
     public StavkaTroskovnik getStavkaTroskovnik() {
         return stavkaTroskovnik;
@@ -48,14 +60,6 @@ public class AnalizaCijene extends Entitet implements Serializable {
 
     public void setOznakaNorme(String oznakaNorme) {
         this.oznakaNorme = oznakaNorme;
-    }
-
-    public String getGrupaNorme() {
-        return grupaNorme;
-    }
-
-    public void setGrupaNorme(String grupaNorme) {
-        this.grupaNorme = grupaNorme;
     }
 
     public String getOpis() {
@@ -132,7 +136,7 @@ public class AnalizaCijene extends Entitet implements Serializable {
 
         @Override
     public String toString(){
-        return getOznakaNorme() + ", " + getGrupaNorme() + ", " + getOpis();
+        return getOznakaNorme() + ", " + getOpis();
     }
     
 }

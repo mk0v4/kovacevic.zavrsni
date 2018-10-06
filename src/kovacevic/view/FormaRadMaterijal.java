@@ -9,9 +9,8 @@ import java.awt.Font;
 import java.awt.event.KeyEvent;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
+import java.util.ArrayList;
 import java.util.List;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
@@ -23,8 +22,7 @@ import kovacevic.model.Materijal;
 import kovacevic.model.Rad;
 import kovacevic.pomocno.HibernateUtil;
 import kovacevic.pomocno.PorukaIznimke;
-import kovacevic.pomocno.WordWrapCellRenderer;
-import org.hibernate.Session;
+import kovacevic.pomocno.WrappableTable;
 import org.jdesktop.swingx.autocomplete.AutoCompleteDecorator;
 
 /**
@@ -64,7 +62,8 @@ public class FormaRadMaterijal extends JFrame {
 
         ucitajRad();
         ucitajMaterijal();
-        jTabbedPane1.setEnabledAt(2, false);
+        jtpRadMaterijal.setSelectedIndex(1);
+        jtpRadMaterijal.setEnabledAt(0, false);
     }
 
     protected void ucitajRad() {
@@ -73,10 +72,7 @@ public class FormaRadMaterijal extends JFrame {
     }
 
     protected void ucitajMaterijal() {
-        Session session = HibernateUtil.getSession();
-        session.clear();
-        rezultatiMaterijal = HibernateUtil.getSession().createQuery("from Materijal a "
-                + "where a.obrisan=false order by grupaMaterijal").list();
+        rezultatiMaterijal = obradaMaterijal.getListaMaterijal(materijal);
         popunjavanjeTabliceMaterijal(tblMaterijal);
     }
 
@@ -102,7 +98,7 @@ public class FormaRadMaterijal extends JFrame {
         String[] coulumnName = {"Rb. (Id)", "Grupe materijala", "Proizvođač",
             "Oznaka", "Pakovanje količina", "Jedinica mjere", "Cijena pakovanja", "Opis"};
         DefaultTableModel model = (DefaultTableModel) tablica.getModel();
-        tablica.setDefaultRenderer(Object.class, new WordWrapCellRenderer());
+        tablica.setDefaultRenderer(Object.class, new WrappableTable.WrappableTableRenderer(tablica));
         model.setRowCount(0);
         model.setColumnIdentifiers(coulumnName);
         int rb = 0;
@@ -159,94 +155,115 @@ public class FormaRadMaterijal extends JFrame {
             } else if (pi.getGreska().contains(ObradaRad.CIJENA_RAD)) {
                 txtRadCijena.requestFocus();
             }
-//            Logger.getLogger(FormaRadMaterijal.class.getName()).log(Level.SEVERE, null, e.getMessage());
             return;
         }
         popuniGrupeRadova();
         ucitajRad();
     }
 
-    protected void spremiMaterijal() throws PorukaIznimke {
+    protected void dpoMaterijal() {
+        List<String> nfePoruke = new ArrayList<>();
+        String dodatakNaslovu = "";
         materijal.setGrupaMaterijal(txtMaterijalGrupaMaterijal.getText());
         materijal.setProizvodac(txtMaterijalProizvodac.getText());
         materijal.setOznaka(txtMaterijalOznaka.getText());
-        materijal.setKolicinaAmbalaza(new BigDecimal(txtMaterijalKolicinaAmbalaza.getText()));
+        if (txtMaterijalKolicinaAmbalaza.getText().trim().equals("")) {
+            materijal.setKolicinaAmbalaza(null);
+        } else {
+            try {
+                materijal.setKolicinaAmbalaza(new BigDecimal(txtMaterijalKolicinaAmbalaza.getText()));
+            } catch (NumberFormatException nfe) {
+                nfePoruke.add("Unešena vrijednost polja " + lblMaterijalKolicinaAmbalaza.getText().replace(":", "") + " ne odgovara numeričkom unosu.");
+            }
+        }
         materijal.setJedinicaMjereAmbalaza(txtMaterijalJedinicaMjereAmbalaza.getText());
-        materijal.setCijenaAmbalaza(new BigDecimal(txtMaterijalCijenaAmbalaza.getText()));
+        if (txtMaterijalCijenaAmbalaza.getText().trim().equals("")) {
+            materijal.setCijenaAmbalaza(null);
+        } else {
+            try {
+                materijal.setCijenaAmbalaza(new BigDecimal(txtMaterijalCijenaAmbalaza.getText()));
+            } catch (NumberFormatException nfe) {
+                nfePoruke.add("Unešena vrijednost polja " + lblMaterijalCijenaAmbalaza.getText().replace(":", "") + " ne odgovara numeričkom unosu.");
+            }
+        }
         materijal.setOpis(tarMaterijalOpis.getText());
-        obradaMaterijal.spremi(materijal);
+        try {
+            if (dodaj == true) {
+                dodatakNaslovu = " - Dodavanje novog";
+                obradaMaterijal.spremi(materijal);
+            }
+            if (promijeni == true) {
+                dodatakNaslovu = " - Promijena";
+                obradaMaterijal.promijeni(materijal);
+            }
+            if (obrisi == true) {
+                dodatakNaslovu = " - Brisanje";
+                obradaMaterijal.obrisi(materijal);
+            }
+        } catch (PorukaIznimke pi) {
+//            TODO provjeriti ispis nfePoruka
+            JOptionPane.showMessageDialog(rootPane, (nfePoruke.isEmpty() ? "" : nfePoruke.toString() + "\n") + pi.getOpis() + pi.getGreska(),
+                    getTitle() + dodatakNaslovu, HEIGHT);
+            if (pi.getGreska().contains(ObradaMaterijal.GRUPA_MATERIJAL)) {
+                txtMaterijalGrupaMaterijal.requestFocus();
+            } else if (pi.getGreska().contains(ObradaMaterijal.PROIZVODAC)) {
+                txtMaterijalProizvodac.requestFocus();
+            } else if (pi.getGreska().contains(ObradaMaterijal.OZNAKA)) {
+                txtMaterijalOznaka.requestFocus();
+            } else if (pi.getGreska().contains(ObradaMaterijal.KOLICINA_AMBALAZA)) {
+                txtMaterijalKolicinaAmbalaza.requestFocus();
+            } else if (pi.getGreska().contains(ObradaMaterijal.JEDINICA_MJERE_AMBALAZA)) {
+                txtMaterijalJedinicaMjereAmbalaza.requestFocus();
+            } else if (pi.getGreska().contains(ObradaMaterijal.CIJENA_AMBALAZA)) {
+                txtMaterijalCijenaAmbalaza.requestFocus();
+            }
+            return;
+        }
+        popuniGrupeMaterijala();
+        ucitajMaterijal();
     }
 
     private void traziRad() {
         String grupaRadova = null;
         String cond = null;
+        String cond2 = null;
         String p = null;
+        String p2 = null;
         if (!cmbGrupeRadova.getSelectedItem().equals("Nije odabrano")) {
             grupaRadova = (String) cmbGrupeRadova.getSelectedItem();
             cond = "=";
             p = "";
-
         } else {
             grupaRadova = "";
             cond = "like";
             p = "%";
-
+        }
+        if (txtRadTraziKategorija.getText().trim().equals("")) {
+            cond2 = "like";
+            p2 = "%";
+        } else {
+            cond2 = "=";
+            p2 = "";
         }
         try {
-
-            if (txtRadTraziCijena.getText().trim().equals("")) {
-                if (txtRadTraziKategorija.getText().trim().equals("") && txtRadTraziCijena.getText().trim().equals("")) {
-
-                    rezultatiRad = HibernateUtil.getSession().createQuery("from Rad a where "
-                            + " a.obrisan=false and a.grupaRadova " + cond + " :grupaRadova"
-                            + " order by grupaRadova asc, kategorijaRad asc, cijena asc")
-                            .setParameter("grupaRadova", p + grupaRadova + p)
-                            .list();
-
-//                System.out.println("r1:" + rezultati);
-                } else if (txtRadTraziCijena.getText().trim().equals("")) {
-                    rezultatiRad = HibernateUtil.getSession().createQuery("from Rad a where "
-                            + " a.obrisan=false and a.grupaRadova " + cond + " :grupaRadova and"
-                            + " a.kategorijaRad = :kategorijaRad order by grupaRadova asc, kategorijaRad asc, cijena asc")
-                            .setParameter("grupaRadova", p + grupaRadova + p)
-                            .setParameter("kategorijaRad", txtRadTraziKategorija.getText()).list();
-//                System.out.println("r2:" + rezultati);
-                }
-            } else {
-                if (txtRadTraziKategorija.getText().trim().equals("")) {
-                    rezultatiRad = HibernateUtil.getSession().createQuery("from Rad a where "
-                            + " a.obrisan=false and a.grupaRadova " + cond + " :grupaRadova "
-                            //                    + "and a.kategorijaRad = :kategorijaRad "
-                            + "and a.cijena like concat(:cijena,'%') order by grupaRadova asc, kategorijaRad asc, cijena asc")
-                            .setParameter("grupaRadova", p + grupaRadova + p)
-                            .setParameter("cijena", new BigDecimal(txtRadTraziCijena.getText()))
-                            //                    .setParameter("kategorijaRad", txtTraziKategorija.getText())
-                            .list();
-//                System.out.println("r3:" + rezultati);
-                } else {
-                    rezultatiRad = HibernateUtil.getSession().createQuery("from Rad a where "
-                            + " a.obrisan=false and a.grupaRadova " + cond + " :grupaRadova "
-                            + "and a.kategorijaRad = :kategorijaRad "
-                            + "and a.cijena like concat(:cijena,'%') order by grupaRadova asc, kategorijaRad asc, cijena asc")
-                            .setParameter("grupaRadova", p + grupaRadova + p)
-                            .setParameter("cijena", new BigDecimal(txtRadTraziCijena.getText()))
-                            .setParameter("kategorijaRad", txtRadTraziKategorija.getText())
-                            .list();
-//                System.out.println("r4:" + rezultati);
-                }
-
-            }
+            Object txt = !txtRadTraziCijena.getText().trim().equals("") ? new BigDecimal(txtRadTraziCijena.getText()) : "";
+            rezultatiRad = HibernateUtil.getSession().createQuery("from Rad a where "
+                    + " a.obrisan=false and a.grupaRadova " + cond + " :grupaRadova "
+                    + "and a.kategorijaRad " + cond2 + " :kategorijaRad "
+                    + "and a.cijena like concat(:cijena,'%') order by grupaRadova asc, kategorijaRad asc, cijena asc")
+                    .setParameter("grupaRadova", p + grupaRadova + p)
+                    .setParameter("kategorijaRad", p2 + txtRadTraziKategorija.getText() + p2)
+                    .setParameter("cijena", !txtRadTraziCijena.getText().trim().equals("") ? new BigDecimal(txtRadTraziCijena.getText()) : "")
+                    .list();
         } catch (NumberFormatException e) {
             JOptionPane.showMessageDialog(rootPane, "Unešena vrijednost nije broj", getTitle() + " - Traži", HEIGHT);
             txtRadTraziCijena.setText("");
             return;
         }
-
         popunjavanjeTabliceRad();
     }
 
     private void traziMaterijal() {
-
         String grupaMaterijala = null;
         String cond = null;
         String p = null;
@@ -254,26 +271,16 @@ public class FormaRadMaterijal extends JFrame {
             grupaMaterijala = (String) cmbGrupeMaterijala.getSelectedItem();
             cond = "=";
             p = "";
-
         } else {
             grupaMaterijala = "";
             cond = "like";
             p = "%";
         }
-
         rezultatiMaterijal = HibernateUtil.getSession().createQuery("from Materijal a where "
                 + " a.obrisan=false and a.grupaMaterijal " + cond + " :grupaMaterijal and a.proizvodac like :proizvodac and a.oznaka like :oznaka "
                 + " order by grupaMaterijal asc, cijenaAmbalaza asc").setParameter("grupaMaterijal", p + grupaMaterijala + p).
                 setParameter("proizvodac", "%" + txtMaterijalTraziProizvodac.getText() + "%").setParameter("oznaka", "%" + txtMaterijalTraziOznaka.getText() + "%").list();
-
         popunjavanjeTabliceMaterijal(tblMaterijal);
-
-//rezultati = HibernateUtil.getSession().createQuery("from Materijal a where "
-//                + " a.obrisan=false and a.grupaMaterijal =:grupaMaterijal and a.proizvodac =:proizvodac and a.oznaka =:oznaka"
-//                + " order by grupaMaterijal asc, cijenaAmbalaza asc").setParameter("grupaMaterijal", cmbGrupeMaterijala.getSelectedItem()).setParameter("proizvodac", "")
-//                .setParameter("oznaka", "").list();
-//
-//        popunjavanjeTablice(tblMaterijal);
     }
 
     private void popuniGrupeRadova() {
@@ -282,66 +289,10 @@ public class FormaRadMaterijal extends JFrame {
         List<String> rad = HibernateUtil.getSession().
                 createQuery("select distinct a.grupaRadova from Rad a where "
                         + "a.obrisan=false  ").list();
-
         m.addElement("Nije odabrano");
         for (String r : rad) {
-
             m.addElement(r);
         }
-    }
-
-    private void updateRowHeights(JTable table) {
-
-        int startRowHeight = table.getRowHeight();
-        BigDecimal bdStartRowHeight = new BigDecimal(startRowHeight);
-
-        int h = 0;
-        for (int row = 0; row < table.getRowCount(); row++) {
-            int actualRowHeight = table.getRowHeight(row);
-            h = actualRowHeight + 3;
-            for (int column = 0; column < table.getModel().getColumnCount(); column++) {
-
-                String value = table.getValueAt(row, column).toString();
-                Font valueFont = table.getFont();
-//                int valueWidth = table.getFontMetrics(valueFont).stringWidth(value);
-                int valueWidth = table.getFontMetrics(valueFont).stringWidth(value.toUpperCase());
-
-                int columnWidth = table.getColumnModel().getColumn(column).getWidth();
-
-                BigDecimal bdValueWidth = new BigDecimal(valueWidth);
-                BigDecimal bdColumnWidth = new BigDecimal(columnWidth);
-
-                BigDecimal wholeNumberOfLines = bdValueWidth.divide(bdColumnWidth, RoundingMode.UP);
-
-                if (wholeNumberOfLines.equals(BigDecimal.ZERO)) {
-                    wholeNumberOfLines = BigDecimal.ONE;
-                }
-
-                BigDecimal rowHeightColumn = wholeNumberOfLines.multiply(bdStartRowHeight);
-
-                if (rowHeightColumn.intValue() > h) {
-                    h = rowHeightColumn.intValue() + 3;
-                }
-            }
-
-            table.setRowHeight(row, h);
-//            System.out.println("=== row " + row + " h " + h);
-
-        }
-
-    }
-
-    public void changedSize(JTable table) {
-
-//           System.out.println("jScrollPane3.getViewport().getWidth() "+jScrollPane3.getViewport().getWidth());
-//           System.out.println("table.getParent().getSize().getWidth() "+table.getParent().getSize().getWidth());
-//           System.out.println("jScrollPane3.getVerticalScrollBar().isShowing() " + jScrollPane3.getVerticalScrollBar().isShowing());
-        for (int i = 0; i < table.getColumnCount(); i++) {
-
-            table.getColumnModel().getColumn(i).setPreferredWidth((int) jScrollPaneMaterijal.getViewport().getWidth() / table.getColumnCount());
-
-        }
-
     }
 
     private void popuniGrupeMaterijala() {
@@ -350,11 +301,42 @@ public class FormaRadMaterijal extends JFrame {
         List<String> materijal = HibernateUtil.getSession().
                 createQuery("select distinct a.grupaMaterijal from Materijal a where "
                         + "a.obrisan=false  ").list();
-
         m.addElement("Nije odabrano");
         for (String s : materijal) {
-
             m.addElement(s);
+        }
+    }
+
+    private void updateRowHeights(JTable table) {
+        int startRowHeight = table.getRowHeight();
+        BigDecimal bdStartRowHeight = new BigDecimal(startRowHeight);
+        int h = 0;
+        for (int row = 0; row < table.getRowCount(); row++) {
+            int actualRowHeight = table.getRowHeight(row);
+            h = actualRowHeight + 3;
+            for (int column = 0; column < table.getModel().getColumnCount(); column++) {
+                String value = table.getValueAt(row, column).toString();
+                Font valueFont = table.getFont();
+                int valueWidth = table.getFontMetrics(valueFont).stringWidth(value.toUpperCase());
+                int columnWidth = table.getColumnModel().getColumn(column).getWidth();
+                BigDecimal bdValueWidth = new BigDecimal(valueWidth);
+                BigDecimal bdColumnWidth = new BigDecimal(columnWidth);
+                BigDecimal wholeNumberOfLines = bdValueWidth.divide(bdColumnWidth, RoundingMode.UP);
+                if (wholeNumberOfLines.equals(BigDecimal.ZERO)) {
+                    wholeNumberOfLines = BigDecimal.ONE;
+                }
+                BigDecimal rowHeightColumn = wholeNumberOfLines.multiply(bdStartRowHeight);
+                if (rowHeightColumn.intValue() > h) {
+                    h = rowHeightColumn.intValue() + 3;
+                }
+            }
+            table.setRowHeight(row, h);
+        }
+    }
+
+    public void changedSize(JTable table) {
+        for (int i = 0; i < table.getColumnCount(); i++) {
+            table.getColumnModel().getColumn(i).setPreferredWidth((int) jScrollPaneMaterijal.getViewport().getWidth() / table.getColumnCount());
         }
     }
 
@@ -367,7 +349,7 @@ public class FormaRadMaterijal extends JFrame {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
-        jTabbedPane1 = new javax.swing.JTabbedPane();
+        jtpRadMaterijal = new javax.swing.JTabbedPane();
         jPanelPrebacivanje = new javax.swing.JPanel();
         jPanelRad = new javax.swing.JPanel();
         lblRadGrupaRadova = new javax.swing.JLabel();
@@ -428,7 +410,7 @@ public class FormaRadMaterijal extends JFrame {
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
         setMinimumSize(new java.awt.Dimension(860, 500));
 
-        jTabbedPane1.setMinimumSize(new java.awt.Dimension(850, 460));
+        jtpRadMaterijal.setMinimumSize(new java.awt.Dimension(850, 460));
 
         javax.swing.GroupLayout jPanelPrebacivanjeLayout = new javax.swing.GroupLayout(jPanelPrebacivanje);
         jPanelPrebacivanje.setLayout(jPanelPrebacivanjeLayout);
@@ -441,7 +423,7 @@ public class FormaRadMaterijal extends JFrame {
             .addGap(0, 432, Short.MAX_VALUE)
         );
 
-        jTabbedPane1.addTab("Prebacivanje", jPanelPrebacivanje);
+        jtpRadMaterijal.addTab("Prebacivanje", jPanelPrebacivanje);
 
         lblRadGrupaRadova.setText("Grupa radova:");
 
@@ -670,7 +652,7 @@ public class FormaRadMaterijal extends JFrame {
                         .addContainerGap())))
         );
 
-        jTabbedPane1.addTab("Rad", jPanelRad);
+        jtpRadMaterijal.addTab("Rad", jPanelRad);
 
         btnMaterijalUpute.setText("?");
         btnMaterijalUpute.addActionListener(new java.awt.event.ActionListener() {
@@ -947,17 +929,17 @@ public class FormaRadMaterijal extends JFrame {
                 .addContainerGap())
         );
 
-        jTabbedPane1.addTab("Materijal", jPanelMaterijal);
+        jtpRadMaterijal.addTab("Materijal", jPanelMaterijal);
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(jTabbedPane1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+            .addComponent(jtpRadMaterijal, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(jTabbedPane1, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+            .addComponent(jtpRadMaterijal, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
         );
 
         pack();
@@ -969,31 +951,85 @@ public class FormaRadMaterijal extends JFrame {
     }//GEN-LAST:event_txtMaterijalGrupaMaterijalActionPerformed
 
     private void btnMaterijalDodajActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnMaterijalDodajActionPerformed
+        dodaj = true;
         materijal = new Materijal();
-        try {
-            spremiMaterijal();
-        } catch (PorukaIznimke ex) {
-            Logger.getLogger(FormaRadMaterijal.class.getName()).log(Level.SEVERE, null, ex);
+        dpoMaterijal();
+        int row = 0;
+        if (tblMaterijal.getSelectedRow() != -1) {
+            row = tblMaterijal.getSelectedRow();
         }
+        traziMaterijal();
+        if (materijal.getId() != null) {
+            for (int i = 0; i < rezultatiMaterijal.size(); i++) {
+                if (tblMaterijal.getModel().getValueAt(i, 0).toString().contains("(" + materijal.getId().toString() + ")")) {
+                    txtMaterijalIdValue.setText(tblMaterijal.getModel().getValueAt(i, 0).toString());
+                    materijal = rezultatiMaterijal.get(tblMaterijal.convertRowIndexToModel(i));
+                    row = i;
+                    break;
+                }
+            }
+        }
+        if (row != 0) {
+            tblMaterijal.setRowSelectionInterval(row, row);
+        }
+        dodaj = false;
     }//GEN-LAST:event_btnMaterijalDodajActionPerformed
 
     private void btnMaterijalPromjeniActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnMaterijalPromjeniActionPerformed
-        try {
-            spremiMaterijal();
-        } catch (PorukaIznimke ex) {
-            Logger.getLogger(FormaRadMaterijal.class.getName()).log(Level.SEVERE, null, ex);
+        promijeni = true;
+        if (materijal == null || tblMaterijal.getSelectedRow() == -1) {
+            JOptionPane.showMessageDialog(rootPane, "Odaberite stavku vidljivu unutar tablice",
+                    getTitle() + " - Promjena postojećeg", HEIGHT);
+        } else {
+            int i = tblMaterijal.getSelectedRow();
+            materijal = rezultatiMaterijal.get(tblMaterijal.convertRowIndexToModel(i));
+            dpoMaterijal();
+            DefaultTableModel model = (DefaultTableModel) tblMaterijal.getModel();
+            model.setValueAt(txtMaterijalGrupaMaterijal.getText(), i, 1);
+            model.setValueAt(txtMaterijalProizvodac.getText(), i, 2);
+            model.setValueAt(txtMaterijalOznaka.getText(), i, 3);
+            model.setValueAt(txtMaterijalKolicinaAmbalaza.getText(), i, 4);
+            model.setValueAt(txtMaterijalJedinicaMjereAmbalaza.getText(), i, 5);
+            model.setValueAt(txtMaterijalCijenaAmbalaza.getText(), i, 6);
+            model.setValueAt(tarMaterijalOpis.getText(), i, 7);
+            materijal = null;
+            traziMaterijal();
+            materijal = rezultatiMaterijal.get(tblMaterijal.convertRowIndexToModel(i));
+            tblMaterijal.setRowSelectionInterval(i, i);
         }
+        promijeni = false;
     }//GEN-LAST:event_btnMaterijalPromjeniActionPerformed
 
     private void btnMaterijalObrisiActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnMaterijalObrisiActionPerformed
-        try {
-            //        if (lista.getSelectedValue() == null) {
-            //            JOptionPane.showConfirmDialog(rootPane, "Prvo odaberite stavku");
-            //        }
-            obradaMaterijal.obrisi(materijal);
-        } catch (PorukaIznimke ex) {
-            Logger.getLogger(FormaRadMaterijal.class.getName()).log(Level.SEVERE, null, ex);
+        obrisi = true;
+        if (materijal == null || tblMaterijal.getSelectedRow() == -1) {
+            JOptionPane.showMessageDialog(rootPane, "Odaberite stavku vidljivu unutar tablice", getTitle() + " - Obriši", HEIGHT);
+        } else {
+            int i = tblMaterijal.getSelectedRow();
+            DefaultTableModel model = (DefaultTableModel) tblMaterijal.getModel();
+            Object[] options = {"Da", "Ne"};
+            int reply = JOptionPane.showOptionDialog(rootPane, "Sigurno želite obrisati stavku? \n"
+                    + model.getValueAt(i, 0).toString() + ", " + model.getValueAt(i, 1).toString()
+                    + ", " + model.getValueAt(i, 2).toString() + ", " + model.getValueAt(i, 3).toString() + ", "
+                    + model.getValueAt(i, 4).toString() + ", " + model.getValueAt(i, 5).toString() + ", "
+                    + model.getValueAt(i, 6).toString(), getTitle()
+                    + " - Obriši", JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE, null, options, null);
+            if (reply == JOptionPane.YES_OPTION) {
+                dpoMaterijal();
+                ucitajMaterijal();
+                materijal = null;
+                txtMaterijalIdValue.setText("");
+                txtMaterijalProizvodac.setText("");
+                txtMaterijalOznaka.setText("");
+                txtMaterijalKolicinaAmbalaza.setText("");
+                txtMaterijalJedinicaMjereAmbalaza.setText("");
+                txtMaterijalCijenaAmbalaza.setText("");
+                tarMaterijalOpis.setText("");
+                tblMaterijal.getSelectionModel().clearSelection();
+                traziMaterijal();
+            }
         }
+        obrisi = false;
     }//GEN-LAST:event_btnMaterijalObrisiActionPerformed
 
     private void txtMaterijalTraziOznakaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtMaterijalTraziOznakaActionPerformed
@@ -1067,8 +1103,6 @@ public class FormaRadMaterijal extends JFrame {
 
     private void cmbGrupeMaterijalaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cmbGrupeMaterijalaActionPerformed
         traziMaterijal();
-        //        jScrollPane3ComponentResized(new ComponentEvent(jScrollPane3, WIDTH));
-        //System.out.println("jScrollPane3.getVerticalScrollBar().isShowing() " + jScrollPane3.getVerticalScrollBar().isShowing());
     }//GEN-LAST:event_cmbGrupeMaterijalaActionPerformed
 
     private void txtMaterijalTraziProizvodacActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtMaterijalTraziProizvodacActionPerformed
@@ -1088,7 +1122,7 @@ public class FormaRadMaterijal extends JFrame {
     private void btnRadUputeActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnRadUputeActionPerformed
         JOptionPane.showMessageDialog(rootPane,
                 "Pretraživanje:" + "\n"
-                + "- izvodi se tipkom enter u jednom od tri polja" + "\n"
+                + "- izvodi se tipkom enter u jednom od polja" + "\n"
                 + "- tipka " + btnRadResetirajTrazilicu.getText() + " briše vrijesnosti unešene u polja i prikazuje sve rezultate" + "\n\n"
                 + "Tablica sa podatcima:" + "\n"
                 + "- jednim klikom miša označava se odabrani red" + "\n"
@@ -1123,7 +1157,6 @@ public class FormaRadMaterijal extends JFrame {
             int row = tblRad.getSelectedRow();
             DefaultTableModel model = (DefaultTableModel) tblRad.getModel();
             rad = rezultatiRad.get(tblRad.convertRowIndexToModel(row));
-            System.out.println(rad.getId() + " " + rad);
             txtRadIdValue.setText(model.getValueAt(row, 0).toString());
             txtRadGrupaRadova.setText(model.getValueAt(row, 1).toString());
             txtRadKategorijaRad.setText(model.getValueAt(row, 2).toString());
@@ -1202,7 +1235,24 @@ public class FormaRadMaterijal extends JFrame {
         dodaj = true;
         rad = new Rad();
         dpoRad();
+        int row = 0;
+        if (tblRad.getSelectedRow() != -1) {
+            row = tblRad.getSelectedRow();
+        }
         traziRad();
+        if (rad.getId() != null) {
+            for (int i = 0; i < rezultatiRad.size(); i++) {
+                if (tblRad.getModel().getValueAt(i, 0).toString().contains("(" + rad.getId().toString() + ")")) {
+                    txtRadIdValue.setText(tblRad.getModel().getValueAt(i, 0).toString());
+                    rad = rezultatiRad.get(tblRad.convertRowIndexToModel(i));
+                    row = i;
+                    break;
+                }
+            }
+        }
+        if (row != 0) {
+            tblRad.setRowSelectionInterval(row, row);
+        }
         dodaj = false;
     }//GEN-LAST:event_btnRadDodajActionPerformed
 
@@ -1211,7 +1261,15 @@ public class FormaRadMaterijal extends JFrame {
     }//GEN-LAST:event_txtRadGrupaRadovaActionPerformed
 
     private void btnMaterijalUputeActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnMaterijalUputeActionPerformed
-        // TODO add your handling code here:
+        JOptionPane.showMessageDialog(rootPane,
+                "Pretraživanje:" + "\n"
+                + "- izvodi se tipkom enter u jednom od polja" + "\n"
+                + "- tipka " + btnMaterijalResetirajTrazilicu.getText() + " briše vrijesnosti unešene u polja i prikazuje sve rezultate" + "\n\n"
+                + "Tablica sa podatcima:" + "\n"
+                + "- jednim klikom miša označava se odabrani red" + "\n"
+                + "- dvostrukim klikom odabiru se vrijednosti odabranog reda i upisuju u polja kako bi se izvršile radnje promjene ili brisanja" + "\n"
+                + "- držanjem tipke alt i lijevim klikom odznačava se red u tablici i ispraznjuju se vrijednosti polja za radnje dodavanja, promjene i brisanja",
+                getTitle() + " - Upute za korištenje", JOptionPane.PLAIN_MESSAGE);
     }//GEN-LAST:event_btnMaterijalUputeActionPerformed
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
@@ -1235,7 +1293,7 @@ public class FormaRadMaterijal extends JFrame {
     private javax.swing.JScrollPane jScrollPaneMaterijal;
     private javax.swing.JScrollPane jScrollPaneMaterijalOpsi;
     private javax.swing.JScrollPane jScrollPaneRad;
-    private javax.swing.JTabbedPane jTabbedPane1;
+    private javax.swing.JTabbedPane jtpRadMaterijal;
     private javax.swing.JLabel lbMaterijallOznaka;
     private javax.swing.JLabel lblMaterijalCijenaAmbalaza;
     private javax.swing.JLabel lblMaterijalGrupaMaterijal;
