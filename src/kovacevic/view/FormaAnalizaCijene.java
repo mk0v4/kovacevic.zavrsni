@@ -6,6 +6,8 @@
 package kovacevic.view;
 
 import java.awt.Color;
+import java.awt.Dimension;
+import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.WindowAdapter;
@@ -138,10 +140,14 @@ public class FormaAnalizaCijene extends JFrame {
     private void popupMenuJTable() {
         menuJTable.add(dodajNorma);
         menuJTable.add(promijeniNorma);
+//        Dimension dim = Toolkit.getDefaultToolkit().getScreenSize();
+//        jFrameEditAnalizaCijene.setLocation(dim.width / 2 - this.getSize().width / 2, dim.height / 2 - this.getSize().height / 2);
+        jFrameEditAnalizaCijene.setLocationRelativeTo(null);
 
         dodajNorma.addActionListener((ActionEvent e) -> {
             System.out.println("kovacevic.view.FormaAnalizaCijene.popupMenuJTable()");
             jFrameEditAnalizaCijene.setVisible(true);
+
 //            grupacijaNorme1.addWindowListener(new WindowAdapter() {
 //                @Override
 //                public void windowClosing(WindowEvent arg0) {
