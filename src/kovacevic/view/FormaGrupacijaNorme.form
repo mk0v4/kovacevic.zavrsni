@@ -27,30 +27,25 @@
     <DimensionLayout dim="0">
       <Group type="103" groupAlignment="0" attributes="0">
           <Group type="102" attributes="0">
+              <EmptySpace max="-2" attributes="0"/>
+              <Group type="103" groupAlignment="0" attributes="0">
+                  <Component id="lblOpisGrupeNorme" alignment="0" min="-2" max="-2" attributes="0"/>
+                  <Component id="lblGrupaNorme" min="-2" max="-2" attributes="0"/>
+                  <Component id="lbOznakaGrupeNorme" alignment="0" min="-2" max="-2" attributes="0"/>
+              </Group>
+              <EmptySpace min="-2" pref="29" max="-2" attributes="0"/>
               <Group type="103" groupAlignment="0" attributes="0">
                   <Group type="102" attributes="0">
-                      <EmptySpace min="-2" pref="158" max="-2" attributes="0"/>
                       <Component id="btnDodaj" min="-2" max="-2" attributes="0"/>
                       <EmptySpace max="-2" attributes="0"/>
                       <Component id="btnPromjeni" min="-2" max="-2" attributes="0"/>
-                      <EmptySpace pref="56" max="32767" attributes="0"/>
+                      <EmptySpace pref="71" max="32767" attributes="0"/>
                       <Component id="btnObrisi" min="-2" max="-2" attributes="0"/>
                   </Group>
-                  <Group type="102" alignment="1" attributes="0">
-                      <EmptySpace max="-2" attributes="0"/>
-                      <Group type="103" groupAlignment="0" attributes="0">
-                          <Component id="lblOpisGrupeNorme" alignment="0" min="-2" max="-2" attributes="0"/>
-                          <Component id="lblGrupaNorme" min="-2" max="-2" attributes="0"/>
-                          <Component id="lbOznakaGrupeNorme" alignment="0" min="-2" max="-2" attributes="0"/>
-                      </Group>
-                      <EmptySpace min="-2" pref="29" max="-2" attributes="0"/>
-                      <Group type="103" groupAlignment="0" attributes="0">
-                          <Component id="jScrollPane2" alignment="0" max="32767" attributes="0"/>
-                          <Component id="txtOznakaNormeKombinirano" alignment="0" max="32767" attributes="0"/>
-                          <Component id="txtOznakaGrupeNorme" alignment="0" max="32767" attributes="0"/>
-                          <Component id="txtGrupa" alignment="0" max="32767" attributes="0"/>
-                      </Group>
-                  </Group>
+                  <Component id="jScrollPane2" alignment="0" max="32767" attributes="0"/>
+                  <Component id="txtOznakaNormeKombinirano" alignment="0" max="32767" attributes="0"/>
+                  <Component id="txtOznakaGrupeNorme" alignment="0" max="32767" attributes="0"/>
+                  <Component id="txtGrupa" alignment="0" max="32767" attributes="0"/>
               </Group>
               <EmptySpace max="-2" attributes="0"/>
           </Group>
@@ -82,7 +77,7 @@
                   <Component id="btnPromjeni" alignment="3" min="-2" max="-2" attributes="0"/>
                   <Component id="btnObrisi" alignment="3" min="-2" max="-2" attributes="0"/>
               </Group>
-              <EmptySpace max="32767" attributes="0"/>
+              <EmptySpace max="-2" attributes="0"/>
           </Group>
       </Group>
     </DimensionLayout>

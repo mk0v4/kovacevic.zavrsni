@@ -5,14 +5,14 @@
     <Container class="javax.swing.JFrame" name="jFrameEditAnalizaCijene">
       <Properties>
         <Property name="minimumSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
-          <Dimension value="[775, 500]"/>
+          <Dimension value="[600, 400]"/>
         </Property>
       </Properties>
 
       <Layout>
         <DimensionLayout dim="0">
           <Group type="103" groupAlignment="0" attributes="0">
-              <Component id="jTabbedPane1" alignment="1" max="32767" attributes="0"/>
+              <Component id="jTabbedPane1" alignment="0" max="32767" attributes="0"/>
           </Group>
         </DimensionLayout>
         <DimensionLayout dim="1">
@@ -23,14 +23,24 @@
       </Layout>
       <SubComponents>
         <Container class="javax.swing.JTabbedPane" name="jTabbedPane1">
+          <Properties>
+            <Property name="preferredSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
+              <Dimension value="[600, 400]"/>
+            </Property>
+          </Properties>
 
           <Layout class="org.netbeans.modules.form.compat2.layouts.support.JTabbedPaneSupportLayout"/>
           <SubComponents>
-            <Container class="javax.swing.JPanel" name="jPanel4">
+            <Container class="javax.swing.JPanel" name="jPaneOsnovno">
+              <Properties>
+                <Property name="preferredSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
+                  <Dimension value="[500, 251]"/>
+                </Property>
+              </Properties>
               <Constraints>
                 <Constraint layoutClass="org.netbeans.modules.form.compat2.layouts.support.JTabbedPaneSupportLayout" value="org.netbeans.modules.form.compat2.layouts.support.JTabbedPaneSupportLayout$JTabbedPaneConstraintsDescription">
-                  <JTabbedPaneConstraints tabName="Ostalo">
-                    <Property name="tabTitle" type="java.lang.String" value="Ostalo"/>
+                  <JTabbedPaneConstraints tabName="Osnovno">
+                    <Property name="tabTitle" type="java.lang.String" value="Osnovno"/>
                   </JTabbedPaneConstraints>
                 </Constraint>
               </Constraints>
@@ -38,36 +48,45 @@
               <Layout>
                 <DimensionLayout dim="0">
                   <Group type="103" groupAlignment="0" attributes="0">
-                      <Group type="102" alignment="0" attributes="0">
+                      <Group type="102" attributes="0">
                           <EmptySpace max="-2" attributes="0"/>
                           <Group type="103" groupAlignment="0" attributes="0">
                               <Component id="lblOpisNorme" alignment="0" min="-2" max="-2" attributes="0"/>
                               <Component id="lblJedinicaMjere" alignment="0" min="-2" max="-2" attributes="0"/>
                               <Component id="lblUkupnoVrijeme" alignment="0" min="-2" max="-2" attributes="0"/>
                               <Component id="lblOznakaNorme" min="-2" max="-2" attributes="0"/>
+                              <Component id="lblOznakaGrupeNorme" alignment="0" min="-2" max="-2" attributes="0"/>
+                              <Component id="lblUkupnaCijenaPoJedinici" alignment="0" min="-2" max="-2" attributes="0"/>
                           </Group>
                           <EmptySpace type="separate" max="-2" attributes="0"/>
                           <Group type="103" groupAlignment="0" attributes="0">
+                              <Component id="txtUkupnaCijenaPoJedinici" max="32767" attributes="0"/>
                               <Group type="102" attributes="0">
                                   <Component id="btnDodaj" min="-2" max="-2" attributes="0"/>
                                   <EmptySpace max="-2" attributes="0"/>
                                   <Component id="btnPromjeni" min="-2" max="-2" attributes="0"/>
-                                  <EmptySpace max="32767" attributes="0"/>
+                                  <EmptySpace pref="228" max="32767" attributes="0"/>
                                   <Component id="btnObrisi" min="-2" max="-2" attributes="0"/>
                               </Group>
                               <Component id="txtUkupanNormativVremena" alignment="0" max="32767" attributes="0"/>
                               <Component id="txtJedinicaMjere" alignment="0" max="32767" attributes="0"/>
-                              <Component id="jScrollPane2" alignment="0" pref="370" max="32767" attributes="0"/>
                               <Component id="txtOznakaNorme" alignment="0" max="32767" attributes="0"/>
+                              <Component id="jScrollPane2" alignment="0" max="32767" attributes="0"/>
+                              <Component id="txtOznakaGrupeNorme" alignment="0" max="32767" attributes="0"/>
                           </Group>
-                          <EmptySpace min="-2" pref="231" max="-2" attributes="0"/>
+                          <EmptySpace max="-2" attributes="0"/>
                       </Group>
                   </Group>
                 </DimensionLayout>
                 <DimensionLayout dim="1">
                   <Group type="103" groupAlignment="0" attributes="0">
                       <Group type="102" alignment="0" attributes="0">
-                          <EmptySpace min="-2" pref="37" max="-2" attributes="0"/>
+                          <EmptySpace max="-2" attributes="0"/>
+                          <Group type="103" groupAlignment="3" attributes="0">
+                              <Component id="lblOznakaGrupeNorme" alignment="3" min="-2" max="-2" attributes="0"/>
+                              <Component id="txtOznakaGrupeNorme" alignment="3" min="-2" max="-2" attributes="0"/>
+                          </Group>
+                          <EmptySpace max="-2" attributes="0"/>
                           <Group type="103" groupAlignment="3" attributes="0">
                               <Component id="txtOznakaNorme" alignment="3" min="-2" max="-2" attributes="0"/>
                               <Component id="lblOznakaNorme" alignment="3" min="-2" max="-2" attributes="0"/>
@@ -87,13 +106,18 @@
                               <Component id="txtUkupanNormativVremena" alignment="3" min="-2" max="-2" attributes="0"/>
                               <Component id="lblUkupnoVrijeme" alignment="3" min="-2" max="-2" attributes="0"/>
                           </Group>
-                          <EmptySpace type="separate" max="-2" attributes="0"/>
+                          <EmptySpace max="-2" attributes="0"/>
+                          <Group type="103" groupAlignment="3" attributes="0">
+                              <Component id="txtUkupnaCijenaPoJedinici" alignment="3" min="-2" max="-2" attributes="0"/>
+                              <Component id="lblUkupnaCijenaPoJedinici" alignment="3" min="-2" max="-2" attributes="0"/>
+                          </Group>
+                          <EmptySpace min="-2" pref="31" max="-2" attributes="0"/>
                           <Group type="103" groupAlignment="3" attributes="0">
                               <Component id="btnDodaj" alignment="3" min="-2" max="-2" attributes="0"/>
                               <Component id="btnPromjeni" alignment="3" min="-2" max="-2" attributes="0"/>
                               <Component id="btnObrisi" alignment="3" min="-2" max="-2" attributes="0"/>
                           </Group>
-                          <EmptySpace pref="212" max="32767" attributes="0"/>
+                          <EmptySpace max="-2" attributes="0"/>
                       </Group>
                   </Group>
                 </DimensionLayout>
@@ -149,6 +173,9 @@
                   </Properties>
                 </Component>
                 <Component class="javax.swing.JTextField" name="txtUkupanNormativVremena">
+                  <Properties>
+                    <Property name="editable" type="boolean" value="false"/>
+                  </Properties>
                 </Component>
                 <Component class="javax.swing.JButton" name="btnDodaj">
                   <Properties>
@@ -174,9 +201,34 @@
                     <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="btnObrisiActionPerformed"/>
                   </Events>
                 </Component>
+                <Component class="javax.swing.JLabel" name="lblOznakaGrupeNorme">
+                  <Properties>
+                    <Property name="text" type="java.lang.String" value="Oznaka grupe norme:"/>
+                  </Properties>
+                </Component>
+                <Component class="javax.swing.JTextField" name="txtOznakaGrupeNorme">
+                  <Properties>
+                    <Property name="editable" type="boolean" value="false"/>
+                  </Properties>
+                </Component>
+                <Component class="javax.swing.JLabel" name="lblUkupnaCijenaPoJedinici">
+                  <Properties>
+                    <Property name="text" type="java.lang.String" value="Ukupna cijena po jedinici:"/>
+                  </Properties>
+                </Component>
+                <Component class="javax.swing.JTextField" name="txtUkupnaCijenaPoJedinici">
+                  <Properties>
+                    <Property name="editable" type="boolean" value="false"/>
+                  </Properties>
+                </Component>
               </SubComponents>
             </Container>
             <Container class="javax.swing.JPanel" name="jPanelOperacija">
+              <Properties>
+                <Property name="preferredSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
+                  <Dimension value="[500, 251]"/>
+                </Property>
+              </Properties>
               <Constraints>
                 <Constraint layoutClass="org.netbeans.modules.form.compat2.layouts.support.JTabbedPaneSupportLayout" value="org.netbeans.modules.form.compat2.layouts.support.JTabbedPaneSupportLayout$JTabbedPaneConstraintsDescription">
                   <JTabbedPaneConstraints tabName="Operacije">
@@ -189,113 +241,187 @@
                 <DimensionLayout dim="0">
                   <Group type="103" groupAlignment="0" attributes="0">
                       <Group type="102" attributes="0">
+                          <EmptySpace min="-2" max="-2" attributes="0"/>
+                          <Group type="103" groupAlignment="0" attributes="0">
+                              <Component id="lblCijenaRad" alignment="0" min="-2" max="-2" attributes="0"/>
+                              <Component id="lblPopisOperacija" alignment="0" min="-2" max="-2" attributes="0"/>
+                              <Component id="lblKoeficijentFirme" alignment="0" min="-2" max="-2" attributes="0"/>
+                              <Component id="lblUkupnaCijena" alignment="0" min="-2" max="-2" attributes="0"/>
+                              <Component id="lblGrupeRada" min="-2" max="-2" attributes="0"/>
+                          </Group>
                           <EmptySpace max="-2" attributes="0"/>
                           <Group type="103" groupAlignment="0" attributes="0">
-                              <Group type="102" attributes="0">
-                                  <Group type="103" groupAlignment="0" attributes="0">
-                                      <Component id="lblUkupnoRad" alignment="0" min="-2" max="-2" attributes="0"/>
-                                      <Component id="lblOperacije1" alignment="0" min="-2" max="-2" attributes="0"/>
-                                  </Group>
-                                  <EmptySpace type="separate" max="-2" attributes="0"/>
-                                  <Group type="103" groupAlignment="0" attributes="0">
-                                      <Component id="jScrollPane6" max="32767" attributes="0"/>
-                                      <Component id="txtUkupnoRad" max="32767" attributes="0"/>
-                                  </Group>
-                              </Group>
-                              <Group type="102" alignment="0" attributes="0">
-                                  <Group type="103" groupAlignment="0" attributes="0">
-                                      <Component id="lblKoeficijentFirme" alignment="0" min="-2" max="-2" attributes="0"/>
-                                      <Component id="lblUkupnaCijena" alignment="0" min="-2" max="-2" attributes="0"/>
-                                  </Group>
-                                  <EmptySpace min="-2" pref="43" max="-2" attributes="0"/>
-                                  <Group type="103" groupAlignment="0" attributes="0">
-                                      <Component id="txtUkupnaCijena" max="32767" attributes="0"/>
-                                      <Component id="txtKoeficijentFirme" max="32767" attributes="0"/>
-                                  </Group>
-                              </Group>
+                              <Component id="txCijenaRada" alignment="1" max="32767" attributes="0"/>
+                              <Component id="txtKoeficijentFirme" max="32767" attributes="0"/>
+                              <Component id="txtUkupnaCijena" alignment="0" max="32767" attributes="0"/>
+                              <Component id="jspGrupeRada" alignment="0" pref="495" max="32767" attributes="0"/>
+                              <Component id="jspOperacije" alignment="1" max="32767" attributes="0"/>
                           </Group>
-                          <EmptySpace min="-2" pref="185" max="-2" attributes="0"/>
+                          <EmptySpace max="-2" attributes="0"/>
                       </Group>
                   </Group>
                 </DimensionLayout>
                 <DimensionLayout dim="1">
                   <Group type="103" groupAlignment="0" attributes="0">
                       <Group type="102" alignment="0" attributes="0">
-                          <EmptySpace max="-2" attributes="0"/>
+                          <EmptySpace min="-2" max="-2" attributes="0"/>
                           <Group type="103" groupAlignment="0" attributes="0">
-                              <Component id="lblOperacije1" alignment="0" min="-2" max="-2" attributes="0"/>
-                              <Component id="jScrollPane6" alignment="0" min="-2" pref="82" max="-2" attributes="0"/>
+                              <Component id="jspOperacije" alignment="0" pref="88" max="32767" attributes="0"/>
+                              <Component id="lblPopisOperacija" alignment="0" min="-2" max="-2" attributes="0"/>
                           </Group>
-                          <EmptySpace type="separate" max="-2" attributes="0"/>
+                          <EmptySpace min="-2" max="-2" attributes="0"/>
+                          <Group type="103" groupAlignment="0" attributes="0">
+                              <Component id="lblGrupeRada" min="-2" max="-2" attributes="0"/>
+                              <Component id="jspGrupeRada" pref="32" max="32767" attributes="0"/>
+                          </Group>
+                          <EmptySpace min="-2" max="-2" attributes="0"/>
                           <Group type="103" groupAlignment="3" attributes="0">
-                              <Component id="txtUkupnoRad" alignment="3" min="-2" max="-2" attributes="0"/>
-                              <Component id="lblUkupnoRad" alignment="3" min="-2" max="-2" attributes="0"/>
+                              <Component id="txCijenaRada" alignment="3" min="-2" max="-2" attributes="0"/>
+                              <Component id="lblCijenaRad" alignment="3" min="-2" max="-2" attributes="0"/>
                           </Group>
-                          <EmptySpace max="-2" attributes="0"/>
+                          <EmptySpace min="-2" max="-2" attributes="0"/>
                           <Group type="103" groupAlignment="3" attributes="0">
                               <Component id="txtKoeficijentFirme" alignment="3" min="-2" max="-2" attributes="0"/>
                               <Component id="lblKoeficijentFirme" alignment="3" min="-2" max="-2" attributes="0"/>
                           </Group>
-                          <EmptySpace max="-2" attributes="0"/>
+                          <EmptySpace min="-2" max="-2" attributes="0"/>
                           <Group type="103" groupAlignment="3" attributes="0">
                               <Component id="txtUkupnaCijena" alignment="3" min="-2" max="-2" attributes="0"/>
                               <Component id="lblUkupnaCijena" alignment="3" min="-2" max="-2" attributes="0"/>
                           </Group>
-                          <EmptySpace pref="266" max="32767" attributes="0"/>
+                          <EmptySpace min="-2" pref="125" max="-2" attributes="0"/>
                       </Group>
                   </Group>
                 </DimensionLayout>
               </Layout>
               <SubComponents>
-                <Component class="javax.swing.JLabel" name="lblOperacije1">
+                <Component class="javax.swing.JLabel" name="lblPopisOperacija">
                   <Properties>
-                    <Property name="text" type="java.lang.String" value="Operacije:"/>
+                    <Property name="text" type="java.lang.String" value="Popis operacija:"/>
                   </Properties>
                 </Component>
-                <Container class="javax.swing.JScrollPane" name="jScrollPane6">
-                  <Properties>
-                    <Property name="minimumSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
-                      <Dimension value="[450, 23]"/>
-                    </Property>
-                    <Property name="name" type="java.lang.String" value="" noResource="true"/>
-                    <Property name="preferredSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
-                      <Dimension value="[450, 130]"/>
-                    </Property>
-                  </Properties>
+                <Container class="javax.swing.JScrollPane" name="jspOperacije">
                   <AuxValues>
                     <AuxValue name="autoScrollPane" type="java.lang.Boolean" value="true"/>
                   </AuxValues>
 
                   <Layout class="org.netbeans.modules.form.compat2.layouts.support.JScrollPaneSupportLayout"/>
                   <SubComponents>
-                    <Component class="javax.swing.JList" name="lstOperacije">
+                    <Component class="javax.swing.JTable" name="tblOperacije">
                       <Properties>
-                        <Property name="model" type="javax.swing.ListModel" editor="org.netbeans.modules.form.editors2.ListModelEditor">
-                          <StringArray count="0"/>
+                        <Property name="model" type="javax.swing.table.TableModel" editor="org.netbeans.modules.form.editors2.TableModelEditor">
+                          <Table columnCount="6" rowCount="0">
+                            <Column editable="false" title="null" type="java.lang.Object"/>
+                            <Column editable="false" title="null" type="java.lang.Object"/>
+                            <Column editable="false" title="null" type="java.lang.Object"/>
+                            <Column editable="false" title="null" type="java.lang.Object"/>
+                            <Column editable="false" title="null" type="java.lang.Object"/>
+                            <Column editable="false" title="null" type="java.lang.Object"/>
+                          </Table>
                         </Property>
-                        <Property name="selectionMode" type="int" value="0"/>
-                        <Property name="toolTipText" type="java.lang.String" value=""/>
-                        <Property name="dropMode" type="javax.swing.DropMode" editor="org.netbeans.modules.form.editors.EnumEditor">
-                          <Value id="INSERT"/>
+                        <Property name="columnModel" type="javax.swing.table.TableColumnModel" editor="org.netbeans.modules.form.editors2.TableColumnModelEditor">
+                          <TableColumnModel selectionModel="1">
+                            <Column maxWidth="-1" minWidth="-1" prefWidth="-1" resizable="true">
+                              <Title/>
+                              <Editor/>
+                              <Renderer/>
+                            </Column>
+                            <Column maxWidth="-1" minWidth="-1" prefWidth="-1" resizable="true">
+                              <Title/>
+                              <Editor/>
+                              <Renderer/>
+                            </Column>
+                            <Column maxWidth="-1" minWidth="-1" prefWidth="-1" resizable="true">
+                              <Title/>
+                              <Editor/>
+                              <Renderer/>
+                            </Column>
+                            <Column maxWidth="-1" minWidth="-1" prefWidth="-1" resizable="true">
+                              <Title/>
+                              <Editor/>
+                              <Renderer/>
+                            </Column>
+                            <Column maxWidth="-1" minWidth="-1" prefWidth="-1" resizable="true">
+                              <Title/>
+                              <Editor/>
+                              <Renderer/>
+                            </Column>
+                            <Column maxWidth="-1" minWidth="-1" prefWidth="-1" resizable="true">
+                              <Title/>
+                              <Editor/>
+                              <Renderer/>
+                            </Column>
+                          </TableColumnModel>
                         </Property>
-                        <Property name="maximumSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
-                          <Dimension value="[1000, 1000]"/>
+                        <Property name="tableHeader" type="javax.swing.table.JTableHeader" editor="org.netbeans.modules.form.editors2.JTableHeaderEditor">
+                          <TableHeader reorderingAllowed="true" resizingAllowed="true"/>
                         </Property>
                       </Properties>
-                      <AuxValues>
-                        <AuxValue name="JavaCodeGenerator_TypeParameters" type="java.lang.String" value="&lt;AnalizaRad&gt;"/>
-                      </AuxValues>
                     </Component>
                   </SubComponents>
                 </Container>
-                <Component class="javax.swing.JLabel" name="lblUkupnoRad">
+                <Component class="javax.swing.JLabel" name="lblGrupeRada">
                   <Properties>
-                    <Property name="text" type="java.lang.String" value="Ukupna cijena rada:"/>
+                    <Property name="text" type="java.lang.String" value="Grupe rada:"/>
                   </Properties>
                 </Component>
-                <Component class="javax.swing.JTextField" name="txtUkupnoRad">
+                <Container class="javax.swing.JScrollPane" name="jspGrupeRada">
+                  <AuxValues>
+                    <AuxValue name="autoScrollPane" type="java.lang.Boolean" value="true"/>
+                  </AuxValues>
+
+                  <Layout class="org.netbeans.modules.form.compat2.layouts.support.JScrollPaneSupportLayout"/>
+                  <SubComponents>
+                    <Component class="javax.swing.JTable" name="tblGrupeRada">
+                      <Properties>
+                        <Property name="model" type="javax.swing.table.TableModel" editor="org.netbeans.modules.form.editors2.TableModelEditor">
+                          <Table columnCount="3" rowCount="0">
+                            <Column editable="false" title="null" type="java.lang.Object"/>
+                            <Column editable="false" title="null" type="java.lang.Object"/>
+                            <Column editable="false" title="null" type="java.lang.Object"/>
+                          </Table>
+                        </Property>
+                        <Property name="columnModel" type="javax.swing.table.TableColumnModel" editor="org.netbeans.modules.form.editors2.TableColumnModelEditor">
+                          <TableColumnModel selectionModel="1">
+                            <Column maxWidth="-1" minWidth="-1" prefWidth="-1" resizable="true">
+                              <Title/>
+                              <Editor/>
+                              <Renderer/>
+                            </Column>
+                            <Column maxWidth="-1" minWidth="-1" prefWidth="-1" resizable="true">
+                              <Title/>
+                              <Editor/>
+                              <Renderer/>
+                            </Column>
+                            <Column maxWidth="-1" minWidth="-1" prefWidth="-1" resizable="true">
+                              <Title/>
+                              <Editor/>
+                              <Renderer/>
+                            </Column>
+                          </TableColumnModel>
+                        </Property>
+                        <Property name="columnSelectionAllowed" type="boolean" value="true"/>
+                        <Property name="tableHeader" type="javax.swing.table.JTableHeader" editor="org.netbeans.modules.form.editors2.JTableHeaderEditor">
+                          <TableHeader reorderingAllowed="true" resizingAllowed="true"/>
+                        </Property>
+                      </Properties>
+                    </Component>
+                  </SubComponents>
+                </Container>
+                <Component class="javax.swing.JLabel" name="lblCijenaRad">
+                  <Properties>
+                    <Property name="text" type="java.lang.String" value="Cijena rada:"/>
+                  </Properties>
                 </Component>
-                <Component class="javax.swing.JTextField" name="txtUkupnaCijena">
+                <Component class="javax.swing.JTextField" name="txCijenaRada">
+                  <Properties>
+                    <Property name="editable" type="boolean" value="false"/>
+                  </Properties>
+                </Component>
+                <Component class="javax.swing.JLabel" name="lblKoeficijentFirme">
+                  <Properties>
+                    <Property name="text" type="java.lang.String" value="Koeficijent:"/>
+                  </Properties>
                 </Component>
                 <Component class="javax.swing.JTextField" name="txtKoeficijentFirme">
                 </Component>
@@ -304,14 +430,20 @@
                     <Property name="text" type="java.lang.String" value="Ukupna cijena:"/>
                   </Properties>
                 </Component>
-                <Component class="javax.swing.JLabel" name="lblKoeficijentFirme">
+                <Component class="javax.swing.JTextField" name="txtUkupnaCijena">
                   <Properties>
-                    <Property name="text" type="java.lang.String" value="Koeficijent:"/>
+                    <Property name="editable" type="boolean" value="false"/>
                   </Properties>
                 </Component>
               </SubComponents>
             </Container>
             <Container class="javax.swing.JPanel" name="jPanelMaterijal">
+              <Properties>
+                <Property name="preferredSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
+                  <Dimension value="[500, 251]"/>
+                </Property>
+                <Property name="requestFocusEnabled" type="boolean" value="false"/>
+              </Properties>
               <Constraints>
                 <Constraint layoutClass="org.netbeans.modules.form.compat2.layouts.support.JTabbedPaneSupportLayout" value="org.netbeans.modules.form.compat2.layouts.support.JTabbedPaneSupportLayout$JTabbedPaneConstraintsDescription">
                   <JTabbedPaneConstraints tabName="Materijali">
@@ -330,11 +462,11 @@
                               <Component id="lblMaterijali" alignment="0" min="-2" max="-2" attributes="0"/>
                           </Group>
                           <EmptySpace type="separate" max="-2" attributes="0"/>
-                          <Group type="103" groupAlignment="1" attributes="0">
-                              <Component id="jScrollPane3" alignment="0" pref="453" max="32767" attributes="0"/>
-                              <Component id="txtUkupnoMaterijal" alignment="0" max="32767" attributes="0"/>
+                          <Group type="103" groupAlignment="0" attributes="0">
+                              <Component id="jScrollPane3" pref="0" max="32767" attributes="0"/>
+                              <Component id="txtUkupnoMaterijal" pref="436" max="32767" attributes="0"/>
                           </Group>
-                          <EmptySpace min="-2" pref="157" max="-2" attributes="0"/>
+                          <EmptySpace max="-2" attributes="0"/>
                       </Group>
                   </Group>
                 </DimensionLayout>
@@ -351,7 +483,7 @@
                               <Component id="txtUkupnoMaterijal" alignment="3" min="-2" max="-2" attributes="0"/>
                               <Component id="lblUkupnoMaterijal" alignment="3" min="-2" max="-2" attributes="0"/>
                           </Group>
-                          <EmptySpace pref="306" max="32767" attributes="0"/>
+                          <EmptySpace pref="229" max="32767" attributes="0"/>
                       </Group>
                   </Group>
                 </DimensionLayout>
@@ -541,13 +673,15 @@
                     </Column>
                   </TableColumnModel>
                 </Property>
+                <Property name="selectionModel" type="javax.swing.ListSelectionModel" editor="org.netbeans.modules.form.editors2.JTableSelectionModelEditor">
+                  <JTableSelectionModel selectionMode="0"/>
+                </Property>
                 <Property name="tableHeader" type="javax.swing.table.JTableHeader" editor="org.netbeans.modules.form.editors2.JTableHeaderEditor">
                   <TableHeader reorderingAllowed="true" resizingAllowed="true"/>
                 </Property>
               </Properties>
               <Events>
                 <EventHandler event="mouseClicked" listener="java.awt.event.MouseListener" parameters="java.awt.event.MouseEvent" handler="jTableNormaMouseClicked"/>
-                <EventHandler event="componentResized" listener="java.awt.event.ComponentListener" parameters="java.awt.event.ComponentEvent" handler="jTableNormaComponentResized"/>
               </Events>
             </Component>
           </SubComponents>

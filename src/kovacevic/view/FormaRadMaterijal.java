@@ -5,16 +5,19 @@
  */
 package kovacevic.view;
 
-import java.awt.Font;
+import java.awt.Rectangle;
 import java.awt.event.KeyEvent;
 import java.math.BigDecimal;
-import java.math.RoundingMode;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
 import javax.swing.JTable;
+import javax.swing.event.ChangeEvent;
+import javax.swing.event.ChangeListener;
 import javax.swing.table.DefaultTableModel;
 import kovacevic.controller.ObradaMaterijal;
 import kovacevic.controller.ObradaRad;
@@ -57,6 +60,8 @@ public class FormaRadMaterijal extends JFrame {
         AutoCompleteDecorator.decorate(cmbGrupeRadova);
         AutoCompleteDecorator.decorate(cmbGrupeMaterijala);
 
+        tblMaterijal = new WrappableTable(tblMaterijal, tblMaterijal.getModel(), jScrollPaneMaterijal);
+
         popuniGrupeRadova();
         popuniGrupeMaterijala();
 
@@ -98,7 +103,6 @@ public class FormaRadMaterijal extends JFrame {
         String[] coulumnName = {"Rb. (Id)", "Grupe materijala", "Proizvođač",
             "Oznaka", "Pakovanje količina", "Jedinica mjere", "Cijena pakovanja", "Opis"};
         DefaultTableModel model = (DefaultTableModel) tablica.getModel();
-        tablica.setDefaultRenderer(Object.class, new WrappableTable.WrappableTableRenderer(tablica));
         model.setRowCount(0);
         model.setColumnIdentifiers(coulumnName);
         int rb = 0;
@@ -114,8 +118,6 @@ public class FormaRadMaterijal extends JFrame {
                 materijal.getCijenaAmbalaza(),
                 materijal.getOpis()});
         }
-        changedSize(tablica);
-        updateRowHeights(tablica);
     }
 
     protected void dpoRad() {
@@ -304,39 +306,6 @@ public class FormaRadMaterijal extends JFrame {
         m.addElement("Nije odabrano");
         for (String s : materijal) {
             m.addElement(s);
-        }
-    }
-
-    private void updateRowHeights(JTable table) {
-        int startRowHeight = table.getRowHeight();
-        BigDecimal bdStartRowHeight = new BigDecimal(startRowHeight);
-        int h = 0;
-        for (int row = 0; row < table.getRowCount(); row++) {
-            int actualRowHeight = table.getRowHeight(row);
-            h = actualRowHeight + 3;
-            for (int column = 0; column < table.getModel().getColumnCount(); column++) {
-                String value = table.getValueAt(row, column).toString();
-                Font valueFont = table.getFont();
-                int valueWidth = table.getFontMetrics(valueFont).stringWidth(value.toUpperCase());
-                int columnWidth = table.getColumnModel().getColumn(column).getWidth();
-                BigDecimal bdValueWidth = new BigDecimal(valueWidth);
-                BigDecimal bdColumnWidth = new BigDecimal(columnWidth);
-                BigDecimal wholeNumberOfLines = bdValueWidth.divide(bdColumnWidth, RoundingMode.UP);
-                if (wholeNumberOfLines.equals(BigDecimal.ZERO)) {
-                    wholeNumberOfLines = BigDecimal.ONE;
-                }
-                BigDecimal rowHeightColumn = wholeNumberOfLines.multiply(bdStartRowHeight);
-                if (rowHeightColumn.intValue() > h) {
-                    h = rowHeightColumn.intValue() + 3;
-                }
-            }
-            table.setRowHeight(row, h);
-        }
-    }
-
-    public void changedSize(JTable table) {
-        for (int i = 0; i < table.getColumnCount(); i++) {
-            table.getColumnModel().getColumn(i).setPreferredWidth((int) jScrollPaneMaterijal.getViewport().getWidth() / table.getColumnCount());
         }
     }
 
@@ -663,12 +632,6 @@ public class FormaRadMaterijal extends JFrame {
 
         lblMaterijalGrupaMaterijal.setText("Grupa materijala:");
 
-        txtMaterijalGrupaMaterijal.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                txtMaterijalGrupaMaterijalActionPerformed(evt);
-            }
-        });
-
         lblMaterijalProizvodac.setText("Proizvođač:");
 
         lbMaterijallOznaka.setText("Oznaka:");
@@ -729,12 +692,6 @@ public class FormaRadMaterijal extends JFrame {
         lblMaterijalTraziGrupaMaterijal.setText("grupa materijala:");
 
         jLabel1.setText("dodati povijest cijena za odabrani red");
-
-        jScrollPaneMaterijal.addComponentListener(new java.awt.event.ComponentAdapter() {
-            public void componentResized(java.awt.event.ComponentEvent evt) {
-                jScrollPaneMaterijalComponentResized(evt);
-            }
-        });
 
         tblMaterijal.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
@@ -946,10 +903,6 @@ public class FormaRadMaterijal extends JFrame {
         setLocationRelativeTo(null);
     }// </editor-fold>//GEN-END:initComponents
 
-    private void txtMaterijalGrupaMaterijalActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtMaterijalGrupaMaterijalActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_txtMaterijalGrupaMaterijalActionPerformed
-
     private void btnMaterijalDodajActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnMaterijalDodajActionPerformed
         dodaj = true;
         materijal = new Materijal();
@@ -958,7 +911,7 @@ public class FormaRadMaterijal extends JFrame {
         if (tblMaterijal.getSelectedRow() != -1) {
             row = tblMaterijal.getSelectedRow();
         }
-        traziMaterijal();
+//        traziMaterijal();
         if (materijal.getId() != null) {
             for (int i = 0; i < rezultatiMaterijal.size(); i++) {
                 if (tblMaterijal.getModel().getValueAt(i, 0).toString().contains("(" + materijal.getId().toString() + ")")) {
@@ -975,8 +928,20 @@ public class FormaRadMaterijal extends JFrame {
         dodaj = false;
     }//GEN-LAST:event_btnMaterijalDodajActionPerformed
 
+    private int vertScroll;
+
+    private int getVertScroll() {
+        return vertScroll;
+    }
+
+    private void setVertScroll(int vertScroll) {
+        this.vertScroll = vertScroll;
+    }
+
+
     private void btnMaterijalPromjeniActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnMaterijalPromjeniActionPerformed
         promijeni = true;
+        setVertScroll(jScrollPaneMaterijal.getVerticalScrollBar().getValue());
         if (materijal == null || tblMaterijal.getSelectedRow() == -1) {
             JOptionPane.showMessageDialog(rootPane, "Odaberite stavku vidljivu unutar tablice",
                     getTitle() + " - Promjena postojećeg", HEIGHT);
@@ -993,11 +958,22 @@ public class FormaRadMaterijal extends JFrame {
             model.setValueAt(txtMaterijalCijenaAmbalaza.getText(), i, 6);
             model.setValueAt(tarMaterijalOpis.getText(), i, 7);
             materijal = null;
-            traziMaterijal();
+//            traziMaterijal();
             materijal = rezultatiMaterijal.get(tblMaterijal.convertRowIndexToModel(i));
             tblMaterijal.setRowSelectionInterval(i, i);
+            tblMaterijal.scrollRectToVisible(new Rectangle(tblMaterijal.getCellRect(i, 0, true)));
         }
         promijeni = false;
+        Thread t = new Thread(() -> {
+            try {
+                Thread.sleep(100);
+            } catch (InterruptedException ex) {
+                Logger.getLogger(FormaRadMaterijal.class.getName()).log(Level.SEVERE, null, ex);
+            }
+            jScrollPaneMaterijal.getVerticalScrollBar().setValue(getVertScroll());
+            jScrollPaneMaterijal.repaint();
+        });
+        t.start();
     }//GEN-LAST:event_btnMaterijalPromjeniActionPerformed
 
     private void btnMaterijalObrisiActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnMaterijalObrisiActionPerformed
@@ -1016,9 +992,10 @@ public class FormaRadMaterijal extends JFrame {
                     + " - Obriši", JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE, null, options, null);
             if (reply == JOptionPane.YES_OPTION) {
                 dpoMaterijal();
-                ucitajMaterijal();
+//                ucitajMaterijal();
                 materijal = null;
                 txtMaterijalIdValue.setText("");
+                txtMaterijalGrupaMaterijal.setText("");
                 txtMaterijalProizvodac.setText("");
                 txtMaterijalOznaka.setText("");
                 txtMaterijalKolicinaAmbalaza.setText("");
@@ -1026,7 +1003,7 @@ public class FormaRadMaterijal extends JFrame {
                 txtMaterijalCijenaAmbalaza.setText("");
                 tarMaterijalOpis.setText("");
                 tblMaterijal.getSelectionModel().clearSelection();
-                traziMaterijal();
+//                traziMaterijal();
             }
         }
         obrisi = false;
@@ -1090,12 +1067,8 @@ public class FormaRadMaterijal extends JFrame {
 
     private void tblMaterijalComponentResized(java.awt.event.ComponentEvent evt) {//GEN-FIRST:event_tblMaterijalComponentResized
         tblMaterijal.setRowHeight(16);
-        updateRowHeights(tblMaterijal);
+//        updateRowHeights(tblMaterijal);
     }//GEN-LAST:event_tblMaterijalComponentResized
-
-    private void jScrollPaneMaterijalComponentResized(java.awt.event.ComponentEvent evt) {//GEN-FIRST:event_jScrollPaneMaterijalComponentResized
-        changedSize(tblMaterijal);
-    }//GEN-LAST:event_jScrollPaneMaterijalComponentResized
 
     private void txtMaterijalIdValueActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtMaterijalIdValueActionPerformed
         // TODO add your handling code here:

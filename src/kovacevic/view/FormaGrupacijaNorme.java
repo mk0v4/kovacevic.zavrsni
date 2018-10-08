@@ -78,7 +78,6 @@ public class FormaGrupacijaNorme extends JFrame {
             public void changedUpdate(DocumentEvent e) {
             }
         });
-
         txtGrupa.getDocument().addDocumentListener(new DocumentListener() {
             @Override
             public void insertUpdate(DocumentEvent e) {
@@ -118,7 +117,6 @@ public class FormaGrupacijaNorme extends JFrame {
         grupacijaNorme.setGrupaNorme(txtGrupa.getText());
         grupacijaNorme.setOznakaNorme(txtOznakaGrupeNorme.getText());
         grupacijaNorme.setOpis(tarOpisNorme.getText());
-
         try {
             if (dodaj == true) {
 //                dodatakNaslovu = " - Dodavanje novog";
@@ -213,26 +211,23 @@ public class FormaGrupacijaNorme extends JFrame {
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
+                .addContainerGap()
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(lblOpisGrupeNorme)
+                    .addComponent(lblGrupaNorme)
+                    .addComponent(lbOznakaGrupeNorme))
+                .addGap(29, 29, 29)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(layout.createSequentialGroup()
-                        .addGap(158, 158, 158)
                         .addComponent(btnDodaj)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(btnPromjeni)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 56, Short.MAX_VALUE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 71, Short.MAX_VALUE)
                         .addComponent(btnObrisi))
-                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                        .addContainerGap()
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(lblOpisGrupeNorme)
-                            .addComponent(lblGrupaNorme)
-                            .addComponent(lbOznakaGrupeNorme))
-                        .addGap(29, 29, 29)
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(jScrollPane2)
-                            .addComponent(txtOznakaNormeKombinirano)
-                            .addComponent(txtOznakaGrupeNorme)
-                            .addComponent(txtGrupa))))
+                    .addComponent(jScrollPane2)
+                    .addComponent(txtOznakaNormeKombinirano)
+                    .addComponent(txtOznakaGrupeNorme)
+                    .addComponent(txtGrupa))
                 .addContainerGap())
         );
         layout.setVerticalGroup(
@@ -257,7 +252,7 @@ public class FormaGrupacijaNorme extends JFrame {
                     .addComponent(btnDodaj)
                     .addComponent(btnPromjeni)
                     .addComponent(btnObrisi))
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addContainerGap())
         );
 
         pack();
@@ -278,7 +273,9 @@ public class FormaGrupacijaNorme extends JFrame {
     }//GEN-LAST:event_btnPromjeniActionPerformed
 
     private void btnObrisiActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnObrisiActionPerformed
-
+        obrisi = true;
+        dpoGrupacijaNorme();
+        obrisi = false;
     }//GEN-LAST:event_btnObrisiActionPerformed
 
     // Variables declaration - do not modify//GEN-BEGIN:variables

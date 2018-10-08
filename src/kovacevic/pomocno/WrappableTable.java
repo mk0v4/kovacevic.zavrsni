@@ -18,6 +18,7 @@ import javax.swing.JScrollPane;
 
 import javax.swing.JTable;
 import javax.swing.JTextArea;
+import javax.swing.Scrollable;
 
 import javax.swing.table.TableModel;
 import javax.swing.table.TableCellRenderer;
@@ -26,30 +27,53 @@ import javax.swing.table.TableCellRenderer;
  *
  * @author Marko Kovačević
  */
-public final class WrappableTable extends JTable {
+public final class WrappableTable extends JTable implements Scrollable {
 
     protected WrappableTableRenderer renderer;
 
     public WrappableTable(JTable table, TableModel tm, JScrollPane scrollPane) {
         super(tm);
+        table.setSelectionModel(super.selectionModel);
+        table.setColumnModel(super.columnModel);
+
         changedSize(table, scrollPane);
 
         table.addComponentListener(new ComponentAdapter() {
             @Override
             public void componentResized(ComponentEvent e) {
+//                int spV = scrollPane.getVerticalScrollBar().getValue();
+//                System.out.println("e.getSource() " + e.getSource());
+//                System.out.println(".componentResized(table)");
+//                System.out.println("table.toString() " + table);
+//                System.out.println("spV " + spV);
+//                System.out.println("scrollPane.getVerticalScrollBar().getValue() " + scrollPane.getVerticalScrollBar().getValue());
+////                System.out.println("scrollPane.getVisibleRect() " + scrollPane.getVisibleRect());
+////                System.out.println("scrollPane.getViewport()) " + scrollPane.getViewport());
+//                System.out.println("====================================");
                 updateRowHeights(table, scrollPane);
             }
         });
         scrollPane.addComponentListener(new ComponentAdapter() {
             @Override
             public void componentResized(ComponentEvent e) {
+//                int spV = scrollPane.getVerticalScrollBar().getValue();
+//                System.out.println(".componentResized(scrollPane)");
+//                System.out.println("scrollPane.toString() " + scrollPane);
+//                System.out.println("spV " + spV);
+//                System.out.println("scrollPane.getVerticalScrollBar().getValue() " + scrollPane.getVerticalScrollBar().getValue());
+//                System.out.println("scrollPane.getVisibleRect() " + scrollPane.getVisibleRect());
+//                System.out.println("scrollPane.getViewport()) " + scrollPane.getViewport());
+//                System.out.println("====================================");
                 changedSize(table, scrollPane);
             }
         });
+
         this.renderer = new WrappableTableRenderer(table);
+        table.setDefaultRenderer(Object.class, this.renderer);
     }
 
     private void updateRowHeights(JTable table, JScrollPane scrollPane) {
+//        System.out.println("kovacevic.pomocno.WrappableTable.updateRowHeights()");
         table.setRowHeight(16);
         int startRowHeight = table.getRowHeight();
         BigDecimal bdStartRowHeight = new BigDecimal(startRowHeight);
@@ -79,6 +103,7 @@ public final class WrappableTable extends JTable {
     }
 
     public void changedSize(JTable table, JScrollPane scrollPane) {
+//        System.out.println("kovacevic.pomocno.WrappableTable.changedSize()");
         for (int i = 0; i < table.getColumnCount(); i++) {
             table.getColumnModel().getColumn(i).setPreferredWidth((int) scrollPane.getViewport().getWidth() / table.getColumnCount());
         }
@@ -109,4 +134,5 @@ public final class WrappableTable extends JTable {
             return this;
         }
     }
+
 }

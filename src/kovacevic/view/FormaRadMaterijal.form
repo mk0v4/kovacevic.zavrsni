@@ -577,9 +577,6 @@
               </Properties>
             </Component>
             <Component class="javax.swing.JTextField" name="txtMaterijalGrupaMaterijal">
-              <Events>
-                <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="txtMaterijalGrupaMaterijalActionPerformed"/>
-              </Events>
             </Component>
             <Component class="javax.swing.JLabel" name="lblMaterijalProizvodac">
               <Properties>
@@ -689,9 +686,6 @@
               </Properties>
             </Component>
             <Container class="javax.swing.JScrollPane" name="jScrollPaneMaterijal">
-              <Events>
-                <EventHandler event="componentResized" listener="java.awt.event.ComponentListener" parameters="java.awt.event.ComponentEvent" handler="jScrollPaneMaterijalComponentResized"/>
-              </Events>
               <AuxValues>
                 <AuxValue name="autoScrollPane" type="java.lang.Boolean" value="true"/>
               </AuxValues>
