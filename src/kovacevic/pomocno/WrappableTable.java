@@ -9,11 +9,13 @@ import java.awt.Color;
 import java.awt.Component;
 import java.awt.Font;
 import java.awt.Insets;
+import java.awt.event.ActionEvent;
 
 import java.awt.event.ComponentAdapter;
 import java.awt.event.ComponentEvent;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
+import javax.swing.AbstractAction;
 import javax.swing.JScrollPane;
 
 import javax.swing.JTable;
@@ -27,7 +29,7 @@ import javax.swing.table.TableCellRenderer;
  *
  * @author Marko Kovačević
  */
-public final class WrappableTable extends JTable implements Scrollable {
+public class WrappableTable extends JTable implements Scrollable {
 
     protected WrappableTableRenderer renderer;
 
@@ -41,35 +43,31 @@ public final class WrappableTable extends JTable implements Scrollable {
         table.addComponentListener(new ComponentAdapter() {
             @Override
             public void componentResized(ComponentEvent e) {
-//                int spV = scrollPane.getVerticalScrollBar().getValue();
-//                System.out.println("e.getSource() " + e.getSource());
-//                System.out.println(".componentResized(table)");
-//                System.out.println("table.toString() " + table);
-//                System.out.println("spV " + spV);
-//                System.out.println("scrollPane.getVerticalScrollBar().getValue() " + scrollPane.getVerticalScrollBar().getValue());
-////                System.out.println("scrollPane.getVisibleRect() " + scrollPane.getVisibleRect());
-////                System.out.println("scrollPane.getViewport()) " + scrollPane.getViewport());
-//                System.out.println("====================================");
                 updateRowHeights(table, scrollPane);
             }
         });
         scrollPane.addComponentListener(new ComponentAdapter() {
             @Override
             public void componentResized(ComponentEvent e) {
-//                int spV = scrollPane.getVerticalScrollBar().getValue();
-//                System.out.println(".componentResized(scrollPane)");
-//                System.out.println("scrollPane.toString() " + scrollPane);
-//                System.out.println("spV " + spV);
-//                System.out.println("scrollPane.getVerticalScrollBar().getValue() " + scrollPane.getVerticalScrollBar().getValue());
-//                System.out.println("scrollPane.getVisibleRect() " + scrollPane.getVisibleRect());
-//                System.out.println("scrollPane.getViewport()) " + scrollPane.getViewport());
-//                System.out.println("====================================");
                 changedSize(table, scrollPane);
             }
         });
 
         this.renderer = new WrappableTableRenderer(table);
         table.setDefaultRenderer(Object.class, this.renderer);
+        
+                AbstractAction action = new AbstractAction() {
+
+            public void actionPerformed(ActionEvent e) {
+                TableCellListener tcl = (TableCellListener) e.getSource();
+                System.out.println("Row   : " + tcl.getRow());
+                System.out.println("Column: " + tcl.getColumn());
+                System.out.println("Old   : " + tcl.getOldValue());
+                System.out.println("New   : " + tcl.getNewValue());
+            }
+        };
+        TableCellListener tcl = new TableCellListener(table, action);
+        
     }
 
     private void updateRowHeights(JTable table, JScrollPane scrollPane) {

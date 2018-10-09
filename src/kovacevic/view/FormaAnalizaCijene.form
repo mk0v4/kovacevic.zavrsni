@@ -241,23 +241,31 @@
                 <DimensionLayout dim="0">
                   <Group type="103" groupAlignment="0" attributes="0">
                       <Group type="102" attributes="0">
-                          <EmptySpace min="-2" max="-2" attributes="0"/>
-                          <Group type="103" groupAlignment="0" attributes="0">
-                              <Component id="lblCijenaRad" alignment="0" min="-2" max="-2" attributes="0"/>
-                              <Component id="lblPopisOperacija" alignment="0" min="-2" max="-2" attributes="0"/>
-                              <Component id="lblKoeficijentFirme" alignment="0" min="-2" max="-2" attributes="0"/>
-                              <Component id="lblUkupnaCijena" alignment="0" min="-2" max="-2" attributes="0"/>
-                              <Component id="lblGrupeRada" min="-2" max="-2" attributes="0"/>
+                          <EmptySpace max="-2" attributes="0"/>
+                          <Group type="103" groupAlignment="2" attributes="0">
+                              <Component id="btnObrisiRed" alignment="2" min="-2" max="-2" attributes="0"/>
+                              <Component id="btnDodajRed" alignment="2" min="-2" max="-2" attributes="0"/>
                           </Group>
                           <EmptySpace max="-2" attributes="0"/>
                           <Group type="103" groupAlignment="0" attributes="0">
-                              <Component id="txCijenaRada" alignment="1" max="32767" attributes="0"/>
+                              <Component id="txtCijenaRada" alignment="1" max="32767" attributes="0"/>
                               <Component id="txtKoeficijentFirme" max="32767" attributes="0"/>
                               <Component id="txtUkupnaCijena" alignment="0" max="32767" attributes="0"/>
-                              <Component id="jspGrupeRada" alignment="0" pref="495" max="32767" attributes="0"/>
+                              <Component id="jspGrupeRada" alignment="0" pref="490" max="32767" attributes="0"/>
                               <Component id="jspOperacije" alignment="1" max="32767" attributes="0"/>
                           </Group>
                           <EmptySpace max="-2" attributes="0"/>
+                      </Group>
+                      <Group type="102" attributes="0">
+                          <EmptySpace min="10" pref="10" max="-2" attributes="0"/>
+                          <Group type="103" groupAlignment="0" attributes="0">
+                              <Component id="lblGrupeRada" min="-2" max="-2" attributes="0"/>
+                              <Component id="lblUkupnaCijena" alignment="0" min="-2" max="-2" attributes="0"/>
+                              <Component id="lblKoeficijentFirme" alignment="0" min="-2" max="-2" attributes="0"/>
+                              <Component id="lblPopisOperacija" alignment="0" min="-2" max="-2" attributes="0"/>
+                              <Component id="lblCijenaRad" alignment="0" min="-2" max="-2" attributes="0"/>
+                          </Group>
+                          <EmptySpace max="32767" attributes="0"/>
                       </Group>
                   </Group>
                 </DimensionLayout>
@@ -266,17 +274,27 @@
                       <Group type="102" alignment="0" attributes="0">
                           <EmptySpace min="-2" max="-2" attributes="0"/>
                           <Group type="103" groupAlignment="0" attributes="0">
-                              <Component id="jspOperacije" alignment="0" pref="88" max="32767" attributes="0"/>
-                              <Component id="lblPopisOperacija" alignment="0" min="-2" max="-2" attributes="0"/>
+                              <Group type="102" attributes="0">
+                                  <Component id="lblPopisOperacija" min="-2" max="-2" attributes="0"/>
+                                  <EmptySpace max="-2" attributes="0"/>
+                                  <Component id="btnDodajRed" min="-2" max="-2" attributes="0"/>
+                                  <EmptySpace max="-2" attributes="0"/>
+                                  <Component id="btnObrisiRed" min="-2" max="-2" attributes="0"/>
+                                  <EmptySpace min="0" pref="48" max="32767" attributes="0"/>
+                              </Group>
+                              <Component id="jspOperacije" pref="0" max="32767" attributes="0"/>
                           </Group>
-                          <EmptySpace min="-2" max="-2" attributes="0"/>
+                          <EmptySpace max="-2" attributes="0"/>
                           <Group type="103" groupAlignment="0" attributes="0">
-                              <Component id="lblGrupeRada" min="-2" max="-2" attributes="0"/>
-                              <Component id="jspGrupeRada" pref="32" max="32767" attributes="0"/>
+                              <Component id="jspGrupeRada" pref="0" max="32767" attributes="0"/>
+                              <Group type="102" attributes="0">
+                                  <Component id="lblGrupeRada" min="-2" max="-2" attributes="0"/>
+                                  <EmptySpace min="0" pref="56" max="32767" attributes="0"/>
+                              </Group>
                           </Group>
-                          <EmptySpace min="-2" max="-2" attributes="0"/>
+                          <EmptySpace max="-2" attributes="0"/>
                           <Group type="103" groupAlignment="3" attributes="0">
-                              <Component id="txCijenaRada" alignment="3" min="-2" max="-2" attributes="0"/>
+                              <Component id="txtCijenaRada" alignment="3" min="-2" max="-2" attributes="0"/>
                               <Component id="lblCijenaRad" alignment="3" min="-2" max="-2" attributes="0"/>
                           </Group>
                           <EmptySpace min="-2" max="-2" attributes="0"/>
@@ -289,7 +307,7 @@
                               <Component id="txtUkupnaCijena" alignment="3" min="-2" max="-2" attributes="0"/>
                               <Component id="lblUkupnaCijena" alignment="3" min="-2" max="-2" attributes="0"/>
                           </Group>
-                          <EmptySpace min="-2" pref="125" max="-2" attributes="0"/>
+                          <EmptySpace min="-2" pref="87" max="-2" attributes="0"/>
                       </Group>
                   </Group>
                 </DimensionLayout>
@@ -311,12 +329,12 @@
                       <Properties>
                         <Property name="model" type="javax.swing.table.TableModel" editor="org.netbeans.modules.form.editors2.TableModelEditor">
                           <Table columnCount="6" rowCount="0">
-                            <Column editable="false" title="null" type="java.lang.Object"/>
-                            <Column editable="false" title="null" type="java.lang.Object"/>
-                            <Column editable="false" title="null" type="java.lang.Object"/>
-                            <Column editable="false" title="null" type="java.lang.Object"/>
-                            <Column editable="false" title="null" type="java.lang.Object"/>
-                            <Column editable="false" title="null" type="java.lang.Object"/>
+                            <Column editable="true" title="null" type="java.lang.Object"/>
+                            <Column editable="true" title="null" type="java.lang.Object"/>
+                            <Column editable="true" title="null" type="java.lang.Object"/>
+                            <Column editable="true" title="null" type="java.lang.Object"/>
+                            <Column editable="true" title="null" type="java.lang.Object"/>
+                            <Column editable="true" title="null" type="java.lang.Object"/>
                           </Table>
                         </Property>
                         <Property name="columnModel" type="javax.swing.table.TableColumnModel" editor="org.netbeans.modules.form.editors2.TableColumnModelEditor">
@@ -353,6 +371,7 @@
                             </Column>
                           </TableColumnModel>
                         </Property>
+                        <Property name="columnSelectionAllowed" type="boolean" value="true"/>
                         <Property name="tableHeader" type="javax.swing.table.JTableHeader" editor="org.netbeans.modules.form.editors2.JTableHeaderEditor">
                           <TableHeader reorderingAllowed="true" resizingAllowed="true"/>
                         </Property>
@@ -413,7 +432,7 @@
                     <Property name="text" type="java.lang.String" value="Cijena rada:"/>
                   </Properties>
                 </Component>
-                <Component class="javax.swing.JTextField" name="txCijenaRada">
+                <Component class="javax.swing.JTextField" name="txtCijenaRada">
                   <Properties>
                     <Property name="editable" type="boolean" value="false"/>
                   </Properties>
@@ -434,6 +453,22 @@
                   <Properties>
                     <Property name="editable" type="boolean" value="false"/>
                   </Properties>
+                </Component>
+                <Component class="javax.swing.JButton" name="btnDodajRed">
+                  <Properties>
+                    <Property name="text" type="java.lang.String" value="Dodaj red"/>
+                  </Properties>
+                  <Events>
+                    <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="btnDodajRedActionPerformed"/>
+                  </Events>
+                </Component>
+                <Component class="javax.swing.JButton" name="btnObrisiRed">
+                  <Properties>
+                    <Property name="text" type="java.lang.String" value="Obrisi red"/>
+                  </Properties>
+                  <Events>
+                    <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="btnObrisiRedActionPerformed"/>
+                  </Events>
                 </Component>
               </SubComponents>
             </Container>
