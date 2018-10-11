@@ -52,6 +52,7 @@ public class TableCellListener implements PropertyChangeListener, Runnable {
         this.column = column;
         this.oldValue = oldValue;
         this.newValue = newValue;
+
     }
 
     /**

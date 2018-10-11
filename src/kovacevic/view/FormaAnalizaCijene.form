@@ -244,6 +244,7 @@
                           <EmptySpace max="-2" attributes="0"/>
                           <Group type="103" groupAlignment="2" attributes="0">
                               <Component id="btnObrisiRed" alignment="2" min="-2" max="-2" attributes="0"/>
+                              <Component id="btbKalkulirajTablicaOperacija" alignment="2" min="-2" max="-2" attributes="0"/>
                               <Component id="btnDodajRed" alignment="2" min="-2" max="-2" attributes="0"/>
                           </Group>
                           <EmptySpace max="-2" attributes="0"/>
@@ -279,8 +280,9 @@
                                   <EmptySpace max="-2" attributes="0"/>
                                   <Component id="btnDodajRed" min="-2" max="-2" attributes="0"/>
                                   <EmptySpace max="-2" attributes="0"/>
+                                  <Component id="btbKalkulirajTablicaOperacija" min="-2" max="-2" attributes="0"/>
+                                  <EmptySpace pref="25" max="32767" attributes="0"/>
                                   <Component id="btnObrisiRed" min="-2" max="-2" attributes="0"/>
-                                  <EmptySpace min="0" pref="48" max="32767" attributes="0"/>
                               </Group>
                               <Component id="jspOperacije" pref="0" max="32767" attributes="0"/>
                           </Group>
@@ -334,7 +336,7 @@
                             <Column editable="true" title="null" type="java.lang.Object"/>
                             <Column editable="true" title="null" type="java.lang.Object"/>
                             <Column editable="true" title="null" type="java.lang.Object"/>
-                            <Column editable="true" title="null" type="java.lang.Object"/>
+                            <Column editable="false" title="null" type="java.lang.Object"/>
                           </Table>
                         </Property>
                         <Property name="columnModel" type="javax.swing.table.TableColumnModel" editor="org.netbeans.modules.form.editors2.TableColumnModelEditor">
@@ -378,6 +380,7 @@
                       </Properties>
                       <Events>
                         <EventHandler event="componentAdded" listener="java.awt.event.ContainerListener" parameters="java.awt.event.ContainerEvent" handler="tblOperacijeComponentAdded"/>
+                        <EventHandler event="mouseExited" listener="java.awt.event.MouseListener" parameters="java.awt.event.MouseEvent" handler="tblOperacijeMouseExited"/>
                       </Events>
                     </Component>
                   </SubComponents>
@@ -471,6 +474,14 @@
                   </Properties>
                   <Events>
                     <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="btnObrisiRedActionPerformed"/>
+                  </Events>
+                </Component>
+                <Component class="javax.swing.JButton" name="btbKalkulirajTablicaOperacija">
+                  <Properties>
+                    <Property name="text" type="java.lang.String" value="Abakusaj"/>
+                  </Properties>
+                  <Events>
+                    <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="btbKalkulirajTablicaOperacijaActionPerformed"/>
                   </Events>
                 </Component>
               </SubComponents>

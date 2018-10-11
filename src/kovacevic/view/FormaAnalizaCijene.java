@@ -6,13 +6,13 @@
 package kovacevic.view;
 
 import java.awt.event.ActionEvent;
+import java.awt.event.KeyEvent;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.math.BigDecimal;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
-import java.util.Vector;
-import javax.swing.AbstractAction;
 import javax.swing.DefaultCellEditor;
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.JComboBox;
@@ -36,7 +36,6 @@ import kovacevic.model.GrupacijaNorme;
 import kovacevic.model.Rad;
 import kovacevic.model.StavkaTroskovnik;
 import kovacevic.pomocno.HibernateUtil;
-import kovacevic.pomocno.TableCellListener;
 import kovacevic.pomocno.WrappableTable;
 
 /**
@@ -225,14 +224,14 @@ public class FormaAnalizaCijene extends JFrame {
             }
         }
         txtUkupanNormativVremena.setText(zbrojenNormativVremena.toString());
-        System.out.println("zbrojenNormativVremena.toString() " + zbrojenNormativVremena.toString());
+//        System.out.println("zbrojenNormativVremena.toString() " + zbrojenNormativVremena.toString());
     }
 
     private void ukupnaCijenaRad() {
         BigDecimal koefFirme = new BigDecimal(txtKoeficijentFirme.getText());
         BigDecimal cijenaRadova = new BigDecimal(txtCijenaRada.getText());
         txtUkupnaCijena.setText(koefFirme.multiply(cijenaRadova).toString());
-        System.out.println("koefFirme.multiply(cijenaRadova).toString() " + koefFirme.multiply(cijenaRadova).toString());
+//        System.out.println("koefFirme.multiply(cijenaRadova).toString() " + koefFirme.multiply(cijenaRadova).toString());
     }
 
     private void zbrojiCijenaRad() {
@@ -243,8 +242,8 @@ public class FormaAnalizaCijene extends JFrame {
             }
         }
         txtCijenaRada.setText(zbrojenaCijenaRad.toString());
-        System.out.println("analizaCijene.getAnalizeRadova() " + analizaCijene.getAnalizeRadova().toString());
-        System.out.println("zbrojenaCijenaRad.toString() " + zbrojenaCijenaRad.toString());
+//        System.out.println("analizaCijene.getAnalizeRadova() " + analizaCijene.getAnalizeRadova().toString());
+//        System.out.println("zbrojenaCijenaRad.toString() " + zbrojenaCijenaRad.toString());
     }
 
     private void popunjavanjeTabliceGrupeRada(JTable tablica) {
@@ -535,6 +534,7 @@ public class FormaAnalizaCijene extends JFrame {
         txtUkupnaCijena = new javax.swing.JTextField();
         btnDodajRed = new javax.swing.JButton();
         btnObrisiRed = new javax.swing.JButton();
+        btbKalkulirajTablicaOperacija = new javax.swing.JButton();
         jPanelMaterijal = new javax.swing.JPanel();
         jScrollPane3 = new javax.swing.JScrollPane();
         lstMaterijali = new javax.swing.JList<>();
@@ -678,11 +678,24 @@ public class FormaAnalizaCijene extends JFrame {
             new String [] {
                 "null", "null", "null", "null", "null", "null"
             }
-        ));
+        ) {
+            boolean[] canEdit = new boolean [] {
+                true, true, true, true, true, false
+            };
+
+            public boolean isCellEditable(int rowIndex, int columnIndex) {
+                return canEdit [columnIndex];
+            }
+        });
         tblOperacije.setColumnSelectionAllowed(true);
         tblOperacije.addContainerListener(new java.awt.event.ContainerAdapter() {
             public void componentAdded(java.awt.event.ContainerEvent evt) {
                 tblOperacijeComponentAdded(evt);
+            }
+        });
+        tblOperacije.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseExited(java.awt.event.MouseEvent evt) {
+                tblOperacijeMouseExited(evt);
             }
         });
         jspOperacije.setViewportView(tblOperacije);
@@ -734,6 +747,13 @@ public class FormaAnalizaCijene extends JFrame {
             }
         });
 
+        btbKalkulirajTablicaOperacija.setText("Abakusaj");
+        btbKalkulirajTablicaOperacija.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btbKalkulirajTablicaOperacijaActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout jPanelOperacijaLayout = new javax.swing.GroupLayout(jPanelOperacija);
         jPanelOperacija.setLayout(jPanelOperacijaLayout);
         jPanelOperacijaLayout.setHorizontalGroup(
@@ -742,6 +762,7 @@ public class FormaAnalizaCijene extends JFrame {
                 .addContainerGap()
                 .addGroup(jPanelOperacijaLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.CENTER)
                     .addComponent(btnObrisiRed)
+                    .addComponent(btbKalkulirajTablicaOperacija)
                     .addComponent(btnDodajRed))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(jPanelOperacijaLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -771,8 +792,9 @@ public class FormaAnalizaCijene extends JFrame {
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(btnDodajRed)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(btnObrisiRed)
-                        .addGap(0, 48, Short.MAX_VALUE))
+                        .addComponent(btbKalkulirajTablicaOperacija)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 25, Short.MAX_VALUE)
+                        .addComponent(btnObrisiRed))
                     .addComponent(jspOperacije, javax.swing.GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(jPanelOperacijaLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -1033,49 +1055,24 @@ public class FormaAnalizaCijene extends JFrame {
     }//GEN-LAST:event_jScrollPaneTableNormaMouseClicked
 
     private void btnDodajRedActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnDodajRedActionPerformed
-//        DefaultTableModel model = (DefaultTableModel) tblOperacije.getModel();
-
-        Rad dummyRad = new Rad();
-        dummyRad.setGrupaRadova("Radnik");
-        dummyRad.setKategorijaRad("III");
-        dummyRad.setCijena(new BigDecimal("55.00"));
-
-        AnalizaRad dodajAnalizaRad = new AnalizaRad();
-        dodajAnalizaRad.setOpisOperacije("Opsi operacije");
-        dodajAnalizaRad.setBrojOperacije(1);
-        dodajAnalizaRad.setJedinicniNormativVremena(new BigDecimal("5.00"));
-        dodajAnalizaRad.setCijenaVrijeme(new BigDecimal("5.00"));
-        dodajAnalizaRad.setRad(dummyRad);
-        dodajAnalizaRad.setAnalizaCijene(analizaCijene);
-        analizaCijene.getAnalizeRadova().add(dodajAnalizaRad);
-
-        popunjavanjeTabliceOperacije(tblOperacije);
-        popunjavanjeTabliceGrupeRada(tblGrupeRada);
+        DefaultTableModel model = (DefaultTableModel) tblOperacije.getModel();
+        model.addRow(new Object[]{"", "", "", "", "", ""});
 
 //        model.addRow(new Object[]{dodajAnalizaRad.getBrojOperacije(), dodajAnalizaRad.getOpisOperacije(),
 //            dodajAnalizaRad.getJedinicniNormativVremena(), dummyRad.getGrupaRadova(),
 //            dummyRad.getKategorijaRad(), dodajAnalizaRad.getCijenaVrijeme()});
-        System.out.println("analizaCijene.getAnalizeRadova() " + analizaCijene.getAnalizeRadova().toString());
     }//GEN-LAST:event_btnDodajRedActionPerformed
 
     private void btnObrisiRedActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnObrisiRedActionPerformed
         int row = tblOperacije.getSelectedRow();
         DefaultTableModel model = (DefaultTableModel) tblOperacije.getModel();
         model.removeRow(row);
+        analizaCijene.getAnalizeRadova().remove(row);
+//        System.out.println("analizaCijene.getAnalizeRadova() " + analizaCijene.getAnalizeRadova());
     }//GEN-LAST:event_btnObrisiRedActionPerformed
 
     private void tblOperacijeComponentAdded(java.awt.event.ContainerEvent evt) {//GEN-FIRST:event_tblOperacijeComponentAdded
         System.out.println("kovacevic.view.FormaAnalizaCijene.tblOperacijeComponentAdded()");
-        int row = tblOperacije.getSelectedRow();
-        int column = tblOperacije.getSelectedColumn();
-        DefaultTableModel model = (DefaultTableModel) tblOperacije.getModel();
-        Object valueRowColumn = tblOperacije.getValueAt(row, column);
-        switch (column) {
-            case 0: ccc
-                tblOperacije.getValueAt(row, column);
-
-        }
-
         zbrojiCijenaRad();
         ukupnaCijenaRad();
         ukupanNormativVremena();
@@ -1087,7 +1084,78 @@ public class FormaAnalizaCijene extends JFrame {
         txtUkupanNormativVremena.repaint();
     }//GEN-LAST:event_tblOperacijeComponentAdded
 
+    private Rad nadjiRad(String grupaRadova, String kategorijaRad) {
+        Rad rad = (Rad) HibernateUtil.getSession().
+                createQuery("from Rad a where "
+                        + "a.obrisan=false and a.grupaRadova=:odabranaGrupaRadova "
+                        + "and a.kategorijaRad = :kategorijaRad")
+                .setParameter("odabranaGrupaRadova", grupaRadova)
+                .setParameter("kategorijaRad", kategorijaRad).uniqueResult();
+        return rad;
+    }
+
+    private void btbKalkulirajTablicaOperacijaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btbKalkulirajTablicaOperacijaActionPerformed
+//        int row = tblOperacije.getSelectedRow();
+//        int column = tblOperacije.getSelectedColumn();
+        DefaultTableModel model = (DefaultTableModel) tblOperacije.getModel();
+        int redovi = tblOperacije.getRowCount();
+//        Object valueRowColumn = tblOperacije.getValueAt(row, column);
+//        analizaCijene.getAnalizeRadova().removeAll(analizaRad);
+//        System.out.println("analizaCijene.getAnalizeRadova().size() " + analizaCijene.getAnalizeRadova().size());
+//        int br = analizaCijene.getAnalizeRadova().size();
+//        for (int i = 0; i < br ; i++) {
+//            System.out.println("analizaCijene.getAnalizeRadova().get(i) = " + i + " = " + analizaCijene.getAnalizeRadova().get(i));
+//            analizaCijene.getAnalizeRadova().remove(i);
+//        }
+
+        analizaCijene.getAnalizeRadova().removeAll(analizaCijene.getAnalizeRadova());
+
+        System.out.println("=== analizaCijene.getAnalizeRadova() " + analizaCijene.getAnalizeRadova());
+        for (int i = 0; i < redovi; i++) {
+            Rad redRad = nadjiRad(tblOperacije.getValueAt(i, 3).toString(), tblOperacije.getValueAt(i, 4).toString());
+            model.setValueAt(redRad.getCijena().multiply(new BigDecimal(tblOperacije.getValueAt(i, 2).toString())), i, 5);
+            redRad.getCijena();
+
+            AnalizaRad redAnalizaRad = new AnalizaRad();
+            redAnalizaRad.setBrojOperacije(Integer.valueOf(tblOperacije.getValueAt(i, 0).toString()));
+            redAnalizaRad.setOpisOperacije(tblOperacije.getValueAt(i, 1).toString());
+            redAnalizaRad.setJedinicniNormativVremena(new BigDecimal(tblOperacije.getValueAt(i, 2).toString()));
+            redAnalizaRad.setCijenaVrijeme(new BigDecimal(tblOperacije.getValueAt(i, 5).toString()));
+            redAnalizaRad.setRad(redRad);
+            redAnalizaRad.setAnalizaCijene(analizaCijene);
+
+            analizaCijene.getAnalizeRadova().add(redAnalizaRad);
+
+        }
+
+//        Rad dummyRad = new Rad();
+//        dummyRad.setGrupaRadova("Radnik");
+//        dummyRad.setKategorijaRad("III");
+//        dummyRad.setCijena(new BigDecimal("55.00"));
+//
+//        AnalizaRad dodajAnalizaRad = new AnalizaRad();
+//        dodajAnalizaRad.setOpisOperacije("Opsi operacije");
+//        dodajAnalizaRad.setBrojOperacije(1);
+//        dodajAnalizaRad.setJedinicniNormativVremena(new BigDecimal("5.00"));
+//        dodajAnalizaRad.setCijenaVrijeme(new BigDecimal("5.00"));
+//        dodajAnalizaRad.setRad(dummyRad);
+//        dodajAnalizaRad.setAnalizaCijene(analizaCijene);
+//        analizaCijene.getAnalizeRadova().add(dodajAnalizaRad);
+        popunjavanjeTabliceOperacije(tblOperacije);
+        popunjavanjeTabliceGrupeRada(tblGrupeRada);
+    }//GEN-LAST:event_btbKalkulirajTablicaOperacijaActionPerformed
+
+    private void tblOperacijeMouseExited(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_tblOperacijeMouseExited
+WrappableTable t = (WrappableTable) tblOperacije;
+        System.out.println( tblOperacije.isEditing());
+        System.out.println("tblOperacije.getClass().getMethods() " + Arrays.toString(tblOperacije.getClass().getMethods()));
+
+//KeyEvent.VK_ENTER;
+        System.out.println("kovacevic.view.FormaAnalizaCijene.tblOperacijeMouseExited()");        // TODO add your handling code here:
+    }//GEN-LAST:event_tblOperacijeMouseExited
+
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JButton btbKalkulirajTablicaOperacija;
     private javax.swing.JButton btnDodaj;
     private javax.swing.JButton btnDodajRed;
     private javax.swing.JButton btnObrisi;

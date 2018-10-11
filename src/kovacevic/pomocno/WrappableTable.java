@@ -7,20 +7,28 @@ package kovacevic.pomocno;
 
 import java.awt.Color;
 import java.awt.Component;
+import java.awt.Event;
 import java.awt.Font;
 import java.awt.Insets;
 import java.awt.event.ActionEvent;
 
 import java.awt.event.ComponentAdapter;
 import java.awt.event.ComponentEvent;
+import java.awt.event.MouseEvent;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
+import java.util.EventObject;
 import javax.swing.AbstractAction;
 import javax.swing.JScrollPane;
 
 import javax.swing.JTable;
 import javax.swing.JTextArea;
 import javax.swing.Scrollable;
+import javax.swing.event.ChangeEvent;
+import javax.swing.event.TableColumnModelEvent;
+import javax.swing.event.TableModelEvent;
+import javax.swing.event.TableModelListener;
+import javax.swing.table.TableCellEditor;
 
 import javax.swing.table.TableModel;
 import javax.swing.table.TableCellRenderer;
@@ -55,9 +63,10 @@ public class WrappableTable extends JTable implements Scrollable {
 
         this.renderer = new WrappableTableRenderer(table);
         table.setDefaultRenderer(Object.class, this.renderer);
-        
-                AbstractAction action = new AbstractAction() {
 
+        AbstractAction action = new AbstractAction() {
+
+            @Override
             public void actionPerformed(ActionEvent e) {
                 TableCellListener tcl = (TableCellListener) e.getSource();
                 System.out.println("Row   : " + tcl.getRow());
@@ -68,7 +77,16 @@ public class WrappableTable extends JTable implements Scrollable {
             }
         };
         TableCellListener tcl = new TableCellListener(table, action);
-        
+
+        scrollPane.addMouseListener(new java.awt.event.MouseAdapter() {
+            @Override
+            public void mouseExited(MouseEvent e) {
+                if (table.isEditing()) {
+                    table.getCellEditor().stopCellEditing();
+                }
+            }
+        });
+
     }
 
     private void updateRowHeights(JTable table, JScrollPane scrollPane) {
