@@ -64,6 +64,7 @@ public class WrappableTable extends JTable implements Scrollable {
                 System.out.println("Column: " + tcl.getColumn());
                 System.out.println("Old   : " + tcl.getOldValue());
                 System.out.println("New   : " + tcl.getNewValue());
+                updateRowHeights(table, scrollPane);
             }
         };
         TableCellListener tcl = new TableCellListener(table, action);

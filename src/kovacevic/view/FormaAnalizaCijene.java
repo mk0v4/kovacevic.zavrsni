@@ -33,6 +33,7 @@ import kovacevic.model.AnalizaCijene;
 import kovacevic.model.AnalizaMaterijal;
 import kovacevic.model.AnalizaRad;
 import kovacevic.model.GrupacijaNorme;
+import kovacevic.model.Rad;
 import kovacevic.model.StavkaTroskovnik;
 import kovacevic.pomocno.HibernateUtil;
 import kovacevic.pomocno.TableCellListener;
@@ -224,12 +225,14 @@ public class FormaAnalizaCijene extends JFrame {
             }
         }
         txtUkupanNormativVremena.setText(zbrojenNormativVremena.toString());
+        System.out.println("zbrojenNormativVremena.toString() " + zbrojenNormativVremena.toString());
     }
 
     private void ukupnaCijenaRad() {
         BigDecimal koefFirme = new BigDecimal(txtKoeficijentFirme.getText());
         BigDecimal cijenaRadova = new BigDecimal(txtCijenaRada.getText());
         txtUkupnaCijena.setText(koefFirme.multiply(cijenaRadova).toString());
+        System.out.println("koefFirme.multiply(cijenaRadova).toString() " + koefFirme.multiply(cijenaRadova).toString());
     }
 
     private void zbrojiCijenaRad() {
@@ -240,6 +243,8 @@ public class FormaAnalizaCijene extends JFrame {
             }
         }
         txtCijenaRada.setText(zbrojenaCijenaRad.toString());
+        System.out.println("analizaCijene.getAnalizeRadova() " + analizaCijene.getAnalizeRadova().toString());
+        System.out.println("zbrojenaCijenaRad.toString() " + zbrojenaCijenaRad.toString());
     }
 
     private void popunjavanjeTabliceGrupeRada(JTable tablica) {
@@ -255,19 +260,19 @@ public class FormaAnalizaCijene extends JFrame {
                     GrupaRadova grupaRad = new GrupaRadova();
                     for (GrupaRadova grupaRadova : listaGrupeRadova) {
                         if (!grupaRadova.getGrupaRadova().matches(analizaRad.getRad().getGrupaRadova())
-                                && !grupaRadova.getKategorijaGrupaRadova().matches(analizaRad.getRad().getKategorijaRad())) {
+                                || !grupaRadova.getKategorijaGrupaRadova().matches(analizaRad.getRad().getKategorijaRad())) {
                             grupaRad.setGrupaRadova(analizaRad.getRad().getGrupaRadova());
                             grupaRad.setKategorijaGrupaRadova(analizaRad.getRad().getKategorijaRad());
                             grupaRad.setJedinicniNormativVremenaGrupaRadova(analizaRad.getJedinicniNormativVremena());
                             grupaRad.setCijenaGrupaRadova(analizaRad.getCijenaVrijeme());
                         } else if (grupaRadova.getGrupaRadova().matches(analizaRad.getRad().getGrupaRadova())
-                                && grupaRadova.getKategorijaGrupaRadova().matches(analizaRad.getRad().getKategorijaRad())) {
+                                || grupaRadova.getKategorijaGrupaRadova().matches(analizaRad.getRad().getKategorijaRad())) {
                             grupaRadova.setJedinicniNormativVremenaGrupaRadova(grupaRadova.getJedinicniNormativVremenaGrupaRadova().add(analizaRad.getJedinicniNormativVremena()));
                             grupaRadova.setCijenaGrupaRadova(grupaRadova.getCijenaGrupaRadova().add(analizaRad.getCijenaVrijeme()));
                         }
                     }
                     if (!listaGrupeRadova.toString().contains(analizaRad.getRad().getGrupaRadova())
-                            && !listaGrupeRadova.toString().contains(analizaRad.getRad().getKategorijaRad())) {
+                            || !listaGrupeRadova.toString().contains(analizaRad.getRad().getKategorijaRad())) {
                         listaGrupeRadova.add(grupaRad);
                     }
                 } else {
@@ -675,6 +680,11 @@ public class FormaAnalizaCijene extends JFrame {
             }
         ));
         tblOperacije.setColumnSelectionAllowed(true);
+        tblOperacije.addContainerListener(new java.awt.event.ContainerAdapter() {
+            public void componentAdded(java.awt.event.ContainerEvent evt) {
+                tblOperacijeComponentAdded(evt);
+            }
+        });
         jspOperacije.setViewportView(tblOperacije);
         tblOperacije.getColumnModel().getSelectionModel().setSelectionMode(javax.swing.ListSelectionModel.SINGLE_SELECTION);
 
@@ -1023,8 +1033,29 @@ public class FormaAnalizaCijene extends JFrame {
     }//GEN-LAST:event_jScrollPaneTableNormaMouseClicked
 
     private void btnDodajRedActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnDodajRedActionPerformed
-        DefaultTableModel model = (DefaultTableModel) tblOperacije.getModel();
-        model.addRow(new Object[]{"", "", "", "", "", ""});
+//        DefaultTableModel model = (DefaultTableModel) tblOperacije.getModel();
+
+        Rad dummyRad = new Rad();
+        dummyRad.setGrupaRadova("Radnik");
+        dummyRad.setKategorijaRad("III");
+        dummyRad.setCijena(new BigDecimal("55.00"));
+
+        AnalizaRad dodajAnalizaRad = new AnalizaRad();
+        dodajAnalizaRad.setOpisOperacije("Opsi operacije");
+        dodajAnalizaRad.setBrojOperacije(1);
+        dodajAnalizaRad.setJedinicniNormativVremena(new BigDecimal("5.00"));
+        dodajAnalizaRad.setCijenaVrijeme(new BigDecimal("5.00"));
+        dodajAnalizaRad.setRad(dummyRad);
+        dodajAnalizaRad.setAnalizaCijene(analizaCijene);
+        analizaCijene.getAnalizeRadova().add(dodajAnalizaRad);
+
+        popunjavanjeTabliceOperacije(tblOperacije);
+        popunjavanjeTabliceGrupeRada(tblGrupeRada);
+
+//        model.addRow(new Object[]{dodajAnalizaRad.getBrojOperacije(), dodajAnalizaRad.getOpisOperacije(),
+//            dodajAnalizaRad.getJedinicniNormativVremena(), dummyRad.getGrupaRadova(),
+//            dummyRad.getKategorijaRad(), dodajAnalizaRad.getCijenaVrijeme()});
+        System.out.println("analizaCijene.getAnalizeRadova() " + analizaCijene.getAnalizeRadova().toString());
     }//GEN-LAST:event_btnDodajRedActionPerformed
 
     private void btnObrisiRedActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnObrisiRedActionPerformed
@@ -1032,6 +1063,29 @@ public class FormaAnalizaCijene extends JFrame {
         DefaultTableModel model = (DefaultTableModel) tblOperacije.getModel();
         model.removeRow(row);
     }//GEN-LAST:event_btnObrisiRedActionPerformed
+
+    private void tblOperacijeComponentAdded(java.awt.event.ContainerEvent evt) {//GEN-FIRST:event_tblOperacijeComponentAdded
+        System.out.println("kovacevic.view.FormaAnalizaCijene.tblOperacijeComponentAdded()");
+        int row = tblOperacije.getSelectedRow();
+        int column = tblOperacije.getSelectedColumn();
+        DefaultTableModel model = (DefaultTableModel) tblOperacije.getModel();
+        Object valueRowColumn = tblOperacije.getValueAt(row, column);
+        switch (column) {
+            case 0: ccc
+                tblOperacije.getValueAt(row, column);
+
+        }
+
+        zbrojiCijenaRad();
+        ukupnaCijenaRad();
+        ukupanNormativVremena();
+
+        txtCijenaRada.repaint();
+        tblGrupeRada.repaint();
+        tblOperacije.repaint();
+        txtUkupnaCijena.repaint();
+        txtUkupanNormativVremena.repaint();
+    }//GEN-LAST:event_tblOperacijeComponentAdded
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btnDodaj;
