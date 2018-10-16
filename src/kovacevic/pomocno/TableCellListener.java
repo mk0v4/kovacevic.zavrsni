@@ -133,31 +133,40 @@ public class TableCellListener implements PropertyChangeListener, Runnable {
      */
     @Override
     public void run() {
-        row = table.convertRowIndexToModel(table.getEditingRow());
-        column = table.convertColumnIndexToModel(table.getEditingColumn());
-        oldValue = table.getModel().getValueAt(row, column);
-        newValue = null;
+        try {
+            row = table.convertRowIndexToModel(table.getEditingRow());
+            column = table.convertColumnIndexToModel(table.getEditingColumn());
+            oldValue = table.getModel().getValueAt(row, column);
+            newValue = null;
+        } catch (Exception e) {
+        }
+
     }
 
     /*
 	 *	Update the Cell history when necessary
      */
     private void processEditingStopped() {
-        newValue = table.getModel().getValueAt(row, column);
+        try {
 
-        //  The data has changed, invoke the supplied Action
-        if (!newValue.equals(oldValue)) {
-            //  Make a copy of the data in case another cell starts editing
-            //  while processing this change
+            newValue = table.getModel().getValueAt(row, column);
 
-            TableCellListener tcl = new TableCellListener(
-                    getTable(), getRow(), getColumn(), getOldValue(), getNewValue());
+            //  The data has changed, invoke the supplied Action
+            if (!newValue.equals(oldValue)) {
+                //  Make a copy of the data in case another cell starts editing
+                //  while processing this change
 
-            ActionEvent event = new ActionEvent(
-                    tcl,
-                    ActionEvent.ACTION_PERFORMED,
-                    "");
-            action.actionPerformed(event);
+                TableCellListener tcl = new TableCellListener(
+                        getTable(), getRow(), getColumn(), getOldValue(), getNewValue());
+
+                ActionEvent event = new ActionEvent(
+                        tcl,
+                        ActionEvent.ACTION_PERFORMED,
+                        "");
+                action.actionPerformed(event);
+            }
+        } catch (Exception e) {
+            processEditingStarted();
         }
     }
 }

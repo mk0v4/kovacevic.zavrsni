@@ -7,7 +7,6 @@ package kovacevic.pomocno;
 
 import java.awt.Color;
 import java.awt.Component;
-import java.awt.Event;
 import java.awt.Font;
 import java.awt.Insets;
 import java.awt.event.ActionEvent;
@@ -17,18 +16,12 @@ import java.awt.event.ComponentEvent;
 import java.awt.event.MouseEvent;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
-import java.util.EventObject;
 import javax.swing.AbstractAction;
 import javax.swing.JScrollPane;
 
 import javax.swing.JTable;
 import javax.swing.JTextArea;
 import javax.swing.Scrollable;
-import javax.swing.event.ChangeEvent;
-import javax.swing.event.TableColumnModelEvent;
-import javax.swing.event.TableModelEvent;
-import javax.swing.event.TableModelListener;
-import javax.swing.table.TableCellEditor;
 
 import javax.swing.table.TableModel;
 import javax.swing.table.TableCellRenderer;
@@ -69,10 +62,10 @@ public class WrappableTable extends JTable implements Scrollable {
             @Override
             public void actionPerformed(ActionEvent e) {
                 TableCellListener tcl = (TableCellListener) e.getSource();
-                System.out.println("Row   : " + tcl.getRow());
-                System.out.println("Column: " + tcl.getColumn());
-                System.out.println("Old   : " + tcl.getOldValue());
-                System.out.println("New   : " + tcl.getNewValue());
+//                System.out.println("Row   : " + tcl.getRow());
+//                System.out.println("Column: " + tcl.getColumn());
+//                System.out.println("Old   : " + tcl.getOldValue());
+//                System.out.println("New   : " + tcl.getNewValue());
                 updateRowHeights(table, scrollPane);
             }
         };
@@ -145,7 +138,7 @@ public class WrappableTable extends JTable implements Scrollable {
             if (isSelected) {
                 setBackground(new Color(184, 207, 229));
             } else {
-                setBackground(Color.WHITE);
+                setBackground(new Color(240, 240, 240));
             }
 //        System.out.println(new SimpleDateFormat("HH:mm.ssSSS").format(new Date()).toString());
             return this;

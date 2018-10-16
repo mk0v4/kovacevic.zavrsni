@@ -289,7 +289,7 @@ public class FormaAnalizaCijeneCUD extends Forma<AnalizaCijene> {
         analizaMaterijal.stream().forEach((p) -> {
             if (entitet != null) {
                 boolean dodaj = true;
-                for (AnalizaMaterijal analizaM : entitet.getAnalize_materijala()) {
+                for (AnalizaMaterijal analizaM : entitet.getAnalizeMaterijala()) {
                     if (p.getId().equals(analizaM.getId())) {
                         dodaj = false;
                         break;

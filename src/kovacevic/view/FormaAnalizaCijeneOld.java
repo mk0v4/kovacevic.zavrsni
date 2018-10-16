@@ -354,7 +354,7 @@ public class FormaAnalizaCijeneOld extends Forma<AnalizaCijene> {
 
             DefaultListModel<AnalizaMaterijal> n = new DefaultListModel<>();
             lstMaterijali.setModel(n);
-            entitet.getAnalize_materijala().forEach((s) -> {
+            entitet.getAnalizeMaterijala().forEach((s) -> {
                 n.addElement(s);
             });
             ucitajAnalizaMaterijal();
@@ -467,7 +467,7 @@ public class FormaAnalizaCijeneOld extends Forma<AnalizaCijene> {
         analizaMaterijal.stream().forEach((p) -> {
             if (entitet != null) {
                 boolean dodaj = true;
-                for (AnalizaMaterijal analizaM : entitet.getAnalize_materijala()) {
+                for (AnalizaMaterijal analizaM : entitet.getAnalizeMaterijala()) {
                     if (p.getId().equals(analizaM.getId())) {
                         dodaj = false;
                         break;

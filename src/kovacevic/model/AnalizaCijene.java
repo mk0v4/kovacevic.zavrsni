@@ -30,7 +30,7 @@ public class AnalizaCijene extends Entitet implements Serializable {
     private List<AnalizaRad> analizeRadova;
     
     @OneToMany (mappedBy = "analizaCijene")
-    private List<AnalizaMaterijal> analize_materijala;
+    private List<AnalizaMaterijal> analizeMaterijala;
     
     @ManyToOne
     private StavkaTroskovnik stavkaTroskovnik;
@@ -126,12 +126,12 @@ public class AnalizaCijene extends Entitet implements Serializable {
         this.analizeRadova = analizeRadova;
     }
 
-    public List<AnalizaMaterijal> getAnalize_materijala() {
-        return analize_materijala;
+    public List<AnalizaMaterijal> getAnalizeMaterijala() {
+        return analizeMaterijala;
     }
 
-    public void setAnalize_materijala(List<AnalizaMaterijal> analize_materijala) {
-        this.analize_materijala = analize_materijala;
+    public void setAnalizeMaterijala(List<AnalizaMaterijal> analizeMaterijala) {
+        this.analizeMaterijala = analizeMaterijala;
     }
 
         @Override
