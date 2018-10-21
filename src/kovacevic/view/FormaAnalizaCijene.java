@@ -58,9 +58,9 @@ public class FormaAnalizaCijene extends JFrame {
     private List<GrupacijaNorme> grupacijaNormeLista;
     private GrupacijaNorme grupacijaNorme;
 
-    private List<Materijal> rezultatiMaterijal;
     private ObradaMaterijal obradaMaterijal;
     private Materijal materijal;
+    private List<Materijal> rezultatiMaterijal;
 
     private final boolean dodaj = false;
     private final boolean promijeni = false;
@@ -102,7 +102,8 @@ public class FormaAnalizaCijene extends JFrame {
         tblOperacije = new WrappableTable(tblOperacije, tblOperacije.getModel(), jspOperacije);
         tblGrupeRada = new WrappableTable(tblGrupeRada, tblGrupeRada.getModel(), jspGrupeRada);
         tblMaterijal = new WrappableTable(tblMaterijal, tblMaterijal.getModel(), jspMaterijal);
-        tblDodavanjeMaterijal = new WrappableTable(tblDodavanjeMaterijal, tblDodavanjeMaterijal.getModel(), jScrollPaneMaterijal);
+        tblDodavanjeMaterijal = new WrappableTable(tblDodavanjeMaterijal, tblDodavanjeMaterijal.getModel(),
+                jScrollPaneMaterijal);
 
         popunjavanjeTabliceAnalizaCijene(jTableNorma);
         popuniGrupeRadova();
@@ -124,7 +125,8 @@ public class FormaAnalizaCijene extends JFrame {
             TreePath odabraniPath = jTreeNorma.getSelectionPath().getParentPath();
             DefaultMutableTreeNode node1 = (DefaultMutableTreeNode) odabraniPath.getPathComponent(1);
             DefaultMutableTreeNode root = (DefaultMutableTreeNode) jTreeNorma.getModel().getRoot();
-            System.out.println("jTreeNorma.getSelectionPath() " + jTreeNorma.getRowForPath(jTreeNorma.getSelectionPath()));
+            System.out.println("jTreeNorma.getSelectionPath() " + jTreeNorma
+                    .getRowForPath(jTreeNorma.getSelectionPath()));
             int red = jTreeNorma.getRowForPath(jTreeNorma.getSelectionPath());
             grupacijaNorme1.addWindowListener(new WindowAdapter() {
                 @Override
@@ -249,7 +251,11 @@ public class FormaAnalizaCijene extends JFrame {
         BigDecimal koefFirme = new BigDecimal(txtKoeficijentFirme.getText());
         BigDecimal cijenaRadova = new BigDecimal(txtCijenaRada.getText());
         txtUkupnaCijena.setText(koefFirme.multiply(cijenaRadova).toString());
-//        System.out.println("koefFirme.multiply(cijenaRadova).toString() " + koefFirme.multiply(cijenaRadova).toString());
+        if (!txtUkupnoMaterijal.getText().trim().equals("") && !txtUkupnaCijena.getText().trim().equals("")) {
+            BigDecimal zbrojenMaterijal = new BigDecimal(txtUkupnoMaterijal.getText());
+            BigDecimal ukupnaCijena = new BigDecimal(txtUkupnaCijena.getText());
+            txtUkupnaCijenaPoJedinici.setText(zbrojenMaterijal.add(ukupnaCijena).toString());
+        }
     }
 
     private void zbrojiCijenaRad() {
@@ -260,8 +266,6 @@ public class FormaAnalizaCijene extends JFrame {
             }
         }
         txtCijenaRada.setText(zbrojenaCijenaRad.toString());
-//        System.out.println("analizaCijene.getAnalizeRadova() " + analizaCijene.getAnalizeRadova().toString());
-//        System.out.println("zbrojenaCijenaRad.toString() " + zbrojenaCijenaRad.toString());
     }
 
     private void popunjavanjeTabliceGrupeRada(JTable tablica) {
@@ -286,10 +290,14 @@ public class FormaAnalizaCijene extends JFrame {
                     int i = 0;
                     for (GrupaRadova grupaRadova : listaGrupeRadova) {
                         if (grupaRadova.getGrupaRadova().matches(analizaRad.getRad().getGrupaRadova())
-                                && grupaRadova.getKategorijaGrupaRadova().matches(analizaRad.getRad().getKategorijaRad())) {
+                                && grupaRadova.getKategorijaGrupaRadova()
+                                        .matches(analizaRad.getRad().getKategorijaRad())) {
                             imaDuplikat = true;
-                            zbrojenoVrijeme = grupaRadova.getJedinicniNormativVremenaGrupaRadova().add(analizaRad.getJedinicniNormativVremena());
-                            zbrojenaCijena = grupaRadova.getCijenaGrupaRadova().add(analizaRad.getCijenaVrijeme());
+                            zbrojenoVrijeme = grupaRadova.getJedinicniNormativVremenaGrupaRadova().add(
+                                    analizaRad
+                                            .getJedinicniNormativVremena());
+                            zbrojenaCijena = grupaRadova.getCijenaGrupaRadova().add(analizaRad
+                                    .getCijenaVrijeme());
                             break;
                         }
                         i++;
@@ -403,9 +411,11 @@ public class FormaAnalizaCijene extends JFrame {
         TableColumn kategorijaRad = tablica.getColumnModel().getColumn(4);
         grupaRadova.setCellEditor(new DefaultCellEditor(cmbGrupeRadova));
         kategorijaRad.setCellEditor(new DefaultCellEditor(cmbKategorijaRad));
-        tablica.getColumnModel().getColumn(0).setCellRenderer(new WrappableTable.WrappableTableRenderer(tablica) {
+        tablica.getColumnModel().getColumn(0).setCellRenderer(new WrappableTable.WrappableTableRenderer(
+                tablica) {
             @Override
-            public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected, boolean hasFocus, int row, int column) {
+            public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected,
+                    boolean hasFocus, int row, int column) {
                 super.getTableCellRendererComponent(table, value, isSelected, hasFocus, row, column);
                 if (isSelected) {
                     setBackground(new Color(184, 207, 229));
@@ -416,9 +426,11 @@ public class FormaAnalizaCijene extends JFrame {
             }
 
         });
-        tablica.getColumnModel().getColumn(1).setCellRenderer(new WrappableTable.WrappableTableRenderer(tablica) {
+        tablica.getColumnModel().getColumn(1).setCellRenderer(new WrappableTable.WrappableTableRenderer(
+                tablica) {
             @Override
-            public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected, boolean hasFocus, int row, int column) {
+            public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected,
+                    boolean hasFocus, int row, int column) {
                 super.getTableCellRendererComponent(table, value, isSelected, hasFocus, row, column);
                 if (isSelected) {
                     setBackground(new Color(184, 207, 229));
@@ -429,9 +441,11 @@ public class FormaAnalizaCijene extends JFrame {
             }
 
         });
-        tablica.getColumnModel().getColumn(2).setCellRenderer(new WrappableTable.WrappableTableRenderer(tablica) {
+        tablica.getColumnModel().getColumn(2).setCellRenderer(new WrappableTable.WrappableTableRenderer(
+                tablica) {
             @Override
-            public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected, boolean hasFocus, int row, int column) {
+            public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected,
+                    boolean hasFocus, int row, int column) {
                 super.getTableCellRendererComponent(table, value, isSelected, hasFocus, row, column);
                 if (isSelected) {
                     setBackground(new Color(184, 207, 229));
@@ -442,9 +456,11 @@ public class FormaAnalizaCijene extends JFrame {
             }
 
         });
-        tablica.getColumnModel().getColumn(3).setCellRenderer(new WrappableTable.WrappableTableRenderer(tablica) {
+        tablica.getColumnModel().getColumn(3).setCellRenderer(new WrappableTable.WrappableTableRenderer(
+                tablica) {
             @Override
-            public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected, boolean hasFocus, int row, int column) {
+            public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected,
+                    boolean hasFocus, int row, int column) {
                 super.getTableCellRendererComponent(table, value, isSelected, hasFocus, row, column);
                 if (isSelected) {
                     setBackground(new Color(184, 207, 229));
@@ -455,9 +471,11 @@ public class FormaAnalizaCijene extends JFrame {
             }
 
         });
-        tablica.getColumnModel().getColumn(4).setCellRenderer(new WrappableTable.WrappableTableRenderer(tablica) {
+        tablica.getColumnModel().getColumn(4).setCellRenderer(new WrappableTable.WrappableTableRenderer(
+                tablica) {
             @Override
-            public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected, boolean hasFocus, int row, int column) {
+            public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected,
+                    boolean hasFocus, int row, int column) {
                 super.getTableCellRendererComponent(table, value, isSelected, hasFocus, row, column);
                 if (isSelected) {
                     setBackground(new Color(184, 207, 229));
@@ -482,15 +500,32 @@ public class FormaAnalizaCijene extends JFrame {
         }
     }
 
+    private void zbrojiCijenaMaterijal() {
+        BigDecimal zbrojenaCijenaMaterijal = BigDecimal.ZERO;
+        if (analizaCijene != null) {
+            for (AnalizaMaterijal analizaRad : analizaCijene.getAnalizeMaterijala()) {
+                zbrojenaCijenaMaterijal = zbrojenaCijenaMaterijal.add(analizaRad.getCijenaMaterijal());
+            }
+        }
+        txtUkupnoMaterijal.setText(zbrojenaCijenaMaterijal.toString());
+
+        if (!txtUkupnaCijena.getText().trim().equals("")) {
+            BigDecimal ukupnaCijena = new BigDecimal(txtUkupnaCijena.getText());
+            txtUkupnaCijenaPoJedinici.setText(zbrojenaCijenaMaterijal.add(ukupnaCijena).toString());
+        }
+    }
+
     private void popunjavanjeTabliceMaterijali(JTable tablica) {
         String[] coulumnName = {"Grupa materijala", "Proizvođač", "Oznaka",
-            "Jedinica mjere", "Količina", "Cijena"};
+            "Jedinica mjere", "Jedinična Cijena", "Količina", "Cijena"};
         DefaultTableModel model = (DefaultTableModel) tablica.getModel();
         model.setRowCount(0);
         model.setColumnIdentifiers(coulumnName);
-        tablica.getColumnModel().getColumn(4).setCellRenderer(new WrappableTable.WrappableTableRenderer(tablica) {
+        tablica.getColumnModel().getColumn(5).setCellRenderer(new WrappableTable.WrappableTableRenderer(
+                tablica) {
             @Override
-            public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected, boolean hasFocus, int row, int column) {
+            public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected,
+                    boolean hasFocus, int row, int column) {
                 super.getTableCellRendererComponent(table, value, isSelected, hasFocus, row, column);
                 if (isSelected) {
                     setBackground(new Color(184, 207, 229));
@@ -508,6 +543,7 @@ public class FormaAnalizaCijene extends JFrame {
                     analizaMaterijal.getMaterijal().getProizvodac(),
                     analizaMaterijal.getMaterijal().getOznaka(),
                     analizaMaterijal.getMaterijal().getJedinicaMjereAmbalaza(),
+                    analizaMaterijal.getJedinicnaCijenaMaterijal(),
                     analizaMaterijal.getKolicina(),
                     analizaMaterijal.getCijenaMaterijal()});
             }
@@ -535,7 +571,8 @@ public class FormaAnalizaCijene extends JFrame {
     }
 
     private void popunjavanjeJTree() {
-        grupacijaNormeLista = HibernateUtil.getSession().createQuery("from GrupacijaNorme a where a.obrisan=false order by a.oznakaNorme asc").list();
+        grupacijaNormeLista = HibernateUtil.getSession().createQuery(
+                "from GrupacijaNorme a where a.obrisan=false order by a.oznakaNorme asc").list();
 
         DefaultTreeModel model = (DefaultTreeModel) jTreeNorma.getModel();
         DefaultMutableTreeNode root = new DefaultMutableTreeNode();
@@ -568,7 +605,9 @@ public class FormaAnalizaCijene extends JFrame {
             DefaultMutableTreeNode childAt = (DefaultMutableTreeNode) root.getChildAt(i);
             for (GrupacijaNorme grupacijaNorme : grupacijaNormeLista) {
                 if (matchingCharactes(childAt.toString(), grupacijaNorme.getOznakaNorme(), 6)) {
-                    node2 = new NameOfJTreeNode(grupacijaNorme.getOznakaNorme() + " " + grupacijaNorme.getOpis(), grupacijaNorme);
+                    node2 = new NameOfJTreeNode(grupacijaNorme.getOznakaNorme() + " " + grupacijaNorme
+                            .getOpis(),
+                            grupacijaNorme);
                     childAt.add(node2);
                 }
             }
@@ -974,11 +1013,11 @@ public class FormaAnalizaCijene extends JFrame {
 
             },
             new String [] {
-                "null", "null", "null", "null", "null", "null"
+                "null", "null", "null", "null", "null", "null", "null"
             }
         ) {
             boolean[] canEdit = new boolean [] {
-                false, false, false, false, true, false
+                false, false, false, false, false, true, false
             };
 
             public boolean isCellEditable(int rowIndex, int columnIndex) {
@@ -1094,11 +1133,6 @@ public class FormaAnalizaCijene extends JFrame {
         tblDodavanjeMaterijal.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mouseClicked(java.awt.event.MouseEvent evt) {
                 tblDodavanjeMaterijalMouseClicked(evt);
-            }
-        });
-        tblDodavanjeMaterijal.addComponentListener(new java.awt.event.ComponentAdapter() {
-            public void componentResized(java.awt.event.ComponentEvent evt) {
-                tblDodavanjeMaterijalComponentResized(evt);
             }
         });
         jScrollPaneMaterijal.setViewportView(tblDodavanjeMaterijal);
@@ -1233,7 +1267,8 @@ public class FormaAnalizaCijene extends JFrame {
             return;
         }
         if (!node.isLeaf()) {
-            DefaultMutableTreeNode node1 = (DefaultMutableTreeNode) jTreeNorma.getSelectionPath().getPathComponent(1);
+            DefaultMutableTreeNode node1 = (DefaultMutableTreeNode) jTreeNorma.getSelectionPath()
+                    .getPathComponent(1);
             DefaultMutableTreeNode root = (DefaultMutableTreeNode) jTreeNorma.getModel().getRoot();
             int expand = 0;
             for (int i = 0; i < root.getChildCount(); i++) {
@@ -1379,24 +1414,34 @@ public class FormaAnalizaCijene extends JFrame {
                 try {
                     Integer.valueOf(tblOperacije.getValueAt(i, 0).toString());
                 } catch (NumberFormatException e) {
-                    nfePoruka = "Unešena vrijednost " + (i + 1) + ". reda i 1. stupca \"" + tblOperacije.getValueAt(i, 0).toString() + "\" ne odgovara numeričkom unosu.";
+                    nfePoruka = "Unešena vrijednost " + (i + 1) + ". reda i 1. stupca \"" + tblOperacije
+                            .getValueAt(i, 0).toString() + "\" ne odgovara numeričkom unosu.";
                     JOptionPane.showMessageDialog(jFrameEditAnalizaCijene, nfePoruka);
                     return;
                 }
             }
-            if (tblOperacije.getValueAt(i, 3) != "" || tblOperacije.getValueAt(i, 4) != "" || tblOperacije.getValueAt(i, 2) != "") {
-                Rad redRad = nadjiRad(tblOperacije.getValueAt(i, 3).toString(), tblOperacije.getValueAt(i, 4).toString());
+            if (tblOperacije.getValueAt(i, 3) != "" || tblOperacije.getValueAt(i, 4) != "" || tblOperacije
+                    .getValueAt(i,
+                            2) != "") {
+                Rad redRad
+                        = nadjiRad(tblOperacije.getValueAt(i, 3).toString(), tblOperacije.getValueAt(i, 4)
+                                .toString());
                 if (redRad == null) {
-                    JOptionPane.showMessageDialog(jFrameEditAnalizaCijene, "Grupa radnik i kategroija rad nije pravilno unešenja za " + (i + 1) + ". red");
+                    JOptionPane.showMessageDialog(jFrameEditAnalizaCijene,
+                            "Grupa radnik i kategroija rad nije pravilno unešenja za " + (i + 1) + ". red");
                     return;
                 }
-                model.setValueAt(redRad.getCijena().multiply(new BigDecimal(tblOperacije.getValueAt(i, 2).toString().replace(",", "."))), i, 5);
+                model.setValueAt(redRad.getCijena().multiply(new BigDecimal(tblOperacije.getValueAt(i, 2)
+                        .toString()
+                        .replace(",", "."))), i, 5);
                 redRad.getCijena();
 
                 AnalizaRad redAnalizaRad = new AnalizaRad();
                 redAnalizaRad.setBrojOperacije(Integer.valueOf(tblOperacije.getValueAt(i, 0).toString()));
                 redAnalizaRad.setOpisOperacije(tblOperacije.getValueAt(i, 1).toString());
-                redAnalizaRad.setJedinicniNormativVremena(new BigDecimal(tblOperacije.getValueAt(i, 2).toString().replace(",", ".")));
+                redAnalizaRad.setJedinicniNormativVremena(new BigDecimal(tblOperacije.getValueAt(i, 2)
+                        .toString()
+                        .replace(",", ".")));
                 redAnalizaRad.setCijenaVrijeme(new BigDecimal(tblOperacije.getValueAt(i, 5).toString()));
                 redAnalizaRad.setRad(redRad);
                 redAnalizaRad.setAnalizaCijene(analizaCijene);
@@ -1463,6 +1508,7 @@ public class FormaAnalizaCijene extends JFrame {
         for (AnalizaMaterijal analizaMaterijal : analizaCijene.getAnalizeMaterijala()) {
             materijalUnutarAnalize.add(analizaMaterijal.getMaterijal());
         }
+        ucitajMaterijal();
         rezultatiMaterijal.removeAll(materijalUnutarAnalize);
         jFrameDodavanjeMaterijala.setVisible(true);
         popunjavanjeTabliceDodajMaterijal(tblDodavanjeMaterijal);
@@ -1475,19 +1521,63 @@ public class FormaAnalizaCijene extends JFrame {
     }//GEN-LAST:event_btnDodajMaterijalActionPerformed
 
     private void btnKalkulirajMaterijalActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnKalkulirajMaterijalActionPerformed
-        // TODO add your handling code here:
+        String nfePoruka = "";
+        DefaultTableModel model = (DefaultTableModel) tblMaterijal.getModel();
+
+        int i = 0;
+        for (AnalizaMaterijal analizaMaterijal : analizaCijene.getAnalizeMaterijala()) {
+            try {
+                new BigDecimal(tblMaterijal.getValueAt(i, 5).toString());
+            } catch (NumberFormatException nfe) {
+                nfePoruka = "Unešena vrijednost " + (i + 1) + ". reda i 6. stupca \"" + tblMaterijal.getValueAt(i, 5).toString() + "\" ne odgovara numeričkom unosu.";
+                JOptionPane.showMessageDialog(jFrameEditAnalizaCijene, nfePoruka);
+                return;
+            }
+            if (!tblMaterijal.getValueAt(i, 5).toString().equals("0")) {
+
+                analizaMaterijal.setKolicina(new BigDecimal(tblMaterijal.getValueAt(i, 5).toString()));
+                analizaMaterijal.setCijenaMaterijal(analizaMaterijal.getKolicina().multiply(analizaMaterijal.getJedinicnaCijenaMaterijal()));
+
+            }
+            i++;
+        }
+
+        List<AnalizaMaterijal> listaAnalizaMaterijalaZaMakniti = new ArrayList<>();
+        i = 0;
+        for (AnalizaMaterijal analizaMaterijal : analizaCijene.getAnalizeMaterijala()) {
+            if (tblMaterijal.getValueAt(i, 5).toString().equals("0")) {
+                listaAnalizaMaterijalaZaMakniti.add(analizaMaterijal);
+            }
+//            else {
+//
+//                analizaCijene.getAnalizeMaterijala().remove(analizaMaterijal);
+//
+//            }
+            i++;
+        }
+
+        analizaCijene.getAnalizeMaterijala().removeAll(listaAnalizaMaterijalaZaMakniti);
+
+        popunjavanjeTabliceMaterijali(tblMaterijal);
+        zbrojiCijenaMaterijal();
     }//GEN-LAST:event_btnKalkulirajMaterijalActionPerformed
 
     private void btnObrisiMaterijalActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnObrisiMaterijalActionPerformed
-        // TODO add your handling code here:
+        int row = tblMaterijal.getSelectedRow();
+        DefaultTableModel model = (DefaultTableModel) tblMaterijal.getModel();
+
+        if (row == -1) {
+            return;
+        }
+        model.removeRow(row);
+        if (row + 1 == analizaCijene.getAnalizeMaterijala().size()) {
+            analizaCijene.getAnalizeMaterijala().remove(row);
+        }
+        popunjavanjeTabliceMaterijali(tblMaterijal);
     }//GEN-LAST:event_btnObrisiMaterijalActionPerformed
 
-    private void tblDodavanjeMaterijalComponentResized(java.awt.event.ComponentEvent evt) {//GEN-FIRST:event_tblDodavanjeMaterijalComponentResized
-        tblDodavanjeMaterijal.setRowHeight(16);
-        //        updateRowHeights(tblMaterijal);
-    }//GEN-LAST:event_tblDodavanjeMaterijalComponentResized
-
     private void tblDodavanjeMaterijalMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_tblDodavanjeMaterijalMouseClicked
+        System.out.println("=== 0 tblDodavanjeMaterijalMouseClicked " + analizaCijene.getAnalizeMaterijala());
         if (evt.getClickCount() == 2 && evt.getButton() == MouseEvent.BUTTON1) {
             int row = tblDodavanjeMaterijal.getSelectedRow();
             if (row != -1) {
@@ -1495,14 +1585,18 @@ public class FormaAnalizaCijene extends JFrame {
                 Materijal odabraniMaterijal = rezultatiMaterijal.get(tblDodavanjeMaterijal.convertRowIndexToModel(row));
                 AnalizaMaterijal dodavanjeAnalizaMaterijal = new AnalizaMaterijal();
                 dodavanjeAnalizaMaterijal.setMaterijal(odabraniMaterijal);
-                dodavanjeAnalizaMaterijal.setKolicina(BigDecimal.ONE);
-                dodavanjeAnalizaMaterijal.setCijenaMaterijal(BigDecimal.ZERO);
+                dodavanjeAnalizaMaterijal.setJedinicnaCijenaMaterijal(odabraniMaterijal.getCijenaAmbalaza().divide(odabraniMaterijal.getKolicinaAmbalaza()));
+                dodavanjeAnalizaMaterijal.setKolicina(BigDecimal.ZERO);
+                dodavanjeAnalizaMaterijal.setCijenaMaterijal(dodavanjeAnalizaMaterijal.
+                        getJedinicnaCijenaMaterijal().multiply(dodavanjeAnalizaMaterijal.getKolicina()));
                 dodavanjeAnalizaMaterijal.setAnalizaCijene(analizaCijene);
+
                 analizaCijene.getAnalizeMaterijala().add(dodavanjeAnalizaMaterijal);
                 popunjavanjeTabliceMaterijali(tblMaterijal);
                 jFrameDodavanjeMaterijala.setVisible(false);
             }
         }
+        System.out.println("===1 tblDodavanjeMaterijalMouseClicked " + analizaCijene.getAnalizeMaterijala());
     }//GEN-LAST:event_tblDodavanjeMaterijalMouseClicked
 
     // Variables declaration - do not modify//GEN-BEGIN:variables

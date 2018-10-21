@@ -21,11 +21,9 @@ public class AnalizaMaterijal extends Entitet implements Serializable {
 
     private BigDecimal kolicina, jedinicnaCijenaMaterijal, cijenaMaterijal;
 
-    private String jedinicaMjere;
-    
     @ManyToOne
     private Materijal materijal;
-    
+
     @ManyToOne
     private AnalizaCijene analizaCijene;
 
@@ -53,15 +51,6 @@ public class AnalizaMaterijal extends Entitet implements Serializable {
         this.cijenaMaterijal = cijenaMaterijal;
     }
 
-    public String getJedinicaMjere() {
-        return jedinicaMjere;
-    }
-
-    public void setJedinicaMjere(String jedinicaMjere) {
-        this.jedinicaMjere = jedinicaMjere;
-    }
-
-    
     public Materijal getMaterijal() {
         return materijal;
     }
@@ -77,10 +66,10 @@ public class AnalizaMaterijal extends Entitet implements Serializable {
     public void setAnalizaCijene(AnalizaCijene analizaCijene) {
         this.analizaCijene = analizaCijene;
     }
-    
+
     @Override
     public String toString() {
-        return /*analiza_cijene.getOznaka_norme() + ", " + */materijal.getGrupaMaterijal() + ", " + materijal.getOznaka() + ", " + getKolicina() + " " + getJedinicaMjere()  + ", Iznos: " + getCijenaMaterijal() +" kn"; 
+        return /*analiza_cijene.getOznaka_norme() + ", " + */ materijal.getGrupaMaterijal() + ", " + materijal.getOznaka() /*+ ", " + getKolicina() + ", Iznos: " + getCijenaMaterijal() + " kn"*/;
     }
-    
+
 }

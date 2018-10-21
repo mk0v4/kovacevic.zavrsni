@@ -232,7 +232,7 @@ public class PocetniLoad {
         HibernateObrada<AnalizaMaterijal> obradaAnalizeMaterijala = new HibernateObrada<>();
         AnalizaMaterijal analizaMaterijal = new AnalizaMaterijal();
         analizaMaterijal.setKolicina(new BigDecimal(146.00));
-        analizaMaterijal.setJedinicaMjere("kg");
+//        analizaMaterijal.setJedinicaMjere("kg");
         analizaMaterijal.setJedinicnaCijenaMaterijal(new BigDecimal(0.80));
         analizaMaterijal.setCijenaMaterijal(new BigDecimal(116.80));
         analizaMaterijal.setAnalizaCijene(analizaCijene1);
@@ -241,7 +241,7 @@ public class PocetniLoad {
 
         AnalizaMaterijal analizaMaterijal1 = new AnalizaMaterijal();
         analizaMaterijal1.setKolicina(new BigDecimal(0.31));
-        analizaMaterijal1.setJedinicaMjere("m3");
+//        analizaMaterijal1.setJedinicaMjere("m3");
         analizaMaterijal1.setJedinicnaCijenaMaterijal(new BigDecimal(324.00));
         analizaMaterijal1.setCijenaMaterijal(new BigDecimal(100.44));
         analizaMaterijal1.setAnalizaCijene(analizaCijene1);
@@ -250,7 +250,7 @@ public class PocetniLoad {
 
         AnalizaMaterijal analizaMaterijal2 = new AnalizaMaterijal();
         analizaMaterijal2.setKolicina(new BigDecimal(0.93));
-        analizaMaterijal2.setJedinicaMjere("m3");
+//        analizaMaterijal2.setJedinicaMjere("m3");
         analizaMaterijal2.setJedinicnaCijenaMaterijal(new BigDecimal(90.00));
         analizaMaterijal2.setCijenaMaterijal(new BigDecimal(83.70));
         analizaMaterijal2.setAnalizaCijene(analizaCijene1);
@@ -259,7 +259,7 @@ public class PocetniLoad {
 
         AnalizaMaterijal analizaMaterijal3 = new AnalizaMaterijal();
         analizaMaterijal3.setKolicina(new BigDecimal(0.24));
-        analizaMaterijal3.setJedinicaMjere("m3");
+//        analizaMaterijal3.setJedinicaMjere("m3");
         analizaMaterijal3.setJedinicnaCijenaMaterijal(new BigDecimal(15.00));
         analizaMaterijal3.setCijenaMaterijal(new BigDecimal(3.60));
         analizaMaterijal3.setAnalizaCijene(analizaCijene1);
@@ -268,7 +268,7 @@ public class PocetniLoad {
 
         AnalizaMaterijal analizaMaterijal4 = new AnalizaMaterijal();
         analizaMaterijal4.setKolicina(new BigDecimal(275));
-        analizaMaterijal4.setJedinicaMjere("kom");
+//        analizaMaterijal4.setJedinicaMjere("kom");
         analizaMaterijal4.setJedinicnaCijenaMaterijal(new BigDecimal(0.28));
         analizaMaterijal4.setCijenaMaterijal(new BigDecimal(77.00));
         analizaMaterijal4.setAnalizaCijene(analizaCijene);
@@ -277,7 +277,7 @@ public class PocetniLoad {
 
         AnalizaMaterijal analizaMaterijal5 = new AnalizaMaterijal();
         analizaMaterijal5.setKolicina(new BigDecimal(0.32));
-        analizaMaterijal5.setJedinicaMjere("m3");
+//        analizaMaterijal5.setJedinicaMjere("m3");
         analizaMaterijal5.setJedinicnaCijenaMaterijal(new BigDecimal(304.54));
         analizaMaterijal5.setCijenaMaterijal(new BigDecimal(97.45));
         analizaMaterijal5.setAnalizaCijene(analizaCijene);

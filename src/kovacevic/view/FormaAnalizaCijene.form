@@ -602,7 +602,8 @@
                     <Component class="javax.swing.JTable" name="tblMaterijal">
                       <Properties>
                         <Property name="model" type="javax.swing.table.TableModel" editor="org.netbeans.modules.form.editors2.TableModelEditor">
-                          <Table columnCount="6" rowCount="0">
+                          <Table columnCount="7" rowCount="0">
+                            <Column editable="false" title="null" type="java.lang.Object"/>
                             <Column editable="false" title="null" type="java.lang.Object"/>
                             <Column editable="false" title="null" type="java.lang.Object"/>
                             <Column editable="false" title="null" type="java.lang.Object"/>
@@ -613,6 +614,11 @@
                         </Property>
                         <Property name="columnModel" type="javax.swing.table.TableColumnModel" editor="org.netbeans.modules.form.editors2.TableColumnModelEditor">
                           <TableColumnModel selectionModel="1">
+                            <Column maxWidth="-1" minWidth="-1" prefWidth="-1" resizable="true">
+                              <Title/>
+                              <Editor/>
+                              <Renderer/>
+                            </Column>
                             <Column maxWidth="-1" minWidth="-1" prefWidth="-1" resizable="true">
                               <Title/>
                               <Editor/>
@@ -757,7 +763,6 @@
                   </Properties>
                   <Events>
                     <EventHandler event="mouseClicked" listener="java.awt.event.MouseListener" parameters="java.awt.event.MouseEvent" handler="tblDodavanjeMaterijalMouseClicked"/>
-                    <EventHandler event="componentResized" listener="java.awt.event.ComponentListener" parameters="java.awt.event.ComponentEvent" handler="tblDodavanjeMaterijalComponentResized"/>
                   </Events>
                 </Component>
               </SubComponents>

@@ -278,7 +278,7 @@ public class FormaAnalizaMaterijal extends Forma<AnalizaMaterijal> {
                             .addComponent(btnDodaj)
                             .addComponent(btnPromjeni)
                             .addComponent(btnObrisi)))
-                    .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 270, Short.MAX_VALUE))
+                    .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                 .addContainerGap())
         );
 
@@ -301,7 +301,7 @@ public class FormaAnalizaMaterijal extends Forma<AnalizaMaterijal> {
     }//GEN-LAST:event_btnPromjeniActionPerformed
     @Override
     protected void spremi() {
-        entitet.setJedinicaMjere(txtJedinicaMjere.getText());
+//        entitet.setJedinicaMjere(txtJedinicaMjere.getText());
         entitet.setKolicina(new BigDecimal(txtKolicina.getText()));
         entitet.setJedinicnaCijenaMaterijal(new BigDecimal(txtJedinicnaCijenaMaterijal.getText()));
         entitet.setCijenaMaterijal(new BigDecimal(txtCijenaMaterijal.getText()));
@@ -338,7 +338,7 @@ public class FormaAnalizaMaterijal extends Forma<AnalizaMaterijal> {
 
         try {
             this.entitet = lstAnalizaMaterijala.getSelectedValue();
-            txtJedinicaMjere.setText(lstAnalizaMaterijala.getSelectedValue().getJedinicaMjere());
+//            txtJedinicaMjere.setText(lstAnalizaMaterijala.getSelectedValue().getJedinicaMjere());
             txtKolicina.setText(lstAnalizaMaterijala.getSelectedValue().getKolicina().toString());
             txtJedinicnaCijenaMaterijal.setText(lstAnalizaMaterijala.getSelectedValue().getJedinicnaCijenaMaterijal().toString());
             txtCijenaMaterijal.setText(lstAnalizaMaterijala.getSelectedValue().getCijenaMaterijal().toString());
