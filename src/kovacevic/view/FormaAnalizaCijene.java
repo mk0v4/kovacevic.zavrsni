@@ -39,6 +39,7 @@ import kovacevic.model.Materijal;
 import kovacevic.model.Rad;
 import kovacevic.model.StavkaTroskovnik;
 import kovacevic.pomocno.HibernateUtil;
+import kovacevic.pomocno.PorukaIznimke;
 import kovacevic.pomocno.WrappableTable;
 
 /**
@@ -47,11 +48,14 @@ import kovacevic.pomocno.WrappableTable;
  */
 public class FormaAnalizaCijene extends JFrame {
 
-    private List<AnalizaMaterijal> analizaMaterijal;
-    private List<AnalizaRad> analizaRad;
+//    iz liste u obradu i save
+    private List<AnalizaMaterijal> analizaMaterijal = new ArrayList<>();
+//    iz liste u obradu i save
+    private AnalizaRad analizaRad;
+    private List<AnalizaRad> rezultatiAnalizaRad = new ArrayList<>();
     private List<StavkaTroskovnik> stavkaTroskovnik;
 
-    private final ObradaAnalizaCijene obradaAnalizaCijene;
+    private ObradaAnalizaCijene obradaAnalizaCijene;
     private AnalizaCijene analizaCijene;
     private List<AnalizaCijene> rezultatiAnalizaCijena;
 
@@ -62,9 +66,9 @@ public class FormaAnalizaCijene extends JFrame {
     private Materijal materijal;
     private List<Materijal> rezultatiMaterijal;
 
-    private final boolean dodaj = false;
-    private final boolean promijeni = false;
-    private final boolean obrisi = false;
+    private boolean dodaj = false;
+    private boolean promijeni = false;
+    private boolean obrisi = false;
 
     private final JPopupMenu menuJTree = new JPopupMenu("Popup");
     private final JMenuItem dodajGrupacijaNorme = new JMenuItem("Dodaj");
@@ -204,6 +208,9 @@ public class FormaAnalizaCijene extends JFrame {
         });
     }
 
+    /**
+     * Ispunjavanje panela za unos
+     */
     private void ispunjavanjeAnalizaCijena() {
         analizaCijene = null;
         txtOznakaNorme.setText("");
@@ -215,6 +222,9 @@ public class FormaAnalizaCijene extends JFrame {
         }
     }
 
+    /**
+     * Ispunjavanje panela sa izmjenama
+     */
     private void ispunjavanjePromjenaAnalizaCijena() {
         int row = jTableNorma.getSelectedRow();
         if (row != -1) {
@@ -228,12 +238,87 @@ public class FormaAnalizaCijene extends JFrame {
             analizaCijene = null;
         }
         txtKoeficijentFirme.setText(BigDecimal.ONE.toString());
+
+        rezultatiAnalizaRad.addAll(analizaCijene.getAnalizeRadova());
+
         popunjavanjeTabliceOperacije(tblOperacije);
         popunjavanjeTabliceGrupeRada(tblGrupeRada);
         popunjavanjeTabliceMaterijali(tblMaterijal);
         zbrojiCijenaRad();
         ukupnaCijenaRad();
+        zbrojiCijenaMaterijal();
         ukupanNormativVremena();
+    }
+
+    protected void dpoAnalizaCijene() {
+
+//      - kod dodavanja i promjene napravit abakusiranje operacija i materijala; kod brisanja nije
+//      - brisanje analizaRada i analieMaterijala veze
+//      - rad i materijal ostaje
+//    
+//    @ManyToOne
+//    private StavkaTroskovnik stavkaTroskovnik;
+//
+        String nfePoruka = "";
+        String dodatakNaslovu = "";
+        analizaCijene.setGrupacijaNorme(grupacijaNorme);
+        analizaCijene.setOznakaNorme(txtOznakaNorme.getText());
+        analizaCijene.setOpis(tarOpisNorme.getText());
+        analizaCijene.setJedinicaMjere(txtJedinicaMjere.getText());
+
+        analizaCijene.setAnalizeRadova(rezultatiAnalizaRad);
+//        dpoAnalizaRad(rezultatiAnalizaRad);
+        for (AnalizaRad analizaRada : rezultatiAnalizaRad) {
+
+        }
+//
+        analizaCijene.setUkupnaCijenaRad(new BigDecimal(txtCijenaRada.getText()));
+        if (txtKoeficijentFirme.getText().trim().equals("")) {
+            analizaCijene.setKoeficijentFirme(null);
+        } else {
+            try {
+                analizaCijene.setKoeficijentFirme(new BigDecimal(txtKoeficijentFirme.getText()));
+            } catch (NumberFormatException nfe) {
+                nfePoruka = "Unešena vrijednost polja " + lblKoeficijentFirme.getText().replace(":", "") + " ne odgovara numeričkom unosu.";
+            }
+        }
+        analizaCijene.setUkupanNormativVremena(new BigDecimal(txtUkupanNormativVremena.getText()));
+
+        analizaCijene.setAnalizeMaterijala(analizaMaterijal);
+        analizaCijene.setUkupnaCijenaMaterijal(new BigDecimal(txtUkupnoMaterijal.getText()));
+
+        analizaCijene.setSveukupanIznos(new BigDecimal(txtUkupnaCijenaPoJedinici.getText()));
+
+        try {
+            if (dodaj == true) {
+                dodatakNaslovu = " - Dodavanje novog";
+                obradaAnalizaCijene.spremi(analizaCijene);
+            }
+            if (promijeni == true) {
+                dodatakNaslovu = " - Promijena";
+                obradaAnalizaCijene.promijeni(analizaCijene);
+            }
+            if (obrisi == true) {
+                dodatakNaslovu = " - Brisanje";
+                obradaAnalizaCijene.obrisi(analizaCijene);
+            }
+        } catch (PorukaIznimke pi) {
+            JOptionPane.showMessageDialog(rootPane, (nfePoruka.trim().equals("") ? "" : nfePoruka + "\n") + pi.getOpis() + pi.getGreska(),
+                    getTitle() + dodatakNaslovu, HEIGHT);
+//            if (pi.getGreska().contains(ObradaRad.GRUPA_RADOVA)) {
+//                txtRadGrupaRadova.requestFocus();
+//            } else if (pi.getGreska().contains(ObradaRad.KATEGORIJA_RAD)) {
+//                txtRadKategorijaRad.requestFocus();
+//            } else if (pi.getGreska().contains(ObradaRad.CIJENA_RAD)) {
+//                txtRadCijena.requestFocus();
+//            }
+            return;
+        }
+        popunjavanjeJTree();
+    }
+
+    private void dpoAnalizaRad(AnalizaRad analizaRad) {
+
     }
 
     private void ukupanNormativVremena() {
@@ -353,52 +438,6 @@ public class FormaAnalizaCijene extends JFrame {
         for (String r : rad) {
             m.addElement(r);
         }
-    }
-
-    private class GrupaRadova {
-
-        private String grupaRadova, kategorijaGrupaRadova;
-
-        private BigDecimal cijenaGrupaRadova, jedinicniNormativVremenaGrupaRadova;
-
-        public String getGrupaRadova() {
-            return grupaRadova;
-        }
-
-        public void setGrupaRadova(String grupaRadova) {
-            this.grupaRadova = grupaRadova;
-        }
-
-        public String getKategorijaGrupaRadova() {
-            return kategorijaGrupaRadova;
-        }
-
-        public void setKategorijaGrupaRadova(String kategorijaGrupaRadova) {
-            this.kategorijaGrupaRadova = kategorijaGrupaRadova;
-        }
-
-        public BigDecimal getCijenaGrupaRadova() {
-            return cijenaGrupaRadova;
-        }
-
-        public void setCijenaGrupaRadova(BigDecimal cijenaGrupaRadova) {
-            this.cijenaGrupaRadova = cijenaGrupaRadova;
-        }
-
-        public BigDecimal getJedinicniNormativVremenaGrupaRadova() {
-            return jedinicniNormativVremenaGrupaRadova;
-        }
-
-        public void setJedinicniNormativVremenaGrupaRadova(BigDecimal jedinicniNormativVremenaGrupaRadova) {
-            this.jedinicniNormativVremenaGrupaRadova = jedinicniNormativVremenaGrupaRadova;
-        }
-
-        @Override
-        public String toString() {
-            return grupaRadova + " " + kategorijaGrupaRadova + " "
-                    + jedinicniNormativVremenaGrupaRadova + " " + cijenaGrupaRadova;
-        }
-
     }
 
     private void popunjavanjeTabliceOperacije(JTable tablica) {
@@ -616,28 +655,7 @@ public class FormaAnalizaCijene extends JFrame {
         model.setRoot(root);
     }
 
-    private class NameOfJTreeNode extends DefaultMutableTreeNode {
-
-        private String nodeName;
-
-        private NameOfJTreeNode(String nodeName, Object userObject) {
-            super(userObject);
-            this.nodeName = nodeName;
-        }
-
-        public void setNodeName(String nodeName) {
-            this.nodeName = nodeName;
-            ((DefaultTreeModel) jTreeNorma.getModel()).nodeChanged(this);
-        }
-
-        @Override
-        public String toString() {
-            return (nodeName != null) ? nodeName : super.toString();
-        }
-
-    }
-
-    public static boolean matchingCharactes(String string1, String string2, int numberOfChar) {
+    private static boolean matchingCharactes(String string1, String string2, int numberOfChar) {
         String matchingPart = "";
         searchingMatch:
         for (int i = 0; i <= numberOfChar - 1; i++) {
@@ -676,9 +694,6 @@ public class FormaAnalizaCijene extends JFrame {
         txtJedinicaMjere = new javax.swing.JTextField();
         lblUkupnoVrijeme = new javax.swing.JLabel();
         txtUkupanNormativVremena = new javax.swing.JTextField();
-        btnDodaj = new javax.swing.JButton();
-        btnPromjeni = new javax.swing.JButton();
-        btnObrisi = new javax.swing.JButton();
         lblOznakaGrupeNorme = new javax.swing.JLabel();
         txtOznakaGrupeNorme = new javax.swing.JTextField();
         lblUkupnaCijenaPoJedinici = new javax.swing.JLabel();
@@ -708,6 +723,10 @@ public class FormaAnalizaCijene extends JFrame {
         btnDodajMaterijal = new javax.swing.JButton();
         btnKalkulirajMaterijal = new javax.swing.JButton();
         btnObrisiMaterijal = new javax.swing.JButton();
+        jPanel1 = new javax.swing.JPanel();
+        btnObrisi = new javax.swing.JButton();
+        btnPromjeni = new javax.swing.JButton();
+        btnDodaj = new javax.swing.JButton();
         jFrameDodavanjeMaterijala = new javax.swing.JFrame();
         jPanelDodavanjeMaterijal = new javax.swing.JPanel();
         jScrollPaneMaterijal = new javax.swing.JScrollPane();
@@ -718,7 +737,7 @@ public class FormaAnalizaCijene extends JFrame {
         jScrollPaneTableNorma = new javax.swing.JScrollPane();
         jTableNorma = new javax.swing.JTable();
 
-        jFrameEditAnalizaCijene.setMinimumSize(new java.awt.Dimension(650, 400));
+        jFrameEditAnalizaCijene.setMinimumSize(new java.awt.Dimension(650, 430));
 
         jTabbedPane1.setMinimumSize(new java.awt.Dimension(600, 400));
         jTabbedPane1.setPreferredSize(new java.awt.Dimension(600, 400));
@@ -745,27 +764,6 @@ public class FormaAnalizaCijene extends JFrame {
 
         txtUkupanNormativVremena.setEditable(false);
 
-        btnDodaj.setText("Dodaj");
-        btnDodaj.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                btnDodajActionPerformed(evt);
-            }
-        });
-
-        btnPromjeni.setText("Promjeni");
-        btnPromjeni.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                btnPromjeniActionPerformed(evt);
-            }
-        });
-
-        btnObrisi.setText("Obriši");
-        btnObrisi.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                btnObrisiActionPerformed(evt);
-            }
-        });
-
         lblOznakaGrupeNorme.setText("Oznaka grupe norme:");
 
         txtOznakaGrupeNorme.setEditable(false);
@@ -790,16 +788,10 @@ public class FormaAnalizaCijene extends JFrame {
                 .addGap(18, 18, 18)
                 .addGroup(jPanelOsnovnoLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(txtUkupnaCijenaPoJedinici)
-                    .addGroup(jPanelOsnovnoLayout.createSequentialGroup()
-                        .addComponent(btnDodaj)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(btnPromjeni)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 253, Short.MAX_VALUE)
-                        .addComponent(btnObrisi))
                     .addComponent(txtUkupanNormativVremena)
                     .addComponent(txtJedinicaMjere)
                     .addComponent(txtOznakaNorme)
-                    .addComponent(jScrollPane2)
+                    .addComponent(jScrollPane2, javax.swing.GroupLayout.DEFAULT_SIZE, 416, Short.MAX_VALUE)
                     .addComponent(txtOznakaGrupeNorme))
                 .addContainerGap())
         );
@@ -830,12 +822,7 @@ public class FormaAnalizaCijene extends JFrame {
                 .addGroup(jPanelOsnovnoLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(txtUkupnaCijenaPoJedinici, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(lblUkupnaCijenaPoJedinici))
-                .addGap(31, 31, 31)
-                .addGroup(jPanelOsnovnoLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(btnDodaj)
-                    .addComponent(btnPromjeni)
-                    .addComponent(btnObrisi))
-                .addContainerGap())
+                .addGap(42, 42, 42))
         );
 
         jTabbedPane1.addTab("Osnovno", jPanelOsnovno);
@@ -877,6 +864,8 @@ public class FormaAnalizaCijene extends JFrame {
 
         lblGrupeRada.setText("Grupe rada:");
 
+        jspGrupeRada.setMinimumSize(new java.awt.Dimension(20, 60));
+
         tblGrupeRada.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
 
@@ -894,6 +883,7 @@ public class FormaAnalizaCijene extends JFrame {
             }
         });
         tblGrupeRada.setColumnSelectionAllowed(true);
+        tblGrupeRada.setMinimumSize(new java.awt.Dimension(100, 50));
         jspGrupeRada.setViewportView(tblGrupeRada);
         tblGrupeRada.getColumnModel().getSelectionModel().setSelectionMode(javax.swing.ListSelectionModel.SINGLE_SELECTION);
 
@@ -957,7 +947,7 @@ public class FormaAnalizaCijene extends JFrame {
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addGroup(jPanelOperacijaLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(jspOperacije, javax.swing.GroupLayout.DEFAULT_SIZE, 480, Short.MAX_VALUE)
-                    .addComponent(jspGrupeRada)
+                    .addComponent(jspGrupeRada, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addComponent(txtCijenaRada)
                     .addComponent(txtKoeficijentFirme)
                     .addComponent(txtUkupnaCijena))
@@ -980,7 +970,7 @@ public class FormaAnalizaCijene extends JFrame {
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(jPanelOperacijaLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(lblGrupeRada)
-                    .addComponent(jspGrupeRada, javax.swing.GroupLayout.DEFAULT_SIZE, 24, Short.MAX_VALUE))
+                    .addComponent(jspGrupeRada, javax.swing.GroupLayout.DEFAULT_SIZE, 60, Short.MAX_VALUE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(jPanelOperacijaLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(txtCijenaRada, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -993,7 +983,7 @@ public class FormaAnalizaCijene extends JFrame {
                 .addGroup(jPanelOperacijaLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(txtUkupnaCijena, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(lblUkupnaCijena))
-                .addGap(87, 87, 87))
+                .addContainerGap())
         );
 
         jTabbedPane1.addTab("Operacije", jPanelOperacija);
@@ -1058,21 +1048,22 @@ public class FormaAnalizaCijene extends JFrame {
                     .addGroup(jPanelMaterijalLayout.createSequentialGroup()
                         .addContainerGap()
                         .addGroup(jPanelMaterijalLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.CENTER)
+                            .addComponent(btnDodajMaterijal, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                             .addComponent(btnKalkulirajMaterijal)
-                            .addComponent(btnDodajMaterijal, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                            .addComponent(btnObrisiMaterijal, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addGap(18, 18, 18)
+                        .addGroup(jPanelMaterijalLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(jspMaterijal, javax.swing.GroupLayout.DEFAULT_SIZE, 485, Short.MAX_VALUE)
+                            .addComponent(txtUkupnoMaterijal)))
                     .addGroup(jPanelMaterijalLayout.createSequentialGroup()
-                        .addGap(6, 6, 6)
-                        .addComponent(lblMaterijali))
-                    .addGroup(jPanelMaterijalLayout.createSequentialGroup()
-                        .addContainerGap()
-                        .addComponent(lblUkupnoMaterijal, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addGroup(jPanelMaterijalLayout.createSequentialGroup()
-                        .addContainerGap()
-                        .addComponent(btnObrisiMaterijal, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                .addGap(18, 18, 18)
-                .addGroup(jPanelMaterijalLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jspMaterijal, javax.swing.GroupLayout.DEFAULT_SIZE, 485, Short.MAX_VALUE)
-                    .addComponent(txtUkupnoMaterijal))
+                        .addGroup(jPanelMaterijalLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addGroup(jPanelMaterijalLayout.createSequentialGroup()
+                                .addContainerGap()
+                                .addComponent(lblUkupnoMaterijal, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                            .addGroup(jPanelMaterijalLayout.createSequentialGroup()
+                                .addGap(6, 6, 6)
+                                .addComponent(lblMaterijali)))
+                        .addGap(0, 0, Short.MAX_VALUE)))
                 .addContainerGap())
         );
         jPanelMaterijalLayout.setVerticalGroup(
@@ -1086,27 +1077,80 @@ public class FormaAnalizaCijene extends JFrame {
                         .addComponent(btnDodajMaterijal, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(btnKalkulirajMaterijal)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 31, Short.MAX_VALUE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                         .addComponent(btnObrisiMaterijal, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                     .addComponent(jspMaterijal, javax.swing.GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(jPanelMaterijalLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
                     .addComponent(lblUkupnoMaterijal, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(txtUkupnoMaterijal, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addGap(143, 143, 143))
+                .addGap(124, 124, 124))
         );
 
         jTabbedPane1.addTab("Materijali", jPanelMaterijal);
+
+        btnObrisi.setText("Obriši");
+        btnObrisi.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnObrisiActionPerformed(evt);
+            }
+        });
+
+        btnPromjeni.setText("Promjeni");
+        btnPromjeni.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnPromjeniActionPerformed(evt);
+            }
+        });
+
+        btnDodaj.setText("Dodaj");
+        btnDodaj.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnDodajActionPerformed(evt);
+            }
+        });
+
+        javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
+        jPanel1.setLayout(jPanel1Layout);
+        jPanel1Layout.setHorizontalGroup(
+            jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(btnDodaj)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(btnPromjeni)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addComponent(btnObrisi)
+                .addContainerGap())
+        );
+        jPanel1Layout.setVerticalGroup(
+            jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
+                .addGap(0, 0, 0)
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                        .addComponent(btnDodaj)
+                        .addComponent(btnPromjeni))
+                    .addComponent(btnObrisi)))
+        );
 
         javax.swing.GroupLayout jFrameEditAnalizaCijeneLayout = new javax.swing.GroupLayout(jFrameEditAnalizaCijene.getContentPane());
         jFrameEditAnalizaCijene.getContentPane().setLayout(jFrameEditAnalizaCijeneLayout);
         jFrameEditAnalizaCijeneLayout.setHorizontalGroup(
             jFrameEditAnalizaCijeneLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(jTabbedPane1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+            .addGroup(jFrameEditAnalizaCijeneLayout.createSequentialGroup()
+                .addGroup(jFrameEditAnalizaCijeneLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(jTabbedPane1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addGap(0, 0, 0))
         );
         jFrameEditAnalizaCijeneLayout.setVerticalGroup(
             jFrameEditAnalizaCijeneLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(jTabbedPane1, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+            .addGroup(jFrameEditAnalizaCijeneLayout.createSequentialGroup()
+                .addComponent(jTabbedPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 355, Short.MAX_VALUE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap())
         );
 
         jFrameDodavanjeMaterijala.setMinimumSize(new java.awt.Dimension(650, 400));
@@ -1296,16 +1340,25 @@ public class FormaAnalizaCijene extends JFrame {
     }//GEN-LAST:event_btnObrisiActionPerformed
 
     private void btnDodajActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnDodajActionPerformed
+        dodaj = true;
         analizaCijene = new AnalizaCijene();
-        //        spremi();
-        repaint();
+        dpoAnalizaCijene();
+//      polozaj jtree ???
+        dodaj = false;
     }//GEN-LAST:event_btnDodajActionPerformed
 
     private void btnPromjeniActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnPromjeniActionPerformed
-        //        if (lstAnalizaCijena.getSelectedValue() == null) {
+        promijeni = true;
+        if (analizaCijene == null || jTableNorma.getSelectedRow() == -1) {
+            JOptionPane.showMessageDialog(rootPane, "Odaberite stavku vidljivu unutar tablice",
+                    getTitle() + " - Promjena postojećeg", HEIGHT);
+        }
+        dpoAnalizaCijene();
+//        if (lstAnalizaCijena.getSelectedValue() == null) {
         //            JOptionPane.showConfirmDialog(rootPane, "Prvo odaberite stavku");
         //        }
         //        spremi();
+        promijeni = false;
     }//GEN-LAST:event_btnPromjeniActionPerformed
 
     private void jTableNormaMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jTableNormaMouseClicked
@@ -1345,10 +1398,7 @@ public class FormaAnalizaCijene extends JFrame {
     private void btnDodajOperacijuActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnDodajOperacijuActionPerformed
         DefaultTableModel model = (DefaultTableModel) tblOperacije.getModel();
         model.addRow(new Object[]{"", "", "", "", "", ""});
-
-//        model.addRow(new Object[]{dodajAnalizaRad.getBrojOperacije(), dodajAnalizaRad.getOpisOperacije(),
-//            dodajAnalizaRad.getJedinicniNormativVremena(), dummyRad.getGrupaRadova(),
-//            dummyRad.getKategorijaRad(), dodajAnalizaRad.getCijenaVrijeme()});
+        rezultatiAnalizaRad.add(new AnalizaRad());
     }//GEN-LAST:event_btnDodajOperacijuActionPerformed
 
     private void btnObrisiOperacijuActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnObrisiOperacijuActionPerformed
@@ -1399,17 +1449,11 @@ public class FormaAnalizaCijene extends JFrame {
 
     private void btnKalkulirajOperacijeActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnKalkulirajOperacijeActionPerformed
         String nfePoruka = "";
-//        int row = tblOperacije.getSelectedRow();
-//        int column = tblOperacije.getSelectedColumn();
         DefaultTableModel model = (DefaultTableModel) tblOperacije.getModel();
-        int redovi = tblOperacije.getRowCount();
-//        Object valueRowColumn = tblOperacije.getValueAt(row, column);
 
-        analizaCijene.getAnalizeRadova().removeAll(analizaCijene.getAnalizeRadova());
-
-//        System.out.println("=== analizaCijene.getAnalizeRadova() " + analizaCijene.getAnalizeRadova());
-        System.out.println("redovi " + redovi);
         for (int i = 0; i < tblOperacije.getRowCount(); i++) {
+            analizaRad = rezultatiAnalizaRad.get(tblOperacije.convertRowIndexToModel(i));
+            System.out.println("=== " + i + " " + analizaRad);
             if (!tblOperacije.getValueAt(i, 0).toString().equals("")) {
                 try {
                     Integer.valueOf(tblOperacije.getValueAt(i, 0).toString());
@@ -1420,33 +1464,27 @@ public class FormaAnalizaCijene extends JFrame {
                     return;
                 }
             }
-            if (tblOperacije.getValueAt(i, 3) != "" || tblOperacije.getValueAt(i, 4) != "" || tblOperacije
-                    .getValueAt(i,
-                            2) != "") {
-                Rad redRad
-                        = nadjiRad(tblOperacije.getValueAt(i, 3).toString(), tblOperacije.getValueAt(i, 4)
-                                .toString());
+            if (tblOperacije.getValueAt(i, 2) != "" || tblOperacije.getValueAt(i, 3) != "" || tblOperacije.getValueAt(i, 4) != "") {
+
+                Rad redRad = nadjiRad(tblOperacije.getValueAt(i, 3).toString(), tblOperacije.getValueAt(i, 4).toString());
                 if (redRad == null) {
                     JOptionPane.showMessageDialog(jFrameEditAnalizaCijene,
                             "Grupa radnik i kategroija rad nije pravilno unešenja za " + (i + 1) + ". red");
                     return;
                 }
-                model.setValueAt(redRad.getCijena().multiply(new BigDecimal(tblOperacije.getValueAt(i, 2)
-                        .toString()
-                        .replace(",", "."))), i, 5);
+                model.setValueAt(redRad.getCijena().multiply(new BigDecimal(tblOperacije.getValueAt(i, 2).toString().replace(",", "."))), i, 5);
                 redRad.getCijena();
 
-                AnalizaRad redAnalizaRad = new AnalizaRad();
-                redAnalizaRad.setBrojOperacije(Integer.valueOf(tblOperacije.getValueAt(i, 0).toString()));
-                redAnalizaRad.setOpisOperacije(tblOperacije.getValueAt(i, 1).toString());
-                redAnalizaRad.setJedinicniNormativVremena(new BigDecimal(tblOperacije.getValueAt(i, 2)
-                        .toString()
-                        .replace(",", ".")));
-                redAnalizaRad.setCijenaVrijeme(new BigDecimal(tblOperacije.getValueAt(i, 5).toString()));
-                redAnalizaRad.setRad(redRad);
-                redAnalizaRad.setAnalizaCijene(analizaCijene);
-
-                analizaCijene.getAnalizeRadova().add(redAnalizaRad);
+//                AnalizaRad redAnalizaRad = new AnalizaRad();
+//                redAnalizaRad.setBrojOperacije(Integer.valueOf(tblOperacije.getValueAt(i, 0).toString()));
+//                redAnalizaRad.setOpisOperacije(tblOperacije.getValueAt(i, 1).toString());
+//                redAnalizaRad.setJedinicniNormativVremena(new BigDecimal(tblOperacije.getValueAt(i, 2)
+//                        .toString().replace(",", ".")));
+//                redAnalizaRad.setCijenaVrijeme(new BigDecimal(tblOperacije.getValueAt(i, 5).toString()));
+//                redAnalizaRad.setRad(redRad);
+//                redAnalizaRad.setAnalizaCijene(analizaCijene);
+//
+//                analizaCijene.getAnalizeRadova().add(redAnalizaRad);
             } else {
                 model.removeRow(i);
             }
@@ -1512,12 +1550,6 @@ public class FormaAnalizaCijene extends JFrame {
         rezultatiMaterijal.removeAll(materijalUnutarAnalize);
         jFrameDodavanjeMaterijala.setVisible(true);
         popunjavanjeTabliceDodajMaterijal(tblDodavanjeMaterijal);
-//        jFrameDodavanjeMaterijala.addWindowListener(new WindowAdapter() {
-//            @Override
-//            public void windowClosing(WindowEvent arg0) {
-//                popunjavanjeTabliceMaterijali(tblMaterijal);
-//            }
-//        });
     }//GEN-LAST:event_btnDodajMaterijalActionPerformed
 
     private void btnKalkulirajMaterijalActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnKalkulirajMaterijalActionPerformed
@@ -1527,7 +1559,7 @@ public class FormaAnalizaCijene extends JFrame {
         int i = 0;
         for (AnalizaMaterijal analizaMaterijal : analizaCijene.getAnalizeMaterijala()) {
             try {
-                new BigDecimal(tblMaterijal.getValueAt(i, 5).toString());
+                new BigDecimal(tblMaterijal.getValueAt(i, 5).toString().replace(",", "."));
             } catch (NumberFormatException nfe) {
                 nfePoruka = "Unešena vrijednost " + (i + 1) + ". reda i 6. stupca \"" + tblMaterijal.getValueAt(i, 5).toString() + "\" ne odgovara numeričkom unosu.";
                 JOptionPane.showMessageDialog(jFrameEditAnalizaCijene, nfePoruka);
@@ -1535,7 +1567,7 @@ public class FormaAnalizaCijene extends JFrame {
             }
             if (!tblMaterijal.getValueAt(i, 5).toString().equals("0")) {
 
-                analizaMaterijal.setKolicina(new BigDecimal(tblMaterijal.getValueAt(i, 5).toString()));
+                analizaMaterijal.setKolicina(new BigDecimal(tblMaterijal.getValueAt(i, 5).toString().replace(",", ".")));
                 analizaMaterijal.setCijenaMaterijal(analizaMaterijal.getKolicina().multiply(analizaMaterijal.getJedinicnaCijenaMaterijal()));
 
             }
@@ -1548,15 +1580,11 @@ public class FormaAnalizaCijene extends JFrame {
             if (tblMaterijal.getValueAt(i, 5).toString().equals("0")) {
                 listaAnalizaMaterijalaZaMakniti.add(analizaMaterijal);
             }
-//            else {
-//
-//                analizaCijene.getAnalizeMaterijala().remove(analizaMaterijal);
-//
-//            }
             i++;
         }
 
         analizaCijene.getAnalizeMaterijala().removeAll(listaAnalizaMaterijalaZaMakniti);
+        analizaMaterijal.addAll(analizaCijene.getAnalizeMaterijala());
 
         popunjavanjeTabliceMaterijali(tblMaterijal);
         zbrojiCijenaMaterijal();
@@ -1577,11 +1605,10 @@ public class FormaAnalizaCijene extends JFrame {
     }//GEN-LAST:event_btnObrisiMaterijalActionPerformed
 
     private void tblDodavanjeMaterijalMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_tblDodavanjeMaterijalMouseClicked
-        System.out.println("=== 0 tblDodavanjeMaterijalMouseClicked " + analizaCijene.getAnalizeMaterijala());
         if (evt.getClickCount() == 2 && evt.getButton() == MouseEvent.BUTTON1) {
             int row = tblDodavanjeMaterijal.getSelectedRow();
             if (row != -1) {
-                DefaultTableModel model = (DefaultTableModel) tblDodavanjeMaterijal.getModel();
+//                DefaultTableModel model = (DefaultTableModel) tblDodavanjeMaterijal.getModel();
                 Materijal odabraniMaterijal = rezultatiMaterijal.get(tblDodavanjeMaterijal.convertRowIndexToModel(row));
                 AnalizaMaterijal dodavanjeAnalizaMaterijal = new AnalizaMaterijal();
                 dodavanjeAnalizaMaterijal.setMaterijal(odabraniMaterijal);
@@ -1596,7 +1623,6 @@ public class FormaAnalizaCijene extends JFrame {
                 jFrameDodavanjeMaterijala.setVisible(false);
             }
         }
-        System.out.println("===1 tblDodavanjeMaterijalMouseClicked " + analizaCijene.getAnalizeMaterijala());
     }//GEN-LAST:event_tblDodavanjeMaterijalMouseClicked
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
@@ -1611,6 +1637,7 @@ public class FormaAnalizaCijene extends JFrame {
     private javax.swing.JButton btnPromjeni;
     private javax.swing.JFrame jFrameDodavanjeMaterijala;
     private javax.swing.JFrame jFrameEditAnalizaCijene;
+    private javax.swing.JPanel jPanel1;
     private javax.swing.JPanel jPanelDodavanjeMaterijal;
     private javax.swing.JPanel jPanelMaterijal;
     private javax.swing.JPanel jPanelNorma;
@@ -1654,4 +1681,72 @@ public class FormaAnalizaCijene extends JFrame {
     private javax.swing.JTextField txtUkupnaCijenaPoJedinici;
     private javax.swing.JTextField txtUkupnoMaterijal;
     // End of variables declaration//GEN-END:variables
+
+    private class NameOfJTreeNode extends DefaultMutableTreeNode {
+
+        private String nodeName;
+
+        private NameOfJTreeNode(String nodeName, Object userObject) {
+            super(userObject);
+            this.nodeName = nodeName;
+        }
+
+        public void setNodeName(String nodeName) {
+            this.nodeName = nodeName;
+            ((DefaultTreeModel) jTreeNorma.getModel()).nodeChanged(this);
+        }
+
+        @Override
+        public String toString() {
+            return (nodeName != null) ? nodeName : super.toString();
+        }
+
+    }
+
+    private class GrupaRadova {
+
+        private String grupaRadova, kategorijaGrupaRadova;
+
+        private BigDecimal cijenaGrupaRadova, jedinicniNormativVremenaGrupaRadova;
+
+        public String getGrupaRadova() {
+            return grupaRadova;
+        }
+
+        public void setGrupaRadova(String grupaRadova) {
+            this.grupaRadova = grupaRadova;
+        }
+
+        public String getKategorijaGrupaRadova() {
+            return kategorijaGrupaRadova;
+        }
+
+        public void setKategorijaGrupaRadova(String kategorijaGrupaRadova) {
+            this.kategorijaGrupaRadova = kategorijaGrupaRadova;
+        }
+
+        public BigDecimal getCijenaGrupaRadova() {
+            return cijenaGrupaRadova;
+        }
+
+        public void setCijenaGrupaRadova(BigDecimal cijenaGrupaRadova) {
+            this.cijenaGrupaRadova = cijenaGrupaRadova;
+        }
+
+        public BigDecimal getJedinicniNormativVremenaGrupaRadova() {
+            return jedinicniNormativVremenaGrupaRadova;
+        }
+
+        public void setJedinicniNormativVremenaGrupaRadova(BigDecimal jedinicniNormativVremenaGrupaRadova) {
+            this.jedinicniNormativVremenaGrupaRadova = jedinicniNormativVremenaGrupaRadova;
+        }
+
+        @Override
+        public String toString() {
+            return grupaRadova + " " + kategorijaGrupaRadova + " "
+                    + jedinicniNormativVremenaGrupaRadova + " " + cijenaGrupaRadova;
+        }
+
+    }
+
 }

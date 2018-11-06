@@ -20,8 +20,8 @@ public class ObradaAnalizaCijene {
     private final HibernateObrada<AnalizaCijene> obrada;
     private ArrayList<String> ordersBys = new ArrayList<>();
 
+    public static final String OZNAKA_GRUPA_NORME = "Grupa norme";
     public static final String OZNAKA_NORME = "Oznaka norme";
-    public static final String GRUPA_NORME = "Grupa norme";
     public static final String OPIS = "Opis norme";
     public static final String JEDINICA_MJERE = "Jedinica mjere";
     public static final String UKUPAN_NORMATIV_VREMENA = "Ukupan normativ vremena";
@@ -30,6 +30,7 @@ public class ObradaAnalizaCijene {
     public static final String KOEFICIJENT_FIRME = "Koeficijent";
     public static final String SVEUKUPAN_IZNOS = "Ukupna cijena";
     public static final String ENTITET_NULL = "vrijednost nije odabrana";
+    public static final String ANALIZE_RADOVA = "operacije nisu dodane";
 
     private boolean brisanje = false;
 
@@ -42,10 +43,10 @@ public class ObradaAnalizaCijene {
 
     public boolean provjeraDuplogUnosaAnalizaCijena(AnalizaCijene analizaCijene) {
         List<AnalizaCijene> analizaCijeneIzBaze = HibernateUtil.getSession().createQuery("from AnalizaCijene where obrisan=false "
-                )
-//                .setParameter("grupaRadova", rad.getGrupaRadova())
-//                .setParameter("kategorijaRad", rad.getKategorijaRad())
-//                .setParameter("cijena", rad.getCijena())
+        )
+                //                .setParameter("grupaRadova", rad.getGrupaRadova())
+                //                .setParameter("kategorijaRad", rad.getKategorijaRad())
+                //                .setParameter("cijena", rad.getCijena())
                 .list();
         return analizaCijeneIzBaze.size() > 0;
     }
@@ -56,6 +57,23 @@ public class ObradaAnalizaCijene {
             throw new PorukaIznimke("Entitet mora biti odabran ", "Odaberite stavku unutar tablice", ENTITET_NULL);
         }
         if (brisanje == false) {
+//            txtOznakaGrupeNorme.setText(grupacijaNorme.getOznakaNorme() + " " + grupacijaNorme.getOpis());
+            if (analizaCijene.getGrupacijaNorme().getOznakaNorme().trim().length() == 0
+                    || analizaCijene.getGrupacijaNorme().getOpis().trim().length() == 0) {
+                greske.add(OZNAKA_GRUPA_NORME);
+            }
+            if (analizaCijene.getOznakaNorme().trim().length() == 0) {
+                greske.add(OZNAKA_NORME);
+            }
+            if (analizaCijene.getOpis().trim().length() == 0) {
+                greske.add(OPIS);
+            }
+            if (analizaCijene.getJedinicaMjere().trim().length() == 0) {
+                greske.add(JEDINICA_MJERE);
+            }
+//            if (analizaCijene.getAnalizeRadova().size() == 0) {
+//                greske.add(ANALIZE_RADOVA);
+//            }
 //            if (analizaCijene.getGrupaRadova().trim().length() == 0) {
 //                greske.add(GRUPA_RADOVA);
 //            }

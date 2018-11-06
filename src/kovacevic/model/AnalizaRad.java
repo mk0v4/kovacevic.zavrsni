@@ -59,7 +59,7 @@ public class AnalizaRad extends Entitet implements Serializable {
 
     @ManyToOne
     private Rad rad;
-    
+
     @ManyToOne
     private AnalizaCijene analizaCijene;
 
@@ -78,10 +78,9 @@ public class AnalizaRad extends Entitet implements Serializable {
     public void setAnalizaCijene(AnalizaCijene analizaCijene) {
         this.analizaCijene = analizaCijene;
     }
-    
-    @Override
-    public String toString(){
-        return /*analiza_cijene.getOznaka_norme() + ", " +*/ brojOperacije + ", " + opisOperacije + ", " + rad.getGrupaRadova() + " " + rad.getKategorijaRad() + ", " + getJedinicniNormativVremena() + " h, " + getCijenaVrijeme() + " kn/h";
-    }
-    
+
+//    @Override
+//    public String toString() {
+//        return /*analiza_cijene.getOznaka_norme() + ", " +*/ brojOperacije + ", " + opisOperacije + ", " + rad.getGrupaRadova() + " " + rad.getKategorijaRad() + ", " + getJedinicniNormativVremena() + " h, " + getCijenaVrijeme() + " kn/h";
+//    }
 }

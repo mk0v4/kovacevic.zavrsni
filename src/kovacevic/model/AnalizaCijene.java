@@ -9,7 +9,6 @@ import java.io.Serializable;
 import java.math.BigDecimal;
 import java.util.List;
 import javax.persistence.Entity;
-import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
@@ -26,15 +25,15 @@ public class AnalizaCijene extends Entitet implements Serializable {
 
     private BigDecimal ukupanNormativVremena, ukupnaCijenaMaterijal, ukupnaCijenaRad, koeficijentFirme, sveukupanIznos;
 
-    @OneToMany (mappedBy = "analizaCijene")
+    @OneToMany(mappedBy = "analizaCijene")
     private List<AnalizaRad> analizeRadova;
-    
-    @OneToMany (mappedBy = "analizaCijene")
+
+    @OneToMany(mappedBy = "analizaCijene")
     private List<AnalizaMaterijal> analizeMaterijala;
-    
+
     @ManyToOne
     private StavkaTroskovnik stavkaTroskovnik;
-    
+
     @ManyToOne
     private GrupacijaNorme grupacijaNorme;
 
@@ -53,7 +52,7 @@ public class AnalizaCijene extends Entitet implements Serializable {
     public void setStavkaTroskovnik(StavkaTroskovnik stavkaTroskovnik) {
         this.stavkaTroskovnik = stavkaTroskovnik;
     }
-    
+
     public String getOznakaNorme() {
         return oznakaNorme;
     }
@@ -134,9 +133,9 @@ public class AnalizaCijene extends Entitet implements Serializable {
         this.analizeMaterijala = analizeMaterijala;
     }
 
-        @Override
-    public String toString(){
+    @Override
+    public String toString() {
         return getOznakaNorme() + ", " + getOpis();
     }
-    
+
 }
