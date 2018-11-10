@@ -7,6 +7,7 @@ package kovacevic.controller;
 
 import java.util.ArrayList;
 import java.util.List;
+import kovacevic.model.AnalizaCijene;
 import kovacevic.model.AnalizaRad;
 import kovacevic.model.Rad;
 import kovacevic.pomocno.HibernateUtil;
@@ -38,15 +39,15 @@ public class ObradaAnalizaRad {
 //        ordersBys.add("cijena");
     }
 
-    public boolean provjeraDuplogUnosaRad(AnalizaRad analizaRad) {
-        List<AnalizaRad> analizaRadIzBaze = HibernateUtil.getSession().createQuery("from AnalizaRad where obrisan=false "
-                + "and grupaRadova=:grupaRadova and kategorijaRad=:kategorijaRad and cijena=:cijena")
-                .setParameter("grupaRadova", rad.getGrupaRadova())
-                .setParameter("kategorijaRad", rad.getKategorijaRad())
-                .setParameter("cijena", rad.getCijena())
-                .list();
-        return analizaRadIzBaze.size() > 0;
-    }
+//    public boolean provjeraDuplogUnosaRad(AnalizaRad analizaRad) {
+//        List<AnalizaRad> analizaRadIzBaze = HibernateUtil.getSession().createQuery("from AnalizaRad where obrisan=false "
+//                + "and grupaRadova=:grupaRadova and kategorijaRad=:kategorijaRad and cijena=:cijena")
+//                .setParameter("grupaRadova", rad.getGrupaRadova())
+//                .setParameter("kategorijaRad", rad.getKategorijaRad())
+//                .setParameter("cijena", rad.getCijena())
+//                .list();
+//        return analizaRadIzBaze.size() > 0;
+//    }
 
     public AnalizaRad spremi(AnalizaRad analizaRad) throws PorukaIznimke {
         List<String> greske = new ArrayList<>();
@@ -102,9 +103,10 @@ public class ObradaAnalizaRad {
         brisanje = false;
     }
 
-    public List<AnalizaRad> getListaRad(AnalizaRad analizaRad) {
-        String query = "from AnalizaRad where obrisan=false" + getOrderByEntitetAsc(ordersBys);
-        List<AnalizaRad> list = HibernateUtil.getSession().createQuery(query).list();
+    public List<AnalizaRad> getListaRad(AnalizaCijene analizaCijene) {
+        String query = "from AnalizaRad where obrisan=false and analizaCijene =:analizaCijene" + getOrderByEntitetAsc(ordersBys);
+        List<AnalizaRad> list = HibernateUtil.getSession().createQuery(query)
+                .setParameter("analizaCijene", analizaCijene).list();
         return list;
     }
 

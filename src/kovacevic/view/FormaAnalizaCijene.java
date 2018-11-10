@@ -14,6 +14,8 @@ import java.awt.event.WindowEvent;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.swing.DefaultCellEditor;
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.JComboBox;
@@ -30,6 +32,7 @@ import javax.swing.tree.DefaultTreeModel;
 import javax.swing.tree.TreeNode;
 import javax.swing.tree.TreePath;
 import kovacevic.controller.ObradaAnalizaCijene;
+import kovacevic.controller.ObradaAnalizaRad;
 import kovacevic.controller.ObradaMaterijal;
 import kovacevic.model.AnalizaCijene;
 import kovacevic.model.AnalizaMaterijal;
@@ -51,6 +54,7 @@ public class FormaAnalizaCijene extends JFrame {
 //    iz liste u obradu i save
     private List<AnalizaMaterijal> analizaMaterijal = new ArrayList<>();
 //    iz liste u obradu i save
+    private ObradaAnalizaRad obradaAnalizaRad;
     private AnalizaRad analizaRad;
     private List<AnalizaRad> rezultatiAnalizaRad = new ArrayList<>();
     private List<StavkaTroskovnik> stavkaTroskovnik;
@@ -86,6 +90,8 @@ public class FormaAnalizaCijene extends JFrame {
     public FormaAnalizaCijene() {
         obradaAnalizaCijene = new ObradaAnalizaCijene();
         obradaMaterijal = new ObradaMaterijal();
+        obradaAnalizaRad = new ObradaAnalizaRad();
+//        rezultatiAnalizaRad = analizaCijene.getAnalizeRadova();
 //        jTreeNorma.setRootVisible(false);
         initComponents();
         cmbGrupeRadova = new JComboBox();
@@ -113,6 +119,10 @@ public class FormaAnalizaCijene extends JFrame {
         popuniGrupeRadova();
         ucitajMaterijal();
 
+    }
+
+    protected void ucitajAnalizaRad(AnalizaCijene odabranaAnalizaCijene) {
+        rezultatiAnalizaRad = obradaAnalizaRad.getListaRad(odabranaAnalizaCijene);
     }
 
     protected void ucitajMaterijal() {
@@ -230,6 +240,7 @@ public class FormaAnalizaCijene extends JFrame {
         if (row != -1) {
             DefaultTableModel model = (DefaultTableModel) jTableNorma.getModel();
             analizaCijene = rezultatiAnalizaCijena.get(jTableNorma.convertRowIndexToModel(row));
+            ucitajAnalizaRad(analizaCijene);
             txtOznakaNorme.setText(model.getValueAt(row, 1).toString());
             tarOpisNorme.setText(model.getValueAt(row, 2).toString());
             txtJedinicaMjere.setText(model.getValueAt(row, 3).toString());
@@ -239,8 +250,7 @@ public class FormaAnalizaCijene extends JFrame {
         }
         txtKoeficijentFirme.setText(BigDecimal.ONE.toString());
 
-        rezultatiAnalizaRad.addAll(analizaCijene.getAnalizeRadova());
-
+//        rezultatiAnalizaRad.addAll(analizaCijene.getAnalizeRadova());
         popunjavanjeTabliceOperacije(tblOperacije);
         popunjavanjeTabliceGrupeRada(tblGrupeRada);
         popunjavanjeTabliceMaterijali(tblMaterijal);
@@ -361,7 +371,7 @@ public class FormaAnalizaCijene extends JFrame {
         model.setColumnIdentifiers(coulumnName);
         ArrayList<GrupaRadova> listaGrupeRadova = new ArrayList<>();
         if (analizaCijene != null) {
-            for (AnalizaRad analizaRad : analizaCijene.getAnalizeRadova()) {
+            for (AnalizaRad analizaRad : rezultatiAnalizaRad) {
                 boolean imaDuplikat = false;
                 if (listaGrupeRadova.size() > 0) {
                     GrupaRadova grupaRad = new GrupaRadova();
@@ -526,7 +536,7 @@ public class FormaAnalizaCijene extends JFrame {
 
         });
         if (analizaCijene != null) {
-            for (AnalizaRad analizaRad : analizaCijene.getAnalizeRadova()) {
+            for (AnalizaRad analizaRad : rezultatiAnalizaRad) {
                 model.addRow(new Object[]{
                     analizaRad.getBrojOperacije(),
                     analizaRad.getOpisOperacije(),
@@ -1403,15 +1413,24 @@ public class FormaAnalizaCijene extends JFrame {
 
     private void btnObrisiOperacijuActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnObrisiOperacijuActionPerformed
         int row = tblOperacije.getSelectedRow();
+        System.out.println("btnObrisiOperacijuActionPerformed()" + row);
         DefaultTableModel model = (DefaultTableModel) tblOperacije.getModel();
 
         if (row == -1) {
             return;
         }
-        model.removeRow(row);
-        if (row + 1 == analizaCijene.getAnalizeRadova().size()) {
-            analizaCijene.getAnalizeRadova().remove(row);
+
+//        if (row + 1 == analizaCijene.getAnalizeRadova().size()) {
+        analizaRad = rezultatiAnalizaRad.get(tblOperacije.convertColumnIndexToModel(row));
+        try {
+            obradaAnalizaRad.obrisi(analizaRad);
+            ucitajAnalizaRad(analizaCijene);
+        } catch (PorukaIznimke ex) {
+            Logger.getLogger(FormaAnalizaCijene.class.getName()).log(Level.SEVERE, null, ex);
         }
+        //            analizaCijene.getAnalizeRadova().remove(row);
+//        }
+        model.removeRow(row);
         popunjavanjeTabliceGrupeRada(tblGrupeRada);
 
         zbrojiCijenaRad();
@@ -1475,16 +1494,22 @@ public class FormaAnalizaCijene extends JFrame {
                 model.setValueAt(redRad.getCijena().multiply(new BigDecimal(tblOperacije.getValueAt(i, 2).toString().replace(",", "."))), i, 5);
                 redRad.getCijena();
 
-//                AnalizaRad redAnalizaRad = new AnalizaRad();
-//                redAnalizaRad.setBrojOperacije(Integer.valueOf(tblOperacije.getValueAt(i, 0).toString()));
-//                redAnalizaRad.setOpisOperacije(tblOperacije.getValueAt(i, 1).toString());
-//                redAnalizaRad.setJedinicniNormativVremena(new BigDecimal(tblOperacije.getValueAt(i, 2)
-//                        .toString().replace(",", ".")));
-//                redAnalizaRad.setCijenaVrijeme(new BigDecimal(tblOperacije.getValueAt(i, 5).toString()));
-//                redAnalizaRad.setRad(redRad);
-//                redAnalizaRad.setAnalizaCijene(analizaCijene);
-//
-//                analizaCijene.getAnalizeRadova().add(redAnalizaRad);
+//                stao
+                AnalizaRad redAnalizaRad = new AnalizaRad();
+                redAnalizaRad.setBrojOperacije(Integer.valueOf(tblOperacije.getValueAt(i, 0).toString()));
+                redAnalizaRad.setOpisOperacije(tblOperacije.getValueAt(i, 1).toString());
+                redAnalizaRad.setJedinicniNormativVremena(new BigDecimal(tblOperacije.getValueAt(i, 2)
+                        .toString().replace(",", ".")));
+                redAnalizaRad.setCijenaVrijeme(new BigDecimal(tblOperacije.getValueAt(i, 5).toString()));
+                redAnalizaRad.setRad(redRad);
+                redAnalizaRad.setAnalizaCijene(analizaCijene);
+
+                try {
+                    obradaAnalizaRad.spremi(redAnalizaRad);
+                } catch (PorukaIznimke ex) {
+                    Logger.getLogger(FormaAnalizaCijene.class.getName()).log(Level.SEVERE, null, ex);
+                    return;
+                }
             } else {
                 model.removeRow(i);
             }
