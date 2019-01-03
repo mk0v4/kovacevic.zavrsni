@@ -8,6 +8,7 @@ package kovacevic.model;
 import java.io.Serializable;
 import java.math.BigDecimal;
 import java.util.List;
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
@@ -30,9 +31,13 @@ public class StavkaTroskovnik extends Entitet implements Serializable {
         this.oznakaStavka = oznakaStavka;
     }
 
-    private BigDecimal kolicinaTroskovnik, ukupnaCijena;
+    @Column(precision = 19, scale = 4)
+    private BigDecimal kolicinaTroskovnik;
 
-    @OneToMany (mappedBy = "stavkaTroskovnik")
+    @Column(precision = 19, scale = 4)
+    private BigDecimal ukupnaCijena;
+
+    @OneToMany(mappedBy = "stavkaTroskovnik")
     private List<AnalizaCijene> analizeCijena;
 
     public List<AnalizaCijene> getAnalizeCijena() {
@@ -42,7 +47,7 @@ public class StavkaTroskovnik extends Entitet implements Serializable {
     public void setAnalizeCijena(List<AnalizaCijene> analizeCijena) {
         this.analizeCijena = analizeCijena;
     }
-    
+
     public String getDodatanOpis() {
         return dodatanOpis;
     }
@@ -71,5 +76,5 @@ public class StavkaTroskovnik extends Entitet implements Serializable {
     public String toString() {
         return getOznakaStavka();
     }
-    
+
 }

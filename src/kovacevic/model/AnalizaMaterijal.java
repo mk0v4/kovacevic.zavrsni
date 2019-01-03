@@ -7,6 +7,7 @@ package kovacevic.model;
 
 import java.io.Serializable;
 import java.math.BigDecimal;
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
@@ -19,7 +20,14 @@ import javax.persistence.Table;
 @Table
 public class AnalizaMaterijal extends Entitet implements Serializable {
 
-    private BigDecimal kolicina, jedinicnaCijenaMaterijal, cijenaMaterijal;
+    @Column(precision = 19, scale = 4)
+    private BigDecimal kolicina;
+
+    @Column(precision = 19, scale = 4)
+    private BigDecimal jedinicnaCijenaMaterijal;
+
+    @Column(precision = 19, scale = 4)
+    private BigDecimal cijenaMaterijal;
 
     @ManyToOne
     private Materijal materijal;

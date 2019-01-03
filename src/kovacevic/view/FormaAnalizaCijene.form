@@ -5,7 +5,7 @@
     <Container class="javax.swing.JFrame" name="jFrameEditAnalizaCijene">
       <Properties>
         <Property name="minimumSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
-          <Dimension value="[650, 430]"/>
+          <Dimension value="[650, 440]"/>
         </Property>
       </Properties>
 
@@ -24,10 +24,10 @@
         <DimensionLayout dim="1">
           <Group type="103" groupAlignment="0" attributes="0">
               <Group type="102" alignment="0" attributes="0">
-                  <Component id="jTabbedPane1" pref="355" max="32767" attributes="0"/>
-                  <EmptySpace min="-2" max="-2" attributes="0"/>
+                  <Component id="jTabbedPane1" pref="367" max="32767" attributes="0"/>
+                  <EmptySpace max="-2" attributes="0"/>
                   <Component id="jPanel1" min="-2" max="-2" attributes="0"/>
-                  <EmptySpace min="-2" max="-2" attributes="0"/>
+                  <EmptySpace max="-2" attributes="0"/>
               </Group>
           </Group>
         </DimensionLayout>
@@ -247,7 +247,7 @@
                           <EmptySpace type="unrelated" min="-2" max="-2" attributes="0"/>
                           <Group type="103" groupAlignment="0" attributes="0">
                               <Component id="jspOperacije" alignment="0" pref="480" max="32767" attributes="0"/>
-                              <Component id="jspGrupeRada" alignment="0" max="32767" attributes="0"/>
+                              <Component id="jspGrupeRada" alignment="0" pref="480" max="32767" attributes="0"/>
                               <Component id="txtCijenaRada" alignment="0" max="32767" attributes="0"/>
                               <Component id="txtKoeficijentFirme" alignment="0" max="32767" attributes="0"/>
                               <Component id="txtUkupnaCijena" alignment="0" max="32767" attributes="0"/>
@@ -267,7 +267,7 @@
                                   <Component id="btnDodajOperaciju" min="-2" max="-2" attributes="0"/>
                                   <EmptySpace max="-2" attributes="0"/>
                                   <Component id="btnKalkulirajOperacije" min="-2" max="-2" attributes="0"/>
-                                  <EmptySpace max="32767" attributes="0"/>
+                                  <EmptySpace max="-2" attributes="0"/>
                                   <Component id="btnObrisiOperaciju" min="-2" max="-2" attributes="0"/>
                               </Group>
                               <Component id="jspOperacije" pref="0" max="32767" attributes="0"/>
@@ -472,7 +472,7 @@
                 </Component>
                 <Component class="javax.swing.JButton" name="btnKalkulirajOperacije">
                   <Properties>
-                    <Property name="text" type="java.lang.String" value="Abakusaj"/>
+                    <Property name="text" type="java.lang.String" value="&lt;html&gt;&lt;center&gt;Izra&#x10d;unaj&lt;br&gt;i spremi&lt;/center&gt;&lt;/html&gt;"/>
                   </Properties>
                   <Events>
                     <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="btnKalkulirajOperacijeActionPerformed"/>
@@ -502,31 +502,25 @@
                 <DimensionLayout dim="0">
                   <Group type="103" groupAlignment="0" attributes="0">
                       <Group type="102" attributes="0">
+                          <EmptySpace max="-2" attributes="0"/>
                           <Group type="103" groupAlignment="0" attributes="0">
                               <Group type="102" attributes="0">
-                                  <EmptySpace max="-2" attributes="0"/>
-                                  <Group type="103" groupAlignment="2" attributes="0">
-                                      <Component id="btnDodajMaterijal" alignment="2" min="-2" max="-2" attributes="0"/>
-                                      <Component id="btnKalkulirajMaterijal" alignment="2" min="-2" max="-2" attributes="0"/>
-                                      <Component id="btnObrisiMaterijal" alignment="2" min="-2" max="-2" attributes="0"/>
+                                  <Group type="103" groupAlignment="0" attributes="0">
+                                      <Group type="103" groupAlignment="2" attributes="0">
+                                          <Component id="btnDodajMaterijal" alignment="2" min="-2" max="-2" attributes="0"/>
+                                          <Component id="btnKalkulirajMaterijal" alignment="2" min="-2" max="-2" attributes="0"/>
+                                          <Component id="btnObrisiMaterijal" alignment="2" min="-2" max="-2" attributes="0"/>
+                                      </Group>
+                                      <Component id="lblMaterijali" alignment="0" min="-2" max="-2" attributes="0"/>
                                   </Group>
                                   <EmptySpace type="separate" max="-2" attributes="0"/>
                                   <Group type="103" groupAlignment="0" attributes="0">
-                                      <Component id="jspMaterijal" pref="485" max="32767" attributes="0"/>
+                                      <Component id="jspMaterijal" pref="486" max="32767" attributes="0"/>
                                       <Component id="txtUkupnoMaterijal" alignment="0" max="32767" attributes="0"/>
                                   </Group>
                               </Group>
                               <Group type="102" attributes="0">
-                                  <Group type="103" groupAlignment="0" attributes="0">
-                                      <Group type="102" alignment="0" attributes="0">
-                                          <EmptySpace max="-2" attributes="0"/>
-                                          <Component id="lblUkupnoMaterijal" min="-2" max="-2" attributes="0"/>
-                                      </Group>
-                                      <Group type="102" alignment="0" attributes="0">
-                                          <EmptySpace min="6" pref="6" max="-2" attributes="0"/>
-                                          <Component id="lblMaterijali" min="-2" max="-2" attributes="0"/>
-                                      </Group>
-                                  </Group>
+                                  <Component id="lblUkupnoMaterijal" min="-2" max="-2" attributes="0"/>
                                   <EmptySpace min="0" pref="0" max="32767" attributes="0"/>
                               </Group>
                           </Group>
@@ -545,7 +539,7 @@
                                   <Component id="btnDodajMaterijal" min="-2" max="-2" attributes="0"/>
                                   <EmptySpace max="-2" attributes="0"/>
                                   <Component id="btnKalkulirajMaterijal" min="-2" max="-2" attributes="0"/>
-                                  <EmptySpace max="32767" attributes="0"/>
+                                  <EmptySpace max="-2" attributes="0"/>
                                   <Component id="btnObrisiMaterijal" min="-2" max="-2" attributes="0"/>
                               </Group>
                               <Component id="jspMaterijal" pref="0" max="32767" attributes="0"/>
@@ -653,7 +647,7 @@
                 </Component>
                 <Component class="javax.swing.JButton" name="btnKalkulirajMaterijal">
                   <Properties>
-                    <Property name="text" type="java.lang.String" value="Abakusaj"/>
+                    <Property name="text" type="java.lang.String" value="&lt;html&gt;&lt;center&gt;Izra&#x10d;unaj&lt;br&gt;i spremi&lt;/center&gt;&lt;/html&gt;"/>
                   </Properties>
                   <Events>
                     <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="btnKalkulirajMaterijalActionPerformed"/>
@@ -681,6 +675,8 @@
                       <Component id="btnDodaj" min="-2" max="-2" attributes="0"/>
                       <EmptySpace max="-2" attributes="0"/>
                       <Component id="btnPromjeni" min="-2" max="-2" attributes="0"/>
+                      <EmptySpace max="-2" attributes="0"/>
+                      <Component id="btnRadUpute" min="-2" max="-2" attributes="0"/>
                       <EmptySpace max="32767" attributes="0"/>
                       <Component id="btnObrisi" min="-2" max="-2" attributes="0"/>
                       <EmptySpace max="-2" attributes="0"/>
@@ -695,6 +691,7 @@
                           <Group type="103" alignment="0" groupAlignment="3" attributes="0">
                               <Component id="btnDodaj" alignment="3" min="-2" max="-2" attributes="0"/>
                               <Component id="btnPromjeni" alignment="3" min="-2" max="-2" attributes="0"/>
+                              <Component id="btnRadUpute" alignment="3" min="-2" max="-2" attributes="0"/>
                           </Group>
                           <Component id="btnObrisi" min="-2" max="-2" attributes="0"/>
                       </Group>
@@ -725,6 +722,14 @@
               </Properties>
               <Events>
                 <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="btnDodajActionPerformed"/>
+              </Events>
+            </Component>
+            <Component class="javax.swing.JButton" name="btnRadUpute">
+              <Properties>
+                <Property name="text" type="java.lang.String" value="?"/>
+              </Properties>
+              <Events>
+                <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="btnRadUputeActionPerformed"/>
               </Events>
             </Component>
           </SubComponents>

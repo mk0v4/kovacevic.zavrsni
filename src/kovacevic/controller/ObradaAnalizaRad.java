@@ -6,10 +6,11 @@
 package kovacevic.controller;
 
 import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
 import java.util.List;
 import kovacevic.model.AnalizaCijene;
 import kovacevic.model.AnalizaRad;
-import kovacevic.model.Rad;
 import kovacevic.pomocno.HibernateUtil;
 import kovacevic.pomocno.PorukaIznimke;
 
@@ -39,15 +40,21 @@ public class ObradaAnalizaRad {
 //        ordersBys.add("cijena");
     }
 
-//    public boolean provjeraDuplogUnosaRad(AnalizaRad analizaRad) {
-//        List<AnalizaRad> analizaRadIzBaze = HibernateUtil.getSession().createQuery("from AnalizaRad where obrisan=false "
-//                + "and grupaRadova=:grupaRadova and kategorijaRad=:kategorijaRad and cijena=:cijena")
-//                .setParameter("grupaRadova", rad.getGrupaRadova())
-//                .setParameter("kategorijaRad", rad.getKategorijaRad())
-//                .setParameter("cijena", rad.getCijena())
-//                .list();
-//        return analizaRadIzBaze.size() > 0;
-//    }
+    public boolean provjeraDuplogUnosaAnalizaRad(AnalizaRad analizaRad) {
+        List<AnalizaRad> analizaRadIzBaze = HibernateUtil.getSession().createQuery("from AnalizaRad where obrisan=false "
+                + "and analizaCijene=:analizaCijene and rad=:rad and opisOperacije=:opisOperacije and"
+                + " jedinicniNormativVremena=:jedinicniNormativVremena and cijenaVrijeme=:cijenaVrijeme"
+                + " and brojOperacije=:brojOperacije and ")
+                .setParameter("analizaCijene", analizaRad.getAnalizaCijene())
+                .setParameter("rad", analizaRad.getRad())
+                .setParameter("opisOperacije", analizaRad.getOpisOperacije())
+                .setParameter("jedinicniNormativVremena", analizaRad.getJedinicniNormativVremena())
+                .setParameter("cijenaVrijeme", analizaRad.getCijenaVrijeme())
+                .setParameter("brojOperacije", analizaRad.getBrojOperacije())
+                .list();
+        analizaRadIzBaze.remove(analizaRad);
+        return analizaRadIzBaze.size() > 0;
+    }
 
     public AnalizaRad spremi(AnalizaRad analizaRad) throws PorukaIznimke {
         List<String> greske = new ArrayList<>();
@@ -65,12 +72,16 @@ public class ObradaAnalizaRad {
 //            if (rad.getCijena() == null) {
 //                greske.add(CIJENA_RAD);
 //            }
-//            if (rad.getGrupaRadova().trim().length() != 0 || rad.getKategorijaRad().trim().length() != 0 || rad.getCijena() != null) {
-//                if (provjeraDuplogUnosaRad(rad) == true) {
-//                    throw new PorukaIznimke("Rezultat mora biti različit u jednom od unosa", "Postoji unos u tablici za ",
-//                            GRUPA_RADOVA + ": " + rad.getGrupaRadova() + ", " + KATEGORIJA_RAD + ": " + rad.getKategorijaRad() + ", " + CIJENA_RAD + ": " + rad.getCijena());
-//                }
-//            }
+            if (analizaRad.getAnalizaCijene() != null || analizaRad.getRad() != null || analizaRad.getOpisOperacije().trim().length() != 0
+                    || analizaRad.getJedinicniNormativVremena() != null || analizaRad.getCijenaVrijeme() != null || analizaRad.getBrojOperacije() <= 0) {
+                if (provjeraDuplogUnosaAnalizaRad(analizaRad) == true) {
+                    throw new PorukaIznimke("Rezultat mora biti različit u jednom od unosa", "Postoji unos u tablici za ",
+                            BROJ_OPERACIJE + ": " + analizaRad.getBrojOperacije() + ", " + OPIS_OPERACIJE + ": " + analizaRad.getOpisOperacije() + ", "
+                            + JEDINICNI_NORMATIV_VREMENA + ": " + analizaRad.getJedinicniNormativVremena() + ", " + RAD + ": "
+                            + analizaRad.getRad().getGrupaRadova() + " " + analizaRad.getRad().getKategorijaRad() + ", "
+                            + CIJENA_VRIJEME + ": " + analizaRad.getCijenaVrijeme());
+                }
+            }
         }
         if (greske.size() > 0) {
             String joined = String.join(", ", greske);
@@ -88,12 +99,6 @@ public class ObradaAnalizaRad {
         if (analizaRad == null) {
             throw new PorukaIznimke("Entitet mora biti odabran ", "Odaberite stavku unutar tablice", ENTITET_NULL);
         }
-//        if (rad.getGrupaRadova().trim().length() != 0 || rad.getKategorijaRad().trim().length() != 0 || rad.getCijena() != null) {
-//            if (provjeraDuplogUnosaRad(rad) == true) {
-//                throw new PorukaIznimke("Rezultat mora biti različit u jednom od unosa", "Podatci nisu izmjenjeni za ",
-//                        GRUPA_RADOVA + ": " + rad.getGrupaRadova() + ", " + KATEGORIJA_RAD + ": " + rad.getKategorijaRad() + ", " + CIJENA_RAD + ": " + rad.getCijena());
-//            }
-//        }
         return obrada.save(analizaRad);
     }
 

@@ -8,6 +8,7 @@ package kovacevic.model;
 import java.io.Serializable;
 import java.math.BigDecimal;
 import java.util.List;
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
@@ -20,15 +21,15 @@ import javax.persistence.Table;
 @Table
 public class Materijal extends Entitet implements Serializable {
 
-    
-
     private String grupaMaterijal, proizvodac, oznaka, opis, jedinicaMjereAmbalaza;
 
+    @Column(precision = 19, scale = 4)
     private BigDecimal kolicinaAmbalaza;
 
+    @Column(precision = 19, scale = 4)
     private BigDecimal cijenaAmbalaza;
-    
-    @OneToMany (mappedBy = "materijal")
+
+    @OneToMany(mappedBy = "materijal")
     private List<AnalizaMaterijal> analizeMaterijala;
 
     public String getGrupaMaterijal() {
@@ -94,19 +95,16 @@ public class Materijal extends Entitet implements Serializable {
     public void setAnalizeMaterijala(List<AnalizaMaterijal> analizeMaterijala) {
         this.analizeMaterijala = analizeMaterijala;
     }
-    
-    
-    
-   
-        @Override
+
+    @Override
     public String toString() {
         String i;
         if (proizvodac.isEmpty()) {
-              i = "";
+            i = "";
         } else {
             i = ", ";
         }
-        return  grupaMaterijal + i + proizvodac + ", " + oznaka + ", " + kolicinaAmbalaza + ", " + jedinicaMjereAmbalaza + ", " + cijenaAmbalaza + " kn";
+        return grupaMaterijal + i + proizvodac + ", " + oznaka + ", " + kolicinaAmbalaza + ", " + jedinicaMjereAmbalaza + ", " + cijenaAmbalaza + " kn";
     }
-    
+
 }

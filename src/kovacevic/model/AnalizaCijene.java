@@ -8,6 +8,7 @@ package kovacevic.model;
 import java.io.Serializable;
 import java.math.BigDecimal;
 import java.util.List;
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
@@ -23,7 +24,20 @@ public class AnalizaCijene extends Entitet implements Serializable {
 
     private String oznakaNorme, opis, jedinicaMjere;
 
-    private BigDecimal ukupanNormativVremena, ukupnaCijenaMaterijal, ukupnaCijenaRad, koeficijentFirme, sveukupanIznos;
+    @Column(precision = 19, scale = 4)
+    private BigDecimal ukupanNormativVremena;
+
+    @Column(precision = 19, scale = 4)
+    private BigDecimal ukupnaCijenaMaterijal;
+
+    @Column(precision = 19, scale = 4)
+    private BigDecimal ukupnaCijenaRad;
+
+    @Column(precision = 19, scale = 4)
+    private BigDecimal koeficijentFirme;
+
+    @Column(precision = 19, scale = 4)
+    private BigDecimal sveukupanIznos;
 
     @OneToMany(mappedBy = "analizaCijene")
     private List<AnalizaRad> analizeRadova;

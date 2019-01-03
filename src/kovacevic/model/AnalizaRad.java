@@ -7,6 +7,7 @@ package kovacevic.model;
 
 import java.io.Serializable;
 import java.math.BigDecimal;
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
@@ -23,7 +24,11 @@ public class AnalizaRad extends Entitet implements Serializable {
 
     private int brojOperacije;
 
-    private BigDecimal jedinicniNormativVremena, cijenaVrijeme;
+    @Column(precision = 19, scale = 4)
+    private BigDecimal jedinicniNormativVremena;
+
+    @Column(precision = 19, scale = 4)
+    private BigDecimal cijenaVrijeme;
 
     public String getOpisOperacije() {
         return opisOperacije;
@@ -79,8 +84,8 @@ public class AnalizaRad extends Entitet implements Serializable {
         this.analizaCijene = analizaCijene;
     }
 
-//    @Override
-//    public String toString() {
-//        return /*analiza_cijene.getOznaka_norme() + ", " +*/ brojOperacije + ", " + opisOperacije + ", " + rad.getGrupaRadova() + " " + rad.getKategorijaRad() + ", " + getJedinicniNormativVremena() + " h, " + getCijenaVrijeme() + " kn/h";
-//    }
+    @Override
+    public String toString() {
+        return /*analiza_cijene.getOznaka_norme() + ", " +*/ brojOperacije + ", " + opisOperacije + ", " + rad.getGrupaRadova() + " " + rad.getKategorijaRad() + ", " + getJedinicniNormativVremena() + " h, " + getCijenaVrijeme() + " kn/h";
+    }
 }

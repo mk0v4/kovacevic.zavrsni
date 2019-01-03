@@ -19,14 +19,6 @@ public class PorukaIznimke extends Exception {
 
     List<String> greske;
 
-    @Deprecated
-    public PorukaIznimke(String message, String opis, List<String> greske) {
-        super(message);
-        this.greske = greske;
-        this.opis = opis;
-
-    }
-
     public PorukaIznimke(String message, String opis, String greska) {
         super(message);
         this.greska = greska;

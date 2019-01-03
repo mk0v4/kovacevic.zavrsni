@@ -97,7 +97,6 @@ public class ObradaMaterijal {
         }
         if (greske.size() > 0) {
             String joined = String.join(", ", greske);
-            System.out.println(joined);
             throw new PorukaIznimke("Podatci moraju biti unešani " + greske,
                     "Nisu unešeni sljedeći podatci: ", joined + ".");
         }
@@ -138,7 +137,6 @@ public class ObradaMaterijal {
 
     public List<Materijal> getListaMaterijal(Materijal materijal) {
         String query = "from Materijal where obrisan=false" + getOrderByEntitetAsc(ordersBys);
-        System.out.println("=== " + query);
         List<Materijal> list = HibernateUtil.getSession().createQuery(query).list();
         return list;
     }

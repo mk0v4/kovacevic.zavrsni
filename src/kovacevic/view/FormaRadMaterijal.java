@@ -65,8 +65,6 @@ public class FormaRadMaterijal extends JFrame {
 
         ucitajRad();
         ucitajMaterijal();
-        jtpRadMaterijal.setSelectedIndex(1);
-        jtpRadMaterijal.setEnabledAt(0, false);
     }
 
     protected void ucitajRad() {
@@ -317,7 +315,6 @@ public class FormaRadMaterijal extends JFrame {
     private void initComponents() {
 
         jtpRadMaterijal = new javax.swing.JTabbedPane();
-        jPanelPrebacivanje = new javax.swing.JPanel();
         jPanelRad = new javax.swing.JPanel();
         lblRadGrupaRadova = new javax.swing.JLabel();
         lblRadKategorijaRada = new javax.swing.JLabel();
@@ -378,19 +375,6 @@ public class FormaRadMaterijal extends JFrame {
         setMinimumSize(new java.awt.Dimension(860, 500));
 
         jtpRadMaterijal.setMinimumSize(new java.awt.Dimension(850, 460));
-
-        javax.swing.GroupLayout jPanelPrebacivanjeLayout = new javax.swing.GroupLayout(jPanelPrebacivanje);
-        jPanelPrebacivanje.setLayout(jPanelPrebacivanjeLayout);
-        jPanelPrebacivanjeLayout.setHorizontalGroup(
-            jPanelPrebacivanjeLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 845, Short.MAX_VALUE)
-        );
-        jPanelPrebacivanjeLayout.setVerticalGroup(
-            jPanelPrebacivanjeLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 432, Short.MAX_VALUE)
-        );
-
-        jtpRadMaterijal.addTab("Prebacivanje", jPanelPrebacivanje);
 
         lblRadGrupaRadova.setText("Grupa radova:");
 
@@ -901,136 +885,28 @@ public class FormaRadMaterijal extends JFrame {
         setLocationRelativeTo(null);
     }// </editor-fold>//GEN-END:initComponents
 
-    private void btnMaterijalDodajActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnMaterijalDodajActionPerformed
-        dodaj = true;
-        materijal = new Materijal();
-        dpoMaterijal();
-        int row = 0;
-        if (tblMaterijal.getSelectedRow() != -1) {
-            row = tblMaterijal.getSelectedRow();
-        }
-//        traziMaterijal();
-        if (materijal.getId() != null) {
-            for (int i = 0; i < rezultatiMaterijal.size(); i++) {
-                if (tblMaterijal.getModel().getValueAt(i, 0).toString().contains("(" + materijal.getId().toString() + ")")) {
-                    txtMaterijalIdValue.setText(tblMaterijal.getModel().getValueAt(i, 0).toString());
-                    materijal = rezultatiMaterijal.get(tblMaterijal.convertRowIndexToModel(i));
-                    row = i;
-                    break;
-                }
-            }
-        }
-        if (row != 0) {
-            tblMaterijal.setRowSelectionInterval(row, row);
-        }
-        dodaj = false;
-    }//GEN-LAST:event_btnMaterijalDodajActionPerformed
-
-    private int vertScroll;
-
-    private int getVertScroll() {
-        return vertScroll;
-    }
-
-    private void setVertScroll(int vertScroll) {
-        this.vertScroll = vertScroll;
-    }
-
-
-    private void btnMaterijalPromjeniActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnMaterijalPromjeniActionPerformed
-        promijeni = true;
-        setVertScroll(jScrollPaneMaterijal.getVerticalScrollBar().getValue());
-        if (materijal == null || tblMaterijal.getSelectedRow() == -1) {
-            JOptionPane.showMessageDialog(rootPane, "Odaberite stavku vidljivu unutar tablice",
-                    getTitle() + " - Promjena postojećeg", HEIGHT);
-        } else {
-            int i = tblMaterijal.getSelectedRow();
-            materijal = rezultatiMaterijal.get(tblMaterijal.convertRowIndexToModel(i));
-            dpoMaterijal();
-            DefaultTableModel model = (DefaultTableModel) tblMaterijal.getModel();
-            model.setValueAt(txtMaterijalGrupaMaterijal.getText(), i, 1);
-            model.setValueAt(txtMaterijalProizvodac.getText(), i, 2);
-            model.setValueAt(txtMaterijalOznaka.getText(), i, 3);
-            model.setValueAt(txtMaterijalKolicinaAmbalaza.getText(), i, 4);
-            model.setValueAt(txtMaterijalJedinicaMjereAmbalaza.getText(), i, 5);
-            model.setValueAt(txtMaterijalCijenaAmbalaza.getText(), i, 6);
-            model.setValueAt(tarMaterijalOpis.getText(), i, 7);
-            materijal = null;
-//            traziMaterijal();
-            materijal = rezultatiMaterijal.get(tblMaterijal.convertRowIndexToModel(i));
-            tblMaterijal.setRowSelectionInterval(i, i);
-            tblMaterijal.scrollRectToVisible(new Rectangle(tblMaterijal.getCellRect(i, 0, true)));
-        }
-        promijeni = false;
-        Thread t = new Thread(() -> {
-            try {
-                Thread.sleep(100);
-            } catch (InterruptedException ex) {
-                Logger.getLogger(FormaRadMaterijal.class.getName()).log(Level.SEVERE, null, ex);
-            }
-            jScrollPaneMaterijal.getVerticalScrollBar().setValue(getVertScroll());
-            jScrollPaneMaterijal.repaint();
-        });
-        t.start();
-    }//GEN-LAST:event_btnMaterijalPromjeniActionPerformed
-
-    private void btnMaterijalObrisiActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnMaterijalObrisiActionPerformed
-        obrisi = true;
-        if (materijal == null || tblMaterijal.getSelectedRow() == -1) {
-            JOptionPane.showMessageDialog(rootPane, "Odaberite stavku vidljivu unutar tablice", getTitle() + " - Obriši", HEIGHT);
-        } else {
-            int i = tblMaterijal.getSelectedRow();
-            DefaultTableModel model = (DefaultTableModel) tblMaterijal.getModel();
-            Object[] options = {"Da", "Ne"};
-            int reply = JOptionPane.showOptionDialog(rootPane, "Sigurno želite obrisati stavku? \n"
-                    + model.getValueAt(i, 0).toString() + ", " + model.getValueAt(i, 1).toString()
-                    + ", " + model.getValueAt(i, 2).toString() + ", " + model.getValueAt(i, 3).toString() + ", "
-                    + model.getValueAt(i, 4).toString() + ", " + model.getValueAt(i, 5).toString() + ", "
-                    + model.getValueAt(i, 6).toString(), getTitle()
-                    + " - Obriši", JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE, null, options, null);
-            if (reply == JOptionPane.YES_OPTION) {
-                dpoMaterijal();
-//                ucitajMaterijal();
-                materijal = null;
-                txtMaterijalIdValue.setText("");
-                txtMaterijalGrupaMaterijal.setText("");
-                txtMaterijalProizvodac.setText("");
-                txtMaterijalOznaka.setText("");
-                txtMaterijalKolicinaAmbalaza.setText("");
-                txtMaterijalJedinicaMjereAmbalaza.setText("");
-                txtMaterijalCijenaAmbalaza.setText("");
-                tarMaterijalOpis.setText("");
-                tblMaterijal.getSelectionModel().clearSelection();
-//                traziMaterijal();
-            }
-        }
-        obrisi = false;
-    }//GEN-LAST:event_btnMaterijalObrisiActionPerformed
-
-    private void txtMaterijalTraziOznakaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtMaterijalTraziOznakaActionPerformed
-
-    }//GEN-LAST:event_txtMaterijalTraziOznakaActionPerformed
-
-    private void txtMaterijalTraziOznakaKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtMaterijalTraziOznakaKeyPressed
+    private void txtMaterijalTraziProizvodacKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtMaterijalTraziProizvodacKeyPressed
         if (evt.getKeyCode() == KeyEvent.VK_ENTER) {
             traziMaterijal();
         }
-    }//GEN-LAST:event_txtMaterijalTraziOznakaKeyPressed
+    }//GEN-LAST:event_txtMaterijalTraziProizvodacKeyPressed
 
-    private void btnMaterijalResetirajTrazilicuActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnMaterijalResetirajTrazilicuActionPerformed
+    private void txtMaterijalTraziProizvodacActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtMaterijalTraziProizvodacActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_txtMaterijalTraziProizvodacActionPerformed
 
-        tblMaterijal.getSelectionModel().clearSelection();
-        materijal = null;
-        txtMaterijalIdValue.setText("");
-        txtMaterijalGrupaMaterijal.setText("");
-        txtMaterijalProizvodac.setText("");
-        txtMaterijalOznaka.setText("");
-        txtMaterijalKolicinaAmbalaza.setText("");
-        txtMaterijalJedinicaMjereAmbalaza.setText("");
-        txtMaterijalCijenaAmbalaza.setText("");
-        tarMaterijalOpis.setText("");
-        ucitajMaterijal();
-    }//GEN-LAST:event_btnMaterijalResetirajTrazilicuActionPerformed
+    private void cmbGrupeMaterijalaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cmbGrupeMaterijalaActionPerformed
+        traziMaterijal();
+    }//GEN-LAST:event_cmbGrupeMaterijalaActionPerformed
+
+    private void txtMaterijalIdValueActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtMaterijalIdValueActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_txtMaterijalIdValueActionPerformed
+
+    private void tblMaterijalComponentResized(java.awt.event.ComponentEvent evt) {//GEN-FIRST:event_tblMaterijalComponentResized
+        tblMaterijal.setRowHeight(16);
+        //        updateRowHeights(tblMaterijal);
+    }//GEN-LAST:event_tblMaterijalComponentResized
 
     private void tblMaterijalMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_tblMaterijalMouseClicked
         if (evt.getClickCount() == 2) {
@@ -1063,28 +939,137 @@ public class FormaRadMaterijal extends JFrame {
         }
     }//GEN-LAST:event_tblMaterijalMouseClicked
 
-    private void tblMaterijalComponentResized(java.awt.event.ComponentEvent evt) {//GEN-FIRST:event_tblMaterijalComponentResized
-        tblMaterijal.setRowHeight(16);
-//        updateRowHeights(tblMaterijal);
-    }//GEN-LAST:event_tblMaterijalComponentResized
+    private void btnMaterijalResetirajTrazilicuActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnMaterijalResetirajTrazilicuActionPerformed
 
-    private void txtMaterijalIdValueActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtMaterijalIdValueActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_txtMaterijalIdValueActionPerformed
+        tblMaterijal.getSelectionModel().clearSelection();
+        materijal = null;
+        txtMaterijalIdValue.setText("");
+        txtMaterijalGrupaMaterijal.setText("");
+        txtMaterijalProizvodac.setText("");
+        txtMaterijalOznaka.setText("");
+        txtMaterijalKolicinaAmbalaza.setText("");
+        txtMaterijalJedinicaMjereAmbalaza.setText("");
+        txtMaterijalCijenaAmbalaza.setText("");
+        tarMaterijalOpis.setText("");
+        ucitajMaterijal();
+    }//GEN-LAST:event_btnMaterijalResetirajTrazilicuActionPerformed
 
-    private void cmbGrupeMaterijalaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cmbGrupeMaterijalaActionPerformed
-        traziMaterijal();
-    }//GEN-LAST:event_cmbGrupeMaterijalaActionPerformed
-
-    private void txtMaterijalTraziProizvodacActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtMaterijalTraziProizvodacActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_txtMaterijalTraziProizvodacActionPerformed
-
-    private void txtMaterijalTraziProizvodacKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtMaterijalTraziProizvodacKeyPressed
+    private void txtMaterijalTraziOznakaKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtMaterijalTraziOznakaKeyPressed
         if (evt.getKeyCode() == KeyEvent.VK_ENTER) {
             traziMaterijal();
         }
-    }//GEN-LAST:event_txtMaterijalTraziProizvodacKeyPressed
+    }//GEN-LAST:event_txtMaterijalTraziOznakaKeyPressed
+
+    private void txtMaterijalTraziOznakaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtMaterijalTraziOznakaActionPerformed
+
+    }//GEN-LAST:event_txtMaterijalTraziOznakaActionPerformed
+
+    private void btnMaterijalObrisiActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnMaterijalObrisiActionPerformed
+        obrisi = true;
+        if (materijal == null || tblMaterijal.getSelectedRow() == -1) {
+            JOptionPane.showMessageDialog(rootPane, "Odaberite stavku vidljivu unutar tablice", getTitle() + " - Obriši", HEIGHT);
+        } else {
+            int i = tblMaterijal.getSelectedRow();
+            DefaultTableModel model = (DefaultTableModel) tblMaterijal.getModel();
+            Object[] options = {"Da", "Ne"};
+            int reply = JOptionPane.showOptionDialog(rootPane, "Sigurno želite obrisati stavku? \n"
+                    + model.getValueAt(i, 0).toString() + ", " + model.getValueAt(i, 1).toString()
+                    + ", " + model.getValueAt(i, 2).toString() + ", " + model.getValueAt(i, 3).toString() + ", "
+                    + model.getValueAt(i, 4).toString() + ", " + model.getValueAt(i, 5).toString() + ", "
+                    + model.getValueAt(i, 6).toString(), getTitle()
+                    + " - Obriši", JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE, null, options, null);
+            if (reply == JOptionPane.YES_OPTION) {
+                dpoMaterijal();
+                //                ucitajMaterijal();
+                materijal = null;
+                txtMaterijalIdValue.setText("");
+                txtMaterijalGrupaMaterijal.setText("");
+                txtMaterijalProizvodac.setText("");
+                txtMaterijalOznaka.setText("");
+                txtMaterijalKolicinaAmbalaza.setText("");
+                txtMaterijalJedinicaMjereAmbalaza.setText("");
+                txtMaterijalCijenaAmbalaza.setText("");
+                tarMaterijalOpis.setText("");
+                tblMaterijal.getSelectionModel().clearSelection();
+                //                traziMaterijal();
+            }
+        }
+        obrisi = false;
+    }//GEN-LAST:event_btnMaterijalObrisiActionPerformed
+
+    private void btnMaterijalPromjeniActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnMaterijalPromjeniActionPerformed
+        promijeni = true;
+        setVertScroll(jScrollPaneMaterijal.getVerticalScrollBar().getValue());
+        if (materijal == null || tblMaterijal.getSelectedRow() == -1) {
+            JOptionPane.showMessageDialog(rootPane, "Odaberite stavku vidljivu unutar tablice",
+                    getTitle() + " - Promjena postojećeg", HEIGHT);
+        } else {
+            int i = tblMaterijal.getSelectedRow();
+            materijal = rezultatiMaterijal.get(tblMaterijal.convertRowIndexToModel(i));
+            dpoMaterijal();
+            DefaultTableModel model = (DefaultTableModel) tblMaterijal.getModel();
+            model.setValueAt(txtMaterijalGrupaMaterijal.getText(), i, 1);
+            model.setValueAt(txtMaterijalProizvodac.getText(), i, 2);
+            model.setValueAt(txtMaterijalOznaka.getText(), i, 3);
+            model.setValueAt(txtMaterijalKolicinaAmbalaza.getText(), i, 4);
+            model.setValueAt(txtMaterijalJedinicaMjereAmbalaza.getText(), i, 5);
+            model.setValueAt(txtMaterijalCijenaAmbalaza.getText(), i, 6);
+            model.setValueAt(tarMaterijalOpis.getText(), i, 7);
+            materijal = null;
+            //            traziMaterijal();
+            materijal = rezultatiMaterijal.get(tblMaterijal.convertRowIndexToModel(i));
+            tblMaterijal.setRowSelectionInterval(i, i);
+            tblMaterijal.scrollRectToVisible(new Rectangle(tblMaterijal.getCellRect(i, 0, true)));
+        }
+        promijeni = false;
+        Thread t = new Thread(() -> {
+            try {
+                Thread.sleep(100);
+            } catch (InterruptedException ex) {
+                Logger.getLogger(FormaRadMaterijal.class.getName()).log(Level.SEVERE, null, ex);
+            }
+            jScrollPaneMaterijal.getVerticalScrollBar().setValue(getVertScroll());
+            jScrollPaneMaterijal.repaint();
+        });
+        t.start();
+    }//GEN-LAST:event_btnMaterijalPromjeniActionPerformed
+
+    private void btnMaterijalDodajActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnMaterijalDodajActionPerformed
+        dodaj = true;
+        materijal = new Materijal();
+        dpoMaterijal();
+        int row = 0;
+        if (tblMaterijal.getSelectedRow() != -1) {
+            row = tblMaterijal.getSelectedRow();
+        }
+        //        traziMaterijal();
+        if (materijal.getId() != null) {
+            for (int i = 0; i < rezultatiMaterijal.size(); i++) {
+                if (tblMaterijal.getModel().getValueAt(i, 0).toString().contains("(" + materijal.getId().toString() + ")")) {
+                    txtMaterijalIdValue.setText(tblMaterijal.getModel().getValueAt(i, 0).toString());
+                    materijal = rezultatiMaterijal.get(tblMaterijal.convertRowIndexToModel(i));
+                    row = i;
+                    break;
+                }
+            }
+        }
+        if (row != 0) {
+            tblMaterijal.setRowSelectionInterval(row, row);
+        }
+        dodaj = false;
+    }//GEN-LAST:event_btnMaterijalDodajActionPerformed
+
+    private void btnMaterijalUputeActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnMaterijalUputeActionPerformed
+        JOptionPane.showMessageDialog(rootPane,
+                "Pretraživanje:" + "\n"
+                + "- izvodi se tipkom enter u jednom od polja" + "\n"
+                + "- tipka " + btnMaterijalResetirajTrazilicu.getText() + " briše vrijesnosti unešene u polja i prikazuje sve rezultate" + "\n\n"
+                + "Tablica sa podatcima:" + "\n"
+                + "- jednim klikom miša označava se odabrani red" + "\n"
+                + "- dvostrukim klikom odabiru se vrijednosti odabranog reda i upisuju u polja kako bi se izvršile radnje promjene ili brisanja" + "\n"
+                + "- držanjem tipke alt i lijevim klikom odznačava se red u tablici i ispraznjuju se vrijednosti polja za radnje dodavanja, promjene i brisanja",
+                getTitle() + " - Upute za korištenje", JOptionPane.PLAIN_MESSAGE);
+    }//GEN-LAST:event_btnMaterijalUputeActionPerformed
 
     private void cmbGrupeRadovaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cmbGrupeRadovaActionPerformed
         traziRad();
@@ -1231,17 +1216,15 @@ public class FormaRadMaterijal extends JFrame {
         // TODO add your handling code here:
     }//GEN-LAST:event_txtRadGrupaRadovaActionPerformed
 
-    private void btnMaterijalUputeActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnMaterijalUputeActionPerformed
-        JOptionPane.showMessageDialog(rootPane,
-                "Pretraživanje:" + "\n"
-                + "- izvodi se tipkom enter u jednom od polja" + "\n"
-                + "- tipka " + btnMaterijalResetirajTrazilicu.getText() + " briše vrijesnosti unešene u polja i prikazuje sve rezultate" + "\n\n"
-                + "Tablica sa podatcima:" + "\n"
-                + "- jednim klikom miša označava se odabrani red" + "\n"
-                + "- dvostrukim klikom odabiru se vrijednosti odabranog reda i upisuju u polja kako bi se izvršile radnje promjene ili brisanja" + "\n"
-                + "- držanjem tipke alt i lijevim klikom odznačava se red u tablici i ispraznjuju se vrijednosti polja za radnje dodavanja, promjene i brisanja",
-                getTitle() + " - Upute za korištenje", JOptionPane.PLAIN_MESSAGE);
-    }//GEN-LAST:event_btnMaterijalUputeActionPerformed
+    private int vertScroll;
+
+    private int getVertScroll() {
+        return vertScroll;
+    }
+
+    private void setVertScroll(int vertScroll) {
+        this.vertScroll = vertScroll;
+    }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btnMaterijalDodaj;
@@ -1259,7 +1242,6 @@ public class FormaRadMaterijal extends JFrame {
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JPanel jPanelMaterijal;
-    private javax.swing.JPanel jPanelPrebacivanje;
     private javax.swing.JPanel jPanelRad;
     private javax.swing.JScrollPane jScrollPaneMaterijal;
     private javax.swing.JScrollPane jScrollPaneMaterijalOpsi;
