@@ -8,6 +8,7 @@ package kovacevic.controller;
 import java.util.ArrayList;
 import java.util.List;
 import kovacevic.model.AnalizaCijene;
+import kovacevic.model.GrupacijaNorme;
 import kovacevic.pomocno.HibernateUtil;
 import kovacevic.pomocno.PorukaIznimke;
 
@@ -121,9 +122,11 @@ public class ObradaAnalizaCijene {
         brisanje = false;
     }
 
-    public List<AnalizaCijene> getListaAnalizaCijena(AnalizaCijene analizaCijene) {
-        String query = "from AnalizaCijene where obrisan=false" + getOrderByEntitetAsc(ordersBys);
-        List<AnalizaCijene> list = HibernateUtil.getSession().createQuery(query).list();
+    public List<AnalizaCijene> getListaAnalizaCijena(GrupacijaNorme grupacijaNorme) {
+        String query = "from AnalizaCijene where obrisan=false and grupacijaNorme = :grupacijaNorme" + getOrderByEntitetAsc(ordersBys);
+        List<AnalizaCijene> list = HibernateUtil.getSession().createQuery(query).setParameter("grupacijaNorme", grupacijaNorme).list();
+        System.out.println("kovacevic.controller.ObradaAnalizaCijene.getListaAnalizaCijena()");
+        System.out.println(list.size());
         return list;
     }
 

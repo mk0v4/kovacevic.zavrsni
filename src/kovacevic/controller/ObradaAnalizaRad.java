@@ -44,7 +44,7 @@ public class ObradaAnalizaRad {
         List<AnalizaRad> analizaRadIzBaze = HibernateUtil.getSession().createQuery("from AnalizaRad where obrisan=false "
                 + "and analizaCijene=:analizaCijene and rad=:rad and opisOperacije=:opisOperacije and"
                 + " jedinicniNormativVremena=:jedinicniNormativVremena and cijenaVrijeme=:cijenaVrijeme"
-                + " and brojOperacije=:brojOperacije and ")
+                + " and brojOperacije=:brojOperacije")
                 .setParameter("analizaCijene", analizaRad.getAnalizaCijene())
                 .setParameter("rad", analizaRad.getRad())
                 .setParameter("opisOperacije", analizaRad.getOpisOperacije())
@@ -109,8 +109,14 @@ public class ObradaAnalizaRad {
     }
 
     public List<AnalizaRad> getListaRad(AnalizaCijene analizaCijene) {
+        List<AnalizaRad> list = new ArrayList<>();
+        if (analizaCijene != null) {
+            if (analizaCijene.getId() == null) {
+                return list;
+            }
+        }
         String query = "from AnalizaRad where obrisan=false and analizaCijene =:analizaCijene" + getOrderByEntitetAsc(ordersBys);
-        List<AnalizaRad> list = HibernateUtil.getSession().createQuery(query)
+        list = HibernateUtil.getSession().createQuery(query)
                 .setParameter("analizaCijene", analizaCijene).list();
         return list;
     }

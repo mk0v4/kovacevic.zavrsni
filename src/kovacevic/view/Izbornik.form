@@ -51,6 +51,7 @@
                   </Group>
                   <Component id="btnUnosRadMaterijal" alignment="0" max="32767" attributes="0"/>
                   <Component id="btnUnosAnalizaCijene" alignment="0" max="32767" attributes="0"/>
+                  <Component id="btnUnosAnalizaCijene1" alignment="0" max="32767" attributes="0"/>
               </Group>
               <EmptySpace max="-2" attributes="0"/>
           </Group>
@@ -84,7 +85,9 @@
               <Component id="btnUnosRadMaterijal" min="-2" pref="40" max="-2" attributes="0"/>
               <EmptySpace type="separate" max="-2" attributes="0"/>
               <Component id="btnUnosAnalizaCijene" min="-2" pref="40" max="-2" attributes="0"/>
-              <EmptySpace max="-2" attributes="0"/>
+              <EmptySpace type="separate" max="-2" attributes="0"/>
+              <Component id="btnUnosAnalizaCijene1" min="-2" pref="40" max="-2" attributes="0"/>
+              <EmptySpace max="32767" attributes="0"/>
           </Group>
       </Group>
     </DimensionLayout>
@@ -189,7 +192,7 @@
     </Component>
     <Component class="javax.swing.JButton" name="btnUnosRadMaterijal">
       <Properties>
-        <Property name="text" type="java.lang.String" value="Unos rada i materijala"/>
+        <Property name="text" type="java.lang.String" value="Rad i materijal"/>
         <Property name="horizontalTextPosition" type="int" value="0"/>
       </Properties>
       <Events>
@@ -198,11 +201,20 @@
     </Component>
     <Component class="javax.swing.JButton" name="btnUnosAnalizaCijene">
       <Properties>
-        <Property name="text" type="java.lang.String" value="Unos analize cijene"/>
+        <Property name="text" type="java.lang.String" value="Analize cijene"/>
         <Property name="horizontalTextPosition" type="int" value="0"/>
       </Properties>
       <Events>
         <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="btnUnosAnalizaCijeneActionPerformed"/>
+      </Events>
+    </Component>
+    <Component class="javax.swing.JButton" name="btnUnosAnalizaCijene1">
+      <Properties>
+        <Property name="text" type="java.lang.String" value="Tro&#x161;kovnik"/>
+        <Property name="horizontalTextPosition" type="int" value="0"/>
+      </Properties>
+      <Events>
+        <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="btnUnosAnalizaCijene1ActionPerformed"/>
       </Events>
     </Component>
   </SubComponents>

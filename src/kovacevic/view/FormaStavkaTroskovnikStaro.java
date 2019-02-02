@@ -9,7 +9,6 @@ import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 import javax.swing.DefaultListModel;
-import javax.swing.JFrame;
 import javax.swing.JOptionPane;
 import kovacevic.controller.HibernateObrada;
 import kovacevic.model.AnalizaCijene;
@@ -20,17 +19,33 @@ import kovacevic.pomocno.HibernateUtil;
  *
  * @author Marko Kovačević
  */
-public class FormaStavkaTroskovnik extends JFrame{
+public class FormaStavkaTroskovnikStaro extends Forma<StavkaTroskovnik>{
+
+    private List<StavkaTroskovnik> stavkaTroskovnik;
+    private List<AnalizaCijene> analizaCijene;
 
     /**
      * Creates new form FormaAnalizaCijene
      */
-    public FormaStavkaTroskovnik() {
+    public FormaStavkaTroskovnikStaro() {
         initComponents();
         setTitle("Stavke Troškovnika");
+        obrada = new HibernateObrada();
 
+        ucitaj();
+        ucitajAnalizaCijene();
     }
-    
+
+    @Override
+    protected void ucitaj() {
+        DefaultListModel<StavkaTroskovnik> m = new DefaultListModel<>();
+        lstStavkeTroskovnika.setModel(m);
+        stavkaTroskovnik = HibernateUtil.getSession().createQuery("from StavkaTroskovnik a where a.obrisan=false").list();
+        stavkaTroskovnik.forEach((s) -> {
+            m.addElement(s);
+        });
+    }
+
     /**
      * This method is called from within the constructor to initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is always
@@ -225,17 +240,68 @@ public class FormaStavkaTroskovnik extends JFrame{
     }// </editor-fold>//GEN-END:initComponents
 
     private void lstStavkeTroskovnikaValueChanged(javax.swing.event.ListSelectionEvent evt) {//GEN-FIRST:event_lstStavkeTroskovnikaValueChanged
+
+        if (evt.getValueIsAdjusting()) {
+            return;
+        }
+
+        try {
+            this.entitet = lstStavkeTroskovnika.getSelectedValue();
+            txtOznakaStavke.setText(lstStavkeTroskovnika.getSelectedValue().getOznakaStavka());
+            tarOpisNorme.setText(entitet.getAnalizeCijena().toString());
+            tarDodatanOpis.setText(lstStavkeTroskovnika.getSelectedValue().getDodatanOpis());
+//            txtJedinicaMjere
+            txtKolicina.setText(lstStavkeTroskovnika.getSelectedValue().getKolicinaTroskovnik().toString());
+            txtUkupnaCijena.setText(lstStavkeTroskovnika.getSelectedValue().getUkupnaCijena().toString());
+      
+
+            DefaultListModel<AnalizaCijene> m = new DefaultListModel<>();
+            lstAnalizeCijena.setModel(m);
+            entitet.getAnalizeCijena().forEach((s) -> {
+                m.addElement(s);
+            });
+            ucitajAnalizaCijene();
+
+        } catch (Exception e) {
+        }
+                repaint();
     }//GEN-LAST:event_lstStavkeTroskovnikaValueChanged
 
     private void btnDodajActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnDodajActionPerformed
-
+        entitet = new StavkaTroskovnik();
+        spremi();
+        repaint();
     }//GEN-LAST:event_btnDodajActionPerformed
 
     private void btnPromjeniActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnPromjeniActionPerformed
-
+        if (lstStavkeTroskovnika.getSelectedValue() == null) {
+            JOptionPane.showConfirmDialog(rootPane, "Prvo odaberite stavku");
+        }
+        spremi();
     }//GEN-LAST:event_btnPromjeniActionPerformed
-
+    @Override
+    protected void spremi() {
+        entitet.setOznakaStavka(txtOznakaStavke.getText());
+        entitet.setDodatanOpis(tarDodatanOpis.getText());
+        entitet.setKolicinaTroskovnik(new BigDecimal(txtKolicina.getText()));
+        entitet.setUkupnaCijena(new BigDecimal(txtUkupnaCijena.getText()));
+        
+//        entitet.setOznaka_norme(txtOznakaNorme.getText());
+//        entitet.setOpis(tarOpisNorme.getText());
+//        entitet.setJedinica_mjere(txtJedinicaMjere.getText());
+//        entitet.setUkupan_normativ_vremena(new BigDecimal(txtUkupanNormativVremena.getText()));
+//        entitet.setUkupna_cijena_rad(new BigDecimal(txtUkupnoRad.getText()));
+//        entitet.setKoeficijent_firme(new BigDecimal(txtKoeficijentFirme.getText()));
+//        entitet.setUkupna_cijena_materijal(new BigDecimal(txtUkupnoMaterijal.getText()));
+//        entitet.setSveukupan_iznos(new BigDecimal(txtUkupnaCijena.getText()));
+        super.spremi();
+        repaint();
+    }
     private void btnObrisiActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnObrisiActionPerformed
+        if (lstStavkeTroskovnika.getSelectedValue() == null) {
+            JOptionPane.showConfirmDialog(rootPane, "Prvo odaberite stavku");
+        }
+        obrisi();
     }//GEN-LAST:event_btnObrisiActionPerformed
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
@@ -262,5 +328,63 @@ public class FormaStavkaTroskovnik extends JFrame{
     private javax.swing.JTextField txtOznakaStavke;
     private javax.swing.JTextField txtUkupnaCijena;
     // End of variables declaration//GEN-END:variables
+
+    private void ucitajAnalizaCijene() {
+        List<AnalizaCijene> ac = new ArrayList<>();
+        analizaCijene = HibernateUtil.getSession().createQuery("from AnalizaCijene a where a.obrisan=false").list();
+        analizaCijene.stream().forEach((p) -> {
+            if (entitet != null) {
+                boolean dodaj = true;
+                for (AnalizaCijene analizaC : entitet.getAnalizeCijena()) {
+                    if (p.getId().equals(analizaC.getId())) {
+                        dodaj = false;
+                        break;
+                    }
+                }
+                if (dodaj) {
+                    ac.add(p);
+                }
+            }
+
+        });
+
+    }
+
+//    private void ucitajAnalizaMaterijal() {
+//        List<AnalizaMaterijal> am = new ArrayList<>();
+//        analizaMaterijal = HibernateUtil.getSession().createQuery("from AnalizaMaterijal a where a.obrisan=false").list();
+//        analizaMaterijal.stream().forEach((p) -> {
+//            if (entitet != null) {
+//                boolean dodaj = true;
+//                for (AnalizaMaterijal analizaM : entitet.getAnalize_materijala()) {
+//                    if (p.getId().equals(analizaM.getId())) {
+//                        dodaj = false;
+//                        break;
+//                    }
+//                }
+//                if (dodaj) {
+//                    am.add(p);
+//                }
+//            }
+//
+//        });
+//        repaint();
+//    }
+
+//    private void ucitajStavkaTroskovnik() {
+//        DefaultComboBoxModel<StavkaTroskovnik> m = new DefaultComboBoxModel<>();
+//        cmbStavkaTroskovnik.setModel(m);
+//        List<StavkaTroskovnik> stavka = HibernateUtil.getSession().
+//                createQuery("from StavkaTroskovnik a where "
+//                        + "a.obrisan=false  ").list();
+//
+//        for (StavkaTroskovnik p : stavka) {
+//
+//            m.addElement(p);
+//            cmbStavkaTroskovnik.setSelectedItem(p);
+//
+//        }
+//
+//    }   
     
 }

@@ -261,7 +261,7 @@ public class FormaGrupacijaNorme extends JFrame {
 
     private void btnDodajActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnDodajActionPerformed
         dodaj = true;
-        grupacijaNorme = new GrupacijaNorme();
+//        grupacijaNorme = new GrupacijaNorme();
         dpoGrupacijaNorme();
         dodaj = false;
     }//GEN-LAST:event_btnDodajActionPerformed

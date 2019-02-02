@@ -44,6 +44,7 @@ public class Izbornik extends javax.swing.JFrame {
         jLabel1 = new javax.swing.JLabel();
         btnUnosRadMaterijal = new javax.swing.JButton();
         btnUnosAnalizaCijene = new javax.swing.JButton();
+        btnUnosAnalizaCijene1 = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setMinimumSize(new java.awt.Dimension(400, 350));
@@ -124,7 +125,7 @@ public class Izbornik extends javax.swing.JFrame {
             }
         });
 
-        btnUnosRadMaterijal.setText("Unos rada i materijala");
+        btnUnosRadMaterijal.setText("Rad i materijal");
         btnUnosRadMaterijal.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
         btnUnosRadMaterijal.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -132,11 +133,19 @@ public class Izbornik extends javax.swing.JFrame {
             }
         });
 
-        btnUnosAnalizaCijene.setText("Unos analize cijene");
+        btnUnosAnalizaCijene.setText("Analize cijene");
         btnUnosAnalizaCijene.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
         btnUnosAnalizaCijene.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 btnUnosAnalizaCijeneActionPerformed(evt);
+            }
+        });
+
+        btnUnosAnalizaCijene1.setText("Troškovnik");
+        btnUnosAnalizaCijene1.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
+        btnUnosAnalizaCijene1.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnUnosAnalizaCijene1ActionPerformed(evt);
             }
         });
 
@@ -164,7 +173,8 @@ public class Izbornik extends javax.swing.JFrame {
                         .addGap(93, 93, 93)
                         .addComponent(lblGithub))
                     .addComponent(btnUnosRadMaterijal, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(btnUnosAnalizaCijene, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                    .addComponent(btnUnosAnalizaCijene, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(btnUnosAnalizaCijene1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                 .addContainerGap())
         );
         layout.setVerticalGroup(
@@ -192,7 +202,9 @@ public class Izbornik extends javax.swing.JFrame {
                 .addComponent(btnUnosRadMaterijal, javax.swing.GroupLayout.PREFERRED_SIZE, 40, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(18, 18, 18)
                 .addComponent(btnUnosAnalizaCijene, javax.swing.GroupLayout.PREFERRED_SIZE, 40, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap())
+                .addGap(18, 18, 18)
+                .addComponent(btnUnosAnalizaCijene1, javax.swing.GroupLayout.PREFERRED_SIZE, 40, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
         pack();
@@ -234,7 +246,7 @@ public class Izbornik extends javax.swing.JFrame {
     }//GEN-LAST:event_lblGithubMouseClicked
 
     private void btnStavkaTroskovnikActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnStavkaTroskovnikActionPerformed
-        new FormaStavkaTroskovnik().setVisible(true);
+        new FormaStavkaTroskovnikStaro().setVisible(true);
     }//GEN-LAST:event_btnStavkaTroskovnikActionPerformed
 
     private void jLabel1MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jLabel1MouseClicked
@@ -249,6 +261,10 @@ public class Izbornik extends javax.swing.JFrame {
         new FormaAnalizaCijene().setVisible(true);
     }//GEN-LAST:event_btnUnosAnalizaCijeneActionPerformed
 
+    private void btnUnosAnalizaCijene1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnUnosAnalizaCijene1ActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_btnUnosAnalizaCijene1ActionPerformed
+
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btnAnalizaCijene;
     private javax.swing.JButton btnAnalizaMaterijal;
@@ -258,6 +274,7 @@ public class Izbornik extends javax.swing.JFrame {
     private javax.swing.JButton btnRad;
     private javax.swing.JButton btnStavkaTroskovnik;
     private javax.swing.JButton btnUnosAnalizaCijene;
+    private javax.swing.JButton btnUnosAnalizaCijene1;
     private javax.swing.JButton btnUnosRadMaterijal;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel lblGithub;

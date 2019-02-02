@@ -65,7 +65,4 @@ public class HibernateObrada<T extends Entitet> {
         session.getTransaction().commit();
         return lista;
     }
-
-
-
 }

@@ -89,8 +89,14 @@ public class ObradaAnalizaMaterijal {
     }
 
     public List<AnalizaMaterijal> getListaAnalizaMaterijal(AnalizaCijene analizaCijene) {
+        List<AnalizaMaterijal> list = new ArrayList<>();
+        if (analizaCijene != null) {
+            if (analizaCijene.getId() == null) {
+                return list;
+            }
+        }
         String query = "from AnalizaMaterijal where obrisan=false and analizaCijene =:analizaCijene" + getOrderByEntitetAsc(ordersBys);
-        List<AnalizaMaterijal> list = HibernateUtil.getSession().createQuery(query)
+        list = HibernateUtil.getSession().createQuery(query)
                 .setParameter("analizaCijene", analizaCijene).list();
         return list;
     }
