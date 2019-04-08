@@ -34,15 +34,16 @@
         <property name="current_session_context_class">thread</property>
 
         <!-- moraju se slijedno navesti klase koje su mapirane -->
-    
+
         <mapping class="kovacevic.model.Rad" />
         <mapping class="kovacevic.model.Materijal" />
+        <mapping class="kovacevic.model.Troskovnik" />
         <mapping class="kovacevic.model.AnalizaRad" />
         <mapping class="kovacevic.model.AnalizaMaterijal" />
-        <mapping class="kovacevic.model.GrupacijaNorme" />
         <mapping class="kovacevic.model.AnalizaCijene" />
         <mapping class="kovacevic.model.StavkaTroskovnik" />
-   
-   
+        <mapping class="kovacevic.model.GrupacijaNorme" />
+
+           
     </session-factory>
 </hibernate-configuration>

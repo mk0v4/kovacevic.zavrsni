@@ -249,7 +249,7 @@ public class FormaStavkaTroskovnikStaro extends Forma<StavkaTroskovnik>{
             this.entitet = lstStavkeTroskovnika.getSelectedValue();
             txtOznakaStavke.setText(lstStavkeTroskovnika.getSelectedValue().getOznakaStavka());
             tarOpisNorme.setText(entitet.getAnalizeCijena().toString());
-            tarDodatanOpis.setText(lstStavkeTroskovnika.getSelectedValue().getDodatanOpis());
+            tarDodatanOpis.setText(lstStavkeTroskovnika.getSelectedValue().getOpisStavka());
 //            txtJedinicaMjere
             txtKolicina.setText(lstStavkeTroskovnika.getSelectedValue().getKolicinaTroskovnik().toString());
             txtUkupnaCijena.setText(lstStavkeTroskovnika.getSelectedValue().getUkupnaCijena().toString());
@@ -282,7 +282,7 @@ public class FormaStavkaTroskovnikStaro extends Forma<StavkaTroskovnik>{
     @Override
     protected void spremi() {
         entitet.setOznakaStavka(txtOznakaStavke.getText());
-        entitet.setDodatanOpis(tarDodatanOpis.getText());
+        entitet.setOpisStavka(tarDodatanOpis.getText());
         entitet.setKolicinaTroskovnik(new BigDecimal(txtKolicina.getText()));
         entitet.setUkupnaCijena(new BigDecimal(txtUkupnaCijena.getText()));
         

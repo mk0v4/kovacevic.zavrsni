@@ -185,7 +185,7 @@ public class PocetniLoad {
         StavkaTroskovnik stavkaTroskovnik = new StavkaTroskovnik();
         stavkaTroskovnik.setOznakaStavka("1.");
         stavkaTroskovnik.setKolicinaTroskovnik(new BigDecimal(30.52));
-        stavkaTroskovnik.setDodatanOpis("Početka radova nakon odobrenja nadzornog inženjera.");
+        stavkaTroskovnik.setOpisStavka("Početka radova nakon odobrenja nadzornog inženjera.");
         stavkaTroskovnik.setUkupnaCijena(new BigDecimal(21886.50));
         obradaStavkeTroskovnika.save(stavkaTroskovnik);
 

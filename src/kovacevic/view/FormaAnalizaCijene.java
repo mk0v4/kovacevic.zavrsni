@@ -111,9 +111,8 @@ public class FormaAnalizaCijene extends JFrame {
 
         popunjavanjeJTree();
 
-        popupMenuJTree();
+//        popupMenuJTree();
 //        popupMenuJTable();
-
         jTableNorma = new WrappableTable(jTableNorma, jTableNorma.getModel(), jScrollPaneTableNorma);
         tblOperacije = new WrappableTable(tblOperacije, tblOperacije.getModel(), jspOperacije);
         tblGrupeRada = new WrappableTable(tblGrupeRada, tblGrupeRada.getModel(), jspGrupeRada);
@@ -125,28 +124,15 @@ public class FormaAnalizaCijene extends JFrame {
         popuniGrupeRadova();
         ucitajMaterijal();
 
-    }
-
-    protected void ucitajAnalizaRad(AnalizaCijene odabranaAnalizaCijene) {
-        rezultatiAnalizaRad = obradaAnalizaRad.getListaRad(odabranaAnalizaCijene);
-    }
-
-    protected void ucitajAnalizaMaterijal(AnalizaCijene odabranaAnalizaCijene) {
-        rezultatiAnalizaMaterijala = obradaAnalizaMaterijal.getListaAnalizaMaterijal(odabranaAnalizaCijene);
-    }
-
-    protected void ucitajMaterijal() {
-        rezultatiMaterijal = obradaMaterijal.getListaMaterijal(materijal);
-    }
-
-    private void popupMenuJTree() {
-        menuJTree.add(dodajGrupacijaNorme);
-        menuJTree.add(promijeniGrupacijaNorme);
-
         dodajGrupacijaNorme.addActionListener((ActionEvent e) -> {
-            FormaGrupacijaNorme grupacijaNorme1 = new FormaGrupacijaNorme(new GrupacijaNorme(), true, true);
-            grupacijaNorme1.setVisible(true);
+
             if (jTreeNorma.getSelectionPath() != null) {
+                DefaultMutableTreeNode leaf = (DefaultMutableTreeNode) jTreeNorma.getLastSelectedPathComponent();
+                if (!leaf.isLeaf()) {
+                    return;
+                }
+                FormaGrupacijaNorme grupacijaNorme1 = new FormaGrupacijaNorme(this.grupacijaNorme, true, true);
+                grupacijaNorme1.setVisible(true);
                 TreePath odabraniPath = jTreeNorma.getSelectionPath().getParentPath();
                 DefaultMutableTreeNode node1 = (DefaultMutableTreeNode) odabraniPath.getPathComponent(1);
                 DefaultMutableTreeNode root = (DefaultMutableTreeNode) jTreeNorma.getModel().getRoot();
@@ -166,35 +152,63 @@ public class FormaAnalizaCijene extends JFrame {
                         popunjavanjeJTree();
                         jTreeNorma.expandRow(expand);
                         jTreeNorma.setSelectionRow(red);
+                        grupacijaNorme1.setVisible(false);
                     }
                 });
             }
 
         });
         promijeniGrupacijaNorme.addActionListener((ActionEvent e) -> {
-            FormaGrupacijaNorme grupacijaNorme = new FormaGrupacijaNorme(this.grupacijaNorme, false, true);
-            grupacijaNorme.setVisible(true);
-            TreePath odabraniPath = jTreeNorma.getSelectionPath().getParentPath();
-            DefaultMutableTreeNode node1 = (DefaultMutableTreeNode) odabraniPath.getPathComponent(1);
-            DefaultMutableTreeNode root = (DefaultMutableTreeNode) jTreeNorma.getModel().getRoot();
-            int red = jTreeNorma.getRowForPath(jTreeNorma.getSelectionPath());
-            grupacijaNorme.addWindowListener(new WindowAdapter() {
-                @Override
-                public void windowClosing(WindowEvent arg0) {
-                    int expand = 0;
-                    for (int i = 0; i < root.getChildCount(); i++) {
-                        jTreeNorma.collapseRow(i);
-                        if (root.getChildAt(i).equals(node1)) {
-                            expand = i;
-                        }
-                    }
-                    popunjavanjeJTree();
-                    jTreeNorma.expandRow(expand);
-                    jTreeNorma.setSelectionRow(red);
-//  spremanje
+            if (jTreeNorma.getSelectionPath() != null) {
+                DefaultMutableTreeNode leaf = (DefaultMutableTreeNode) jTreeNorma.getLastSelectedPathComponent();
+                if (!leaf.isLeaf()) {
+                    return;
                 }
-            });
+                FormaGrupacijaNorme grupacijaNorme = new FormaGrupacijaNorme(this.grupacijaNorme, false, true);
+                grupacijaNorme.setVisible(true);
+                TreePath odabraniPath = jTreeNorma.getSelectionPath().getParentPath();
+                DefaultMutableTreeNode node1 = (DefaultMutableTreeNode) odabraniPath.getPathComponent(1);
+                DefaultMutableTreeNode root = (DefaultMutableTreeNode) jTreeNorma.getModel().getRoot();
+                int red = jTreeNorma.getRowForPath(jTreeNorma.getSelectionPath());
+                grupacijaNorme.addWindowListener(new WindowAdapter() {
+                    @Override
+                    public void windowClosing(WindowEvent arg0) {
+                        int expand = 0;
+                        for (int i = 0; i < root.getChildCount(); i++) {
+                            jTreeNorma.collapseRow(i);
+                            if (root.getChildAt(i).equals(node1)) {
+                                expand = i;
+                            }
+                        }
+                        popunjavanjeJTree();
+                        jTreeNorma.expandRow(expand);
+                        jTreeNorma.setSelectionRow(red);
+//  spremanje
+                        grupacijaNorme.setVisible(false);
+                    }
+                });
+            }
+
         });
+
+    }
+
+    protected void ucitajAnalizaRad(AnalizaCijene odabranaAnalizaCijene) {
+        rezultatiAnalizaRad = obradaAnalizaRad.getListaRad(odabranaAnalizaCijene);
+    }
+
+    protected void ucitajAnalizaMaterijal(AnalizaCijene odabranaAnalizaCijene) {
+        rezultatiAnalizaMaterijala = obradaAnalizaMaterijal.getListaAnalizaMaterijal(odabranaAnalizaCijene);
+    }
+
+    protected void ucitajMaterijal() {
+        rezultatiMaterijal = obradaMaterijal.getListaMaterijal(materijal);
+    }
+
+    private void popupMenuJTree() {
+        menuJTree.add(dodajGrupacijaNorme);
+        menuJTree.add(promijeniGrupacijaNorme);
+
     }
 
     /**
@@ -218,7 +232,6 @@ public class FormaAnalizaCijene extends JFrame {
             ispunjavanjeAnalizaCijena();
             ispunjavanjePromjenaAnalizaCijena(dodajNorma);
             TreePath odabraniPath = jTreeNorma.getSelectionPath().getParentPath();
-            DefaultMutableTreeNode node = (DefaultMutableTreeNode) jTreeNorma.getLastSelectedPathComponent();
             DefaultMutableTreeNode node1 = (DefaultMutableTreeNode) odabraniPath.getPathComponent(1);
             DefaultMutableTreeNode root = (DefaultMutableTreeNode) jTreeNorma.getModel().getRoot();
             int red = jTreeNorma.getRowForPath(jTreeNorma.getSelectionPath());
@@ -244,7 +257,6 @@ public class FormaAnalizaCijene extends JFrame {
             ispunjavanjeAnalizaCijena();
             ispunjavanjePromjenaAnalizaCijena(promijeniNorma);
             TreePath odabraniPath = jTreeNorma.getSelectionPath().getParentPath();
-            DefaultMutableTreeNode node = (DefaultMutableTreeNode) jTreeNorma.getLastSelectedPathComponent();
             DefaultMutableTreeNode node1 = (DefaultMutableTreeNode) odabraniPath.getPathComponent(1);
             DefaultMutableTreeNode root = (DefaultMutableTreeNode) jTreeNorma.getModel().getRoot();
             int red = jTreeNorma.getRowForPath(jTreeNorma.getSelectionPath());
@@ -1368,11 +1380,11 @@ public class FormaAnalizaCijene extends JFrame {
 
             },
             new String [] {
-                "null", "null", "null", "null", "null"
+                "null", "null", "null", "null", "null", "null"
             }
         ) {
             boolean[] canEdit = new boolean [] {
-                false, false, false, false, false
+                false, false, false, false, false, false
             };
 
             public boolean isCellEditable(int rowIndex, int columnIndex) {
@@ -1433,17 +1445,17 @@ public class FormaAnalizaCijene extends JFrame {
         if (SwingUtilities.isRightMouseButton(evt)) {
             popupMenuJTree();
             menuJTree.show(evt.getComponent(), evt.getX(), evt.getY());
-            //            TODO - dodati dodavanje norme desni klik meni
-            System.out.println("kovacevic.view.FormaAnalizaCijene.jTreeNormaMouseClicked()");
-//            int index = jTreeNorma.getSelectionRows();
-//                    .locationToIndex(evt.getPoint());
-//            analizaCijene = lstAnalizaCijena.getModel().getElementAt(index);
-//            lstAnalizaCijena.setSelectionInterval(index, index);
-//            lstAnalizaCijena.setSelectionBackground(new Color(184, 207, 229));
-            DefaultMutableTreeNode node = (DefaultMutableTreeNode) jTreeNorma.getLastSelectedPathComponent();
-            if (node != null && node.isLeaf()) {
-                menuJTree.show(evt.getComponent(), evt.getX(), evt.getY());
-            }
+//            //            TODO - dodati dodavanje norme desni klik meni
+//            System.out.println("kovacevic.view.FormaAnalizaCijene.jTreeNormaMouseClicked()");
+////            int index = jTreeNorma.getSelectionRows();
+////                    .locationToIndex(evt.getPoint());
+////            analizaCijene = lstAnalizaCijena.getModel().getElementAt(index);
+////            lstAnalizaCijena.setSelectionInterval(index, index);
+////            lstAnalizaCijena.setSelectionBackground(new Color(184, 207, 229));
+//            DefaultMutableTreeNode node = (DefaultMutableTreeNode) jTreeNorma.getLastSelectedPathComponent();
+//            if (node != null && node.isLeaf()) {
+//                menuJTree.show(evt.getComponent(), evt.getX(), evt.getY());
+//            }
         }
     }//GEN-LAST:event_jTreeNormaMouseClicked
 
@@ -1499,7 +1511,42 @@ public class FormaAnalizaCijene extends JFrame {
             }
             popupMenuJTable();
             menuJTable.show(evt.getComponent(), evt.getX(), evt.getY());
+        } else if (evt.getClickCount() == 2) {
+            if (grupacijaNorme == null) {
+                JOptionPane.showMessageDialog(null, "odaberite grupu norme");
+                return;
+            }
+            if (row == -1) {
+                JOptionPane.showMessageDialog(null, "odaberite normu unutar tablice");
+                analizaCijene = null;
+                return;
+            }
+            jFrameEditAnalizaCijene.setLocationRelativeTo(null);
+            jFrameEditAnalizaCijene.setTitle("Analiza Cijene - Promjena");
+            jFrameEditAnalizaCijene.setVisible(true);
+            ispunjavanjeAnalizaCijena();
+            ispunjavanjePromjenaAnalizaCijena(promijeniNorma);
+            TreePath odabraniPath = jTreeNorma.getSelectionPath().getParentPath();
+            DefaultMutableTreeNode node1 = (DefaultMutableTreeNode) odabraniPath.getPathComponent(1);
+            DefaultMutableTreeNode root = (DefaultMutableTreeNode) jTreeNorma.getModel().getRoot();
+            int red = jTreeNorma.getRowForPath(jTreeNorma.getSelectionPath());
+            jFrameEditAnalizaCijene.addWindowListener(new WindowAdapter() {
+                @Override
+                public void windowClosing(WindowEvent arg0) {
+                    int expand = 0;
+                    for (int i = 0; i < root.getChildCount(); i++) {
+                        jTreeNorma.collapseRow(i);
+                        if (root.getChildAt(i).equals(node1)) {
+                            expand = i;
+                        }
+                    }
+                    jTreeNorma.expandRow(expand);
+                    jTreeNorma.setSelectionRow(red);
+                    osvjeziRezultateAnalizeCijena();
+                }
+            });
         }
+
     }//GEN-LAST:event_jTableNormaMouseClicked
 
     private void jScrollPaneTableNormaMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jScrollPaneTableNormaMouseClicked
