@@ -5,22 +5,29 @@
  */
 package kovacevic.view;
 
+import java.awt.Color;
+import java.awt.Component;
+import java.awt.Container;
+import java.awt.LayoutManager;
 import java.io.IOException;
+import java.util.Random;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javax.swing.JFrame;
 import javax.swing.JPanel;
+import javax.swing.SwingUtilities;
+import sun.swing.SwingAccessor;
 
 /**
  *
  * @author Marko Kovačević
  */
-public class Izbornik extends javax.swing.JFrame {
-//nasljedjje se form??
+public class TestIzbornik extends javax.swing.JFrame {
 
     /**
      * Creates new form Izbornik
      */
-    public Izbornik() {
+    public TestIzbornik() {
         initComponents();
         setTitle("Završni rad");
     }
@@ -40,9 +47,11 @@ public class Izbornik extends javax.swing.JFrame {
         btnUnosAnalizaCijene = new javax.swing.JButton();
         btnTroskovnici = new javax.swing.JButton();
         jButton1 = new javax.swing.JButton();
+        jScrollPane1 = new javax.swing.JScrollPane();
+        pnlPodatci = new javax.swing.JPanel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
-        setMinimumSize(new java.awt.Dimension(400, 350));
+        setMinimumSize(new java.awt.Dimension(800, 350));
 
         btnEraDijagram.setText("<html><center>ERA<br> Dijagram</center></html>");
         btnEraDijagram.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
@@ -90,6 +99,11 @@ public class Izbornik extends javax.swing.JFrame {
             }
         });
 
+        pnlPodatci.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0)));
+        pnlPodatci.setMinimumSize(new java.awt.Dimension(850, 350));
+        pnlPodatci.setLayout(new javax.swing.BoxLayout(pnlPodatci, javax.swing.BoxLayout.PAGE_AXIS));
+        jScrollPane1.setViewportView(pnlPodatci);
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
@@ -97,32 +111,35 @@ public class Izbornik extends javax.swing.JFrame {
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                        .addGap(0, 0, Short.MAX_VALUE)
-                        .addComponent(lblGithub))
-                    .addComponent(btnEraDijagram)
-                    .addComponent(btnUnosRadMaterijal, javax.swing.GroupLayout.DEFAULT_SIZE, 336, Short.MAX_VALUE)
-                    .addComponent(btnUnosAnalizaCijene, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(btnTroskovnici, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(jButton1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                    .addComponent(btnEraDijagram, javax.swing.GroupLayout.PREFERRED_SIZE, 134, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(btnUnosRadMaterijal, javax.swing.GroupLayout.PREFERRED_SIZE, 134, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(btnUnosAnalizaCijene, javax.swing.GroupLayout.PREFERRED_SIZE, 134, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(btnTroskovnici, javax.swing.GroupLayout.PREFERRED_SIZE, 134, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jButton1, javax.swing.GroupLayout.PREFERRED_SIZE, 134, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(lblGithub, javax.swing.GroupLayout.Alignment.TRAILING))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 576, Short.MAX_VALUE)
                 .addContainerGap())
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(btnEraDijagram, javax.swing.GroupLayout.PREFERRED_SIZE, 40, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(15, 15, 15)
-                .addComponent(lblGithub)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addComponent(btnUnosRadMaterijal, javax.swing.GroupLayout.PREFERRED_SIZE, 40, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(18, 18, 18)
-                .addComponent(btnUnosAnalizaCijene, javax.swing.GroupLayout.PREFERRED_SIZE, 40, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(18, 18, 18)
-                .addComponent(btnTroskovnici, javax.swing.GroupLayout.PREFERRED_SIZE, 40, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(18, 18, 18)
-                .addComponent(jButton1, javax.swing.GroupLayout.PREFERRED_SIZE, 40, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap())
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 348, Short.MAX_VALUE)
+                    .addGroup(layout.createSequentialGroup()
+                        .addComponent(btnEraDijagram, javax.swing.GroupLayout.PREFERRED_SIZE, 40, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(15, 15, 15)
+                        .addComponent(lblGithub)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addComponent(btnUnosRadMaterijal, javax.swing.GroupLayout.PREFERRED_SIZE, 40, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(18, 18, 18)
+                        .addComponent(btnUnosAnalizaCijene, javax.swing.GroupLayout.PREFERRED_SIZE, 40, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(18, 18, 18)
+                        .addComponent(btnTroskovnici, javax.swing.GroupLayout.PREFERRED_SIZE, 40, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(18, 18, 18)
+                        .addComponent(jButton1, javax.swing.GroupLayout.PREFERRED_SIZE, 40, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                .addGap(8, 8, 8))
         );
 
         pack();
@@ -130,7 +147,10 @@ public class Izbornik extends javax.swing.JFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     private void btnEraDijagramActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnEraDijagramActionPerformed
-        new EraDijagram().setVisible(true);
+        pnlPodatci.removeAll();
+        pnlPodatci.add(new TestEraDijagram());
+        pnlPodatci.validate();
+        jScrollPane1.validate();
     }//GEN-LAST:event_btnEraDijagramActionPerformed
 
     private void lblGithubMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_lblGithubMouseClicked
@@ -138,17 +158,24 @@ public class Izbornik extends javax.swing.JFrame {
         try {
             Runtime.getRuntime().exec("cmd /c start https://github.com/mk0v4 ");
         } catch (IOException ex) {
-            Logger.getLogger(Izbornik.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(TestIzbornik.class.getName()).log(Level.SEVERE, null, ex);
         }
 
     }//GEN-LAST:event_lblGithubMouseClicked
 
     private void btnUnosRadMaterijalActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnUnosRadMaterijalActionPerformed
-        new FormaRadMaterijal().setVisible(true);
+        pnlPodatci.removeAll();
+        pnlPodatci.add(new TestFormaRadMaterijal());
+        pnlPodatci.validate();
+        jScrollPane1.validate();
+
     }//GEN-LAST:event_btnUnosRadMaterijalActionPerformed
 
     private void btnUnosAnalizaCijeneActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnUnosAnalizaCijeneActionPerformed
-        new FormaAnalizaCijene().setVisible(true);
+        pnlPodatci.removeAll();
+        pnlPodatci.add(new TestFormaAnalizaCijene());
+        pnlPodatci.validate();
+        jScrollPane1.validate();        
     }//GEN-LAST:event_btnUnosAnalizaCijeneActionPerformed
 
     private void btnTroskovniciActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnTroskovniciActionPerformed
@@ -156,7 +183,7 @@ public class Izbornik extends javax.swing.JFrame {
     }//GEN-LAST:event_btnTroskovniciActionPerformed
 
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
-        new TestIzbornik().setVisible(true);
+//        new TestIzbornik().setVisible(true);
     }//GEN-LAST:event_jButton1ActionPerformed
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
@@ -165,6 +192,8 @@ public class Izbornik extends javax.swing.JFrame {
     private javax.swing.JButton btnUnosAnalizaCijene;
     private javax.swing.JButton btnUnosRadMaterijal;
     private javax.swing.JButton jButton1;
+    private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JLabel lblGithub;
+    private javax.swing.JPanel pnlPodatci;
     // End of variables declaration//GEN-END:variables
 }

@@ -36,6 +36,7 @@ public class FormaTroskovnik extends JFrame {
         obradaTroskovnik = new ObradaTroskovnik();
         initComponents();
         setTitle("Troškovnik");
+        jlpGrupaRadova.setVisible(false);
     }
 
     public FormaTroskovnik(boolean dodaj, boolean promjeni) {
