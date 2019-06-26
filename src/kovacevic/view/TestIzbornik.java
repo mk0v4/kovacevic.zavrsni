@@ -46,7 +46,6 @@ public class TestIzbornik extends javax.swing.JFrame {
         btnUnosRadMaterijal = new javax.swing.JButton();
         btnUnosAnalizaCijene = new javax.swing.JButton();
         btnTroskovnici = new javax.swing.JButton();
-        jButton1 = new javax.swing.JButton();
         jScrollPane1 = new javax.swing.JScrollPane();
         pnlPodatci = new javax.swing.JPanel();
 
@@ -92,13 +91,6 @@ public class TestIzbornik extends javax.swing.JFrame {
             }
         });
 
-        jButton1.setText("jButton1");
-        jButton1.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButton1ActionPerformed(evt);
-            }
-        });
-
         pnlPodatci.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0)));
         pnlPodatci.setMinimumSize(new java.awt.Dimension(850, 350));
         pnlPodatci.setLayout(new javax.swing.BoxLayout(pnlPodatci, javax.swing.BoxLayout.PAGE_AXIS));
@@ -115,7 +107,6 @@ public class TestIzbornik extends javax.swing.JFrame {
                     .addComponent(btnUnosRadMaterijal, javax.swing.GroupLayout.PREFERRED_SIZE, 134, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(btnUnosAnalizaCijene, javax.swing.GroupLayout.PREFERRED_SIZE, 134, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(btnTroskovnici, javax.swing.GroupLayout.PREFERRED_SIZE, 134, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jButton1, javax.swing.GroupLayout.PREFERRED_SIZE, 134, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(lblGithub, javax.swing.GroupLayout.Alignment.TRAILING))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 576, Short.MAX_VALUE)
@@ -137,8 +128,7 @@ public class TestIzbornik extends javax.swing.JFrame {
                         .addComponent(btnUnosAnalizaCijene, javax.swing.GroupLayout.PREFERRED_SIZE, 40, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addGap(18, 18, 18)
                         .addComponent(btnTroskovnici, javax.swing.GroupLayout.PREFERRED_SIZE, 40, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(18, 18, 18)
-                        .addComponent(jButton1, javax.swing.GroupLayout.PREFERRED_SIZE, 40, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                        .addGap(0, 0, Short.MAX_VALUE)))
                 .addGap(8, 8, 8))
         );
 
@@ -182,16 +172,11 @@ public class TestIzbornik extends javax.swing.JFrame {
         new FormaTroskovnici().setVisible(true);
     }//GEN-LAST:event_btnTroskovniciActionPerformed
 
-    private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
-//        new TestIzbornik().setVisible(true);
-    }//GEN-LAST:event_jButton1ActionPerformed
-
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btnEraDijagram;
     private javax.swing.JButton btnTroskovnici;
     private javax.swing.JButton btnUnosAnalizaCijene;
     private javax.swing.JButton btnUnosRadMaterijal;
-    private javax.swing.JButton jButton1;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JLabel lblGithub;
     private javax.swing.JPanel pnlPodatci;
